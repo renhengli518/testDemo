@@ -1,0 +1,272 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.codyy.oc.onlinetest.dao.ExamPracticeMapper" >
+  <resultMap id="BaseResultMap" type="com.codyy.oc.onlinetest.entity.ExamPractice" >
+    <id column="EXAM_PRACTICE_ID" property="examPracticeId" jdbcType="VARCHAR" />
+    <result column="ANSWER_TIME" property="answerTime" jdbcType="DECIMAL" />
+    <result column="SCORE" property="score" jdbcType="DECIMAL" />
+    <result column="STATUS" property="status" jdbcType="VARCHAR" />
+    <result column="MY_SCORE" property="myScore" jdbcType="DECIMAL" />
+    <result column="QUESTION_COUNT" property="questionCount" jdbcType="DECIMAL" />
+    <result column="ANSWER_COUNT" property="answerCount" jdbcType="DECIMAL" />
+    <result column="CORRECT_COUNT" property="correctCount" jdbcType="DECIMAL" />
+    <result column="CREATE_TIME" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="EXAM_RESULT_ID" property="examResultId" jdbcType="VARCHAR" />
+    <result column="BASE_SEMESTER_ID" property="baseSemesterId" jdbcType="VARCHAR" />
+    <result column="BASE_CLASSLEVEL_ID" property="baseClasslevelId" jdbcType="VARCHAR" />
+    <result column="BASE_SUBJECT_ID" property="baseSubjectId" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    EXAM_PRACTICE_ID, ANSWER_TIME, SCORE, STATUS, MY_SCORE, QUESTION_COUNT, ANSWER_COUNT, 
+    CORRECT_COUNT, CREATE_TIME, EXAM_RESULT_ID, BASE_SEMESTER_ID, BASE_CLASSLEVEL_ID, 
+    BASE_SUBJECT_ID
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from EXAM_PRACTICE
+    where EXAM_PRACTICE_ID = #{examPracticeId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from EXAM_PRACTICE
+    where EXAM_PRACTICE_ID = #{examPracticeId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.codyy.oc.onlinetest.entity.ExamPractice" >
+    insert into EXAM_PRACTICE (EXAM_PRACTICE_ID, ANSWER_TIME, SCORE, 
+      STATUS, MY_SCORE, QUESTION_COUNT, 
+      ANSWER_COUNT, CORRECT_COUNT, CREATE_TIME, 
+      EXAM_RESULT_ID, BASE_SEMESTER_ID, BASE_CLASSLEVEL_ID, 
+      BASE_SUBJECT_ID)
+    values (#{examPracticeId,jdbcType=VARCHAR}, #{answerTime,jdbcType=DECIMAL}, #{score,jdbcType=DECIMAL}, 
+      #{status,jdbcType=VARCHAR}, #{myScore,jdbcType=DECIMAL}, #{questionCount,jdbcType=DECIMAL}, 
+      #{answerCount,jdbcType=DECIMAL}, #{correctCount,jdbcType=DECIMAL}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{examResultId,jdbcType=VARCHAR}, #{baseSemesterId,jdbcType=VARCHAR}, #{baseClasslevelId,jdbcType=VARCHAR}, 
+      #{baseSubjectId,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.codyy.oc.onlinetest.entity.ExamPractice" >
+    insert into EXAM_PRACTICE
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="examPracticeId != null" >
+        EXAM_PRACTICE_ID,
+      </if>
+      <if test="answerTime != null" >
+        ANSWER_TIME,
+      </if>
+      <if test="score != null" >
+        SCORE,
+      </if>
+      <if test="status != null" >
+        STATUS,
+      </if>
+      <if test="myScore != null" >
+        MY_SCORE,
+      </if>
+      <if test="questionCount != null" >
+        QUESTION_COUNT,
+      </if>
+      <if test="answerCount != null" >
+        ANSWER_COUNT,
+      </if>
+      <if test="correctCount != null" >
+        CORRECT_COUNT,
+      </if>
+      <if test="createTime != null" >
+        CREATE_TIME,
+      </if>
+      <if test="examResultId != null" >
+        EXAM_RESULT_ID,
+      </if>
+      <if test="baseSemesterId != null" >
+        BASE_SEMESTER_ID,
+      </if>
+      <if test="baseClasslevelId != null" >
+        BASE_CLASSLEVEL_ID,
+      </if>
+      <if test="baseSubjectId != null" >
+        BASE_SUBJECT_ID,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="examPracticeId != null" >
+        #{examPracticeId,jdbcType=VARCHAR},
+      </if>
+      <if test="answerTime != null" >
+        #{answerTime,jdbcType=DECIMAL},
+      </if>
+      <if test="score != null" >
+        #{score,jdbcType=DECIMAL},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="myScore != null" >
+        #{myScore,jdbcType=DECIMAL},
+      </if>
+      <if test="questionCount != null" >
+        #{questionCount,jdbcType=DECIMAL},
+      </if>
+      <if test="answerCount != null" >
+        #{answerCount,jdbcType=DECIMAL},
+      </if>
+      <if test="correctCount != null" >
+        #{correctCount,jdbcType=DECIMAL},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="examResultId != null" >
+        #{examResultId,jdbcType=VARCHAR},
+      </if>
+      <if test="baseSemesterId != null" >
+        #{baseSemesterId,jdbcType=VARCHAR},
+      </if>
+      <if test="baseClasslevelId != null" >
+        #{baseClasslevelId,jdbcType=VARCHAR},
+      </if>
+      <if test="baseSubjectId != null" >
+        #{baseSubjectId,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.codyy.oc.onlinetest.entity.ExamPractice" >
+    update EXAM_PRACTICE
+    <set >
+      <if test="answerTime != null" >
+        ANSWER_TIME = #{answerTime,jdbcType=DECIMAL},
+      </if>
+      <if test="score != null" >
+        SCORE = #{score,jdbcType=DECIMAL},
+      </if>
+      <if test="status != null" >
+        STATUS = #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="myScore != null" >
+        MY_SCORE = #{myScore,jdbcType=DECIMAL},
+      </if>
+      <if test="questionCount != null" >
+        QUESTION_COUNT = #{questionCount,jdbcType=DECIMAL},
+      </if>
+      <if test="answerCount != null" >
+        ANSWER_COUNT = #{answerCount,jdbcType=DECIMAL},
+      </if>
+      <if test="correctCount != null" >
+        CORRECT_COUNT = #{correctCount,jdbcType=DECIMAL},
+      </if>
+      <if test="createTime != null" >
+        CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="examResultId != null" >
+        EXAM_RESULT_ID = #{examResultId,jdbcType=VARCHAR},
+      </if>
+      <if test="baseSemesterId != null" >
+        BASE_SEMESTER_ID = #{baseSemesterId,jdbcType=VARCHAR},
+      </if>
+      <if test="baseClasslevelId != null" >
+        BASE_CLASSLEVEL_ID = #{baseClasslevelId,jdbcType=VARCHAR},
+      </if>
+      <if test="baseSubjectId != null" >
+        BASE_SUBJECT_ID = #{baseSubjectId,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where EXAM_PRACTICE_ID = #{examPracticeId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.codyy.oc.onlinetest.entity.ExamPractice" >
+    update EXAM_PRACTICE
+    set 
+      ANSWER_TIME = #{answerTime},
+      ANSWER_COUNT = #{answerCount}
+    where EXAM_PRACTICE_ID = #{examPracticeId}
+  </update>
+  
+  <!-- 获取巩固测试 -->
+  <select id="getPracticeByExamResultId" parameterType="java.lang.String" resultMap="BaseResultMap">
+	 select 
+    <include refid="Base_Column_List" />
+    from EXAM_PRACTICE
+    where EXAM_RESULT_ID = #{examResultId,jdbcType=VARCHAR}
+  </select>
+  
+  
+  <update id="updatePracticeQuestion">
+	 update EXAM_PRACTICE
+      set 
+      ANSWER_COUNT = #{answerCount},
+      STATUS = #{end}
+      
+    where EXAM_PRACTICE_ID = #{examPracticeId,jdbcType=VARCHAR}
+  
+  
+  </update>
+  
+  
+  <!-- 获取巩固测试结果统计  -->
+  <select id="getPracticeStatistics" parameterType="java.lang.String" resultType="com.codyy.oc.onlinetest.entity.ExamPractice">
+	with rt as (
+  		select
+  
+            distinct t.exam_practice_id,
+            t.total,
+            
+            (case
+              when t.right is null then
+               t.wrong
+              when t.wrong is null then
+               t.total - t.right
+            
+            end) mistakeCnt,
+            
+            (case
+              when t.right is null then
+               trunc(((t.total - t.wrong) / t.total) * 100, 2)
+              when t.wrong is null then
+               trunc((t.right / t.total) * 100, 2)
+            
+            end) rightRate
+  
+    	from (select distinct erqq.exam_practice_id,
+                           erqq.result,
+                           
+                           count(erqq.exam_practice_id) over(partition by erqq.exam_practice_id) total,
+                           
+                           (case
+                           
+                             when erqq.result = '1' then
+                              count(1) over(partition by erqq.result)
+                           
+                           end) right,
+                           
+                           (case
+                           
+                             when erqq.result = '0' then
+                              count(1) over(partition by erqq.result)
+                           
+                           end) wrong
+           
+             from exam_practice_question erqq
+            where erqq.exam_practice_id = #{examPracticeId}
+              and erqq.type not in ('ASK_ANSWER', 'COMPUTING')
+           
+           ) t
+           
+        )
+
+	select
+
+ 		rt.mistakeCnt       as mistakeCnt,
+ 		rt.rightRate        as rightRate,
+ 		ep.answer_count     as answerCount,
+ 		ep.question_count   as questionCount
+
+  	from exam_practice ep
+
+  	left join rt
+    	on rt.exam_practice_id = ep.exam_practice_id
+
+ 	where ep.exam_practice_id = #{examPracticeId}
+
+
+  </select>
+  
+  
+  
+</mapper>

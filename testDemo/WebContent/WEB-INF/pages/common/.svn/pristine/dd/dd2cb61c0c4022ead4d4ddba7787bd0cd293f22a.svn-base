@@ -1,0 +1,24 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" isErrorPage="true"%>
+<%@ page import="java.io.ByteArrayOutputStream" %>
+<%@ page import="java.io.PrintStream" %>
+<%@ include file="../meta.jsp"%>
+<title>500页面</title>
+</head>
+<body>
+	<div style="width:100%;height:100%;background: #f5f5f5;">
+		<div class="building" style="position:absolute;top:10%;;left:50%;margin-left:-200px;">
+			<img src="${root }/public/img/404.png" alt="">
+			<a class="here-btn" href="javascript:;" onclick="history.back();" style="display:block;width:40px;height:22px;position:relative;left:187px;top:-110px;"></a>
+		</div>
+	</div>
+	<div style="display: none;">
+		<%
+		ByteArrayOutputStream output = new ByteArrayOutputStream(1024);
+		exception.printStackTrace(new PrintStream(output)); 
+		out.write(output.toString());
+		%>
+	</div>
+</body>
+<script type="text/javascript">
+</script>
+</html>

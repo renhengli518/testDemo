@@ -1,0 +1,1138 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.codyy.oc.onlinetest.dao.ExamQuestionMapper" >
+  <resultMap id="BaseResultMap" type="com.codyy.oc.onlinetest.entity.ExamQuestionListResult" >
+    <id column="EXAM_QUESTION_ID" property="examQuestionId" jdbcType="VARCHAR" />
+    <result column="BASE_SEMESTER_ID" property="baseSemesterId" jdbcType="VARCHAR" />
+    <result column="BASE_CLASSLEVEL_ID" property="baseClasslevelId" jdbcType="VARCHAR" />
+    <result column="BASE_SUBJECT_ID" property="baseSubjectId" jdbcType="VARCHAR" />
+    <result column="BASE_USER_ID" property="baseUserId" jdbcType="VARCHAR" />
+    <result column="EXAM_ID" property="examId" jdbcType="VARCHAR" />
+    <result column="CONTENT_VIDEO" property="contentVideo" jdbcType="VARCHAR" />
+    <result column="ANSWER" property="answer" jdbcType="VARCHAR" />
+    <result column="DIFFICULTY" property="difficulty" jdbcType="VARCHAR" />
+    <result column="TYPE" property="type" jdbcType="VARCHAR" />
+    <result column="RESOLVE_VIDEO" property="resolveVideo" jdbcType="VARCHAR" />
+    <result column="FILL_IN_ANSWER_TYPE" property="fillInAnswerType" jdbcType="VARCHAR" />
+    <result column="FILL_IN_SCORE_TYPE" property="fillInScoreType" jdbcType="VARCHAR" />
+    <result column="RELATIONAL_INDICATOR" property="relationalIndicator" jdbcType="VARCHAR" />
+    <result column="MOTHER_ID" property="motherId" jdbcType="VARCHAR" />
+    <result column="SCORE" property="score" jdbcType="DECIMAL" />
+    <result column="SORT" property="sort" jdbcType="DECIMAL" />
+    <result column="STORE_SERVER" property="storeServer" jdbcType="VARCHAR" />
+    <result column="EXAM_TIMES" property="examTimes" jdbcType="VARCHAR" />
+    <result column="NUM" property="num" jdbcType="VARCHAR" />
+    <result column="UPDATE_TIME" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="MYSCORE" property="myScore" jdbcType="DECIMAL" />
+    <result column="AVGSCORE" property="avgScore" jdbcType="VARCHAR" />
+    <result column="ANSWERVIDEO" property="answerVideo" jdbcType="VARCHAR" />
+    <result column="RIGHTRATE" property="rightRate" jdbcType="VARCHAR" />
+    <result column="result" property="result" jdbcType="INTEGER"/>
+    <result column="myAnswer" property="myAnswer" jdbcType="VARCHAR"/>
+    <result column="answer_video" property="answerVideo" jdbcType="VARCHAR"/>
+    <result column="RESOLVE" property="resolve" jdbcType="CLOB" />
+    <result column="exam_task_id" property="examTaskId" jdbcType="VARCHAR"/>
+    <result column="exam_question_result_id" property="examQuestionResultId" jdbcType="VARCHAR"/>
+    <collection column="EXAM_QUESTION_ID" property="fillList" ofType="com.codyy.oc.onlinetest.entity.ExamQueFillInAnswer" select="selecFillAnswerList"/>
+   </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="com.codyy.oc.onlinetest.entity.ExamQuestionListResult" extends="BaseResultMap" >
+    <result column="CONTENT" property="content" jdbcType="CLOB" />
+    <result column="OPTIONS" property="options" jdbcType="CLOB" />
+    <result column="RESOLVE" property="resolve" jdbcType="CLOB" />
+    <result column="OPTIONS_TXT" property="optionsTxt" jdbcType="CLOB" />  
+    <result column="MYANSWER" property="myAnswer" jdbcType="CLOB" />
+    <result column="TEACHER_COMMENT" property="teacherComment" jdbcType="CLOB" />
+  </resultMap>
+  
+   <resultMap id="QuestionResultMap" type="com.codyy.oc.onlinetest.entity.ExamQuestionListResult" >
+    <id column="EXAM_QUESTION_ID" property="examQuestionId" jdbcType="VARCHAR" />
+    <result column="BASE_SEMESTER_ID" property="baseSemesterId" jdbcType="VARCHAR" />
+    <result column="BASE_CLASSLEVEL_ID" property="baseClasslevelId" jdbcType="VARCHAR" />
+    <result column="BASE_SUBJECT_ID" property="baseSubjectId" jdbcType="VARCHAR" />
+    <result column="BASE_USER_ID" property="baseUserId" jdbcType="VARCHAR" />
+    <result column="EXAM_ID" property="examId" jdbcType="VARCHAR" />
+    <result column="CONTENT_VIDEO" property="contentVideo" jdbcType="VARCHAR" />
+    <result column="ANSWER" property="answer" jdbcType="VARCHAR" />
+    <result column="DIFFICULTY" property="difficulty" jdbcType="VARCHAR" />
+    <result column="TYPE" property="type" jdbcType="VARCHAR" />
+    <result column="RESOLVE_VIDEO" property="resolveVideo" jdbcType="VARCHAR" />
+    <result column="FILL_IN_ANSWER_TYPE" property="fillInAnswerType" jdbcType="VARCHAR" />
+    <result column="FILL_IN_SCORE_TYPE" property="fillInScoreType" jdbcType="VARCHAR" />
+    <result column="RELATIONAL_INDICATOR" property="relationalIndicator" jdbcType="VARCHAR" />
+    <result column="MOTHER_ID" property="motherId" jdbcType="VARCHAR" />
+    <result column="SCORE" property="score" jdbcType="DECIMAL" />
+    <result column="SORT" property="sort" jdbcType="DECIMAL" />
+    <result column="STORE_SERVER" property="storeServer" jdbcType="VARCHAR" />
+    <result column="EXAM_TIMES" property="examTimes" jdbcType="VARCHAR" />
+    <result column="NUM" property="num" jdbcType="VARCHAR" />
+    <result column="UPDATE_TIME" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="MYSCORE" property="myScore" jdbcType="DECIMAL" />
+    <result column="AVGSCORE" property="avgScore" jdbcType="VARCHAR" />
+    <result column="ANSWER_VIDEO" property="answerVideo" jdbcType="VARCHAR" />
+    <result column="MYAnswer" property="myAnswer" jdbcType="VARCHAR"/>
+    <result column="RIGHTRATE" property="rightRate" jdbcType="VARCHAR" />
+    <result column="QUE_QUESTION_ID" property="queQuestionId" jdbcType="VARCHAR" />
+    <collection property="fillInAnswers" column="EXAM_QUESTION_ID" ofType="com.codyy.oc.onlinetest.entity.ExamQueFillInAnswer" select="selectFillInAnswer"/>
+    <collection property="rKnowledges" column="EXAM_QUESTION_ID" ofType="com.codyy.oc.onlinetest.entity.ExamQuestionRKnowledge"  select="selectRKnowledge"/>
+    <collection property="rChapters" column="EXAM_QUESTION_ID" ofType="ExamQuestionRChapter"  select="selectRChapter"  />
+  </resultMap>
+
+ 
+ 
+  <resultMap id="QuestionWithBLOBs" type="com.codyy.oc.onlinetest.entity.ExamQuestionListResult" extends="QuestionResultMap" >
+    <result column="CONTENT" property="content" jdbcType="CLOB" />
+    <result column="OPTIONS" property="options" jdbcType="CLOB" />
+    <result column="RESOLVE" property="resolve" jdbcType="CLOB" />
+    <result column="OPTIONS_TXT" property="optionsTxt" jdbcType="CLOB" />  
+    <result column="MYANSWER" property="myAnswer" jdbcType="CLOB" />
+    <result column="TEACHER_COMMENT" property="teacherComment" jdbcType="CLOB" />
+  </resultMap>
+  
+  
+   <!-- 填空题答案 -->
+   <resultMap id="FillInAnswerResultMap" type="com.codyy.oc.onlinetest.entity.ExamQueFillInAnswer">
+    <id column="EXAM_QUE_FILL_IN_ANSWER_ID" property="examQueFillInAnswerId" jdbcType="VARCHAR" />
+    <result column="EXAM_QUESTION_ID" property="examQuestionId" jdbcType="VARCHAR" />
+    <result column="SORT" property="sort" jdbcType="VARCHAR" />
+    <result column="ANSWER_GRP1" property="answerGrp1" jdbcType="CLOB" />
+    <result column="ANSWER_GRP2" property="answerGrp2" jdbcType="CLOB" />
+    <result column="ANSWER_GRP3" property="answerGrp3" jdbcType="CLOB" />
+    <result column="ANSWER_GRP4" property="answerGrp4" jdbcType="CLOB" />
+    <result column="ANSWER_GRP1_TXT" property="answerGrp1Txt" jdbcType="CLOB" />
+    <result column="ANSWER_GRP2_TXT" property="answerGrp2Txt" jdbcType="CLOB" />
+    <result column="ANSWER_GRP3_TXT" property="answerGrp3Txt" jdbcType="CLOB" />
+    <result column="ANSWER_GRP4_TXT" property="answerGrp4Txt" jdbcType="CLOB" />
+  </resultMap>
+  
+   <!-- 知识点 -->
+   <resultMap id="qstRKnowledgeResultMap" type="com.codyy.oc.onlinetest.entity.ExamQuestionRKnowledge" >
+	    <id column="EXAM_QUESTION_R_KNOWLEDGE_ID" property="examQuestionRKnowledgeId" jdbcType="VARCHAR" />
+	    <result column="BASE_KNOWLEDGE_ID" property="baseKnowledgeId" jdbcType="VARCHAR" />
+	    <result column="EXAM_QUESTION_ID" property="examQuestionId" jdbcType="VARCHAR" />
+	    <result column="BASE_SUB_KNOWLEDGE1_ID" property="baseSubKnowledge1Id"/>
+	    <result column="BASE_SUB_KNOWLEDGE2_ID" property="baseSubKnowledge2Id" />
+	    <result column="BASE_SUB_KNOWLEDGE3_ID" property="baseSubKnowledge3Id" />
+	    <result column="BASE_SUB_KNOWLEDGE4_ID" property="baseSubKnowledge4Id" />
+	    <result column="BASE_SUB_KNOWLEDGE5_ID" property="baseSubKnowledge5Id"/>
+	    <result column="BASE_END_KNOWLEDGE_ID" property="baseEndKnowledgeId"/>  
+  </resultMap>
+  
+  <!-- 章节 -->
+  <resultMap id="qstRChapterResultMap" type="com.codyy.oc.onlinetest.entity.ExamQuestionRChapter" >
+    <id column="EXAM_QUESTION_R_CHAPTER_ID" property="examQuestionRChapterId" jdbcType="VARCHAR" />
+    <result column="EXAM_QUESTION_ID" property="examQuestionId" jdbcType="VARCHAR" />
+    <result column="BASE_VERSION_ID" property="baseVersionId" jdbcType="VARCHAR" />
+    <result column="BASE_SECTION_ID" property="baseSectionId" jdbcType="VARCHAR" />
+    <result column="BASE_CHAPTER_ID" property="baseChapterId" jdbcType="VARCHAR" />
+    <result column="BASE_VOLUME_ID" property="baseVolumeId" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <!-- 获得填空题的答案集合-->
+  <select id="selecFillAnswerList"  resultType="com.codyy.oc.onlinetest.entity.ExamQueFillInAnswer">
+      select an.answer_grp1 as answerGrp1,an.answer_grp2 as answerGrp2,
+      an.answer_grp3 as answerGrp3,an.answer_grp4 as answerGrp4 from exam_que_fill_in_answer an 
+      where an.exam_question_id=#{EXAM_QUESTION_ID} order by sort
+  </select>
+  
+  
+  <sql id="Base_Column_List" >
+    EXAM_QUESTION_ID, BASE_SEMESTER_ID, BASE_CLASSLEVEL_ID, BASE_SUBJECT_ID, BASE_USER_ID, 
+    EXAM_ID, CONTENT_VIDEO, ANSWER, DIFFICULTY, TYPE, RESOLVE_VIDEO, FILL_IN_ANSWER_TYPE,
+    FILL_IN_SCORE_TYPE, RELATIONAL_INDICATOR, MOTHER_ID, SCORE, SORT, STORE_SERVER,UPDATE_TIME,TEMPORARY_FLAG,QUE_QUESTION_ID
+  </sql>
+  <sql id="Blob_Column_List" >
+    CONTENT, OPTIONS, RESOLVE, OPTIONS_TXT
+  </sql>
+  
+  <sql id="Exam_Column_List" >
+    EXAM_QUESTION_ID, CONTENT_VIDEO, ANSWER, DIFFICULTY, TYPE, RESOLVE_VIDEO, FILL_IN_ANSWER_TYPE,
+    FILL_IN_SCORE_TYPE, RELATIONAL_INDICATOR, MOTHER_ID, SORT, UPDATE_TIME
+  </sql>
+  <sql id="ExamBlob_Column_List" >
+    CONTENT, OPTIONS, RESOLVE, OPTIONS_TXT
+  </sql>
+  
+  <select id="selectByPrimaryKey" resultMap="QuestionWithBLOBs" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from EXAM_QUESTION
+    where EXAM_QUESTION_ID = #{examQuestionId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from EXAM_QUESTION
+    where EXAM_QUESTION_ID = #{examQuestionId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.codyy.oc.onlinetest.entity.ExamQuestion" >
+    insert into EXAM_QUESTION (EXAM_QUESTION_ID, BASE_SEMESTER_ID, BASE_CLASSLEVEL_ID, 
+      BASE_SUBJECT_ID, BASE_USER_ID, EXAM_ID, 
+      CONTENT_VIDEO, ANSWER, DIFFICULTY, 
+      TYPE, RESOLVE_VIDEO, FILL_IN_ANSWER_TYPE, 
+      FILL_IN_SCORE_TYPE, RELATIONAL_INDICATOR, MOTHER_ID, 
+      SCORE, SORT, STORE_SERVER, 
+      CONTENT, OPTIONS, RESOLVE, OPTIONS_TXT, UPDATE_TIME,TEMPORARY_FLAG,que_question_id
+      )
+    values (#{examQuestionId,jdbcType=VARCHAR}, #{baseSemesterId,jdbcType=VARCHAR}, #{baseClasslevelId,jdbcType=VARCHAR}, 
+      #{baseSubjectId,jdbcType=VARCHAR}, #{baseUserId,jdbcType=VARCHAR}, #{examId,jdbcType=VARCHAR}, 
+      #{contentVideo,jdbcType=VARCHAR}, #{answer,jdbcType=VARCHAR}, #{difficulty,jdbcType=VARCHAR}, 
+      #{type,jdbcType=VARCHAR}, #{resolveVideo,jdbcType=VARCHAR}, #{fillInAnswerType,jdbcType=VARCHAR}, 
+      #{fillInScoreType,jdbcType=VARCHAR}, #{relationalIndicator,jdbcType=VARCHAR}, #{motherId,jdbcType=VARCHAR}, 
+      #{score,jdbcType=DECIMAL}, #{sort,jdbcType=DECIMAL}, #{storeServer,jdbcType=VARCHAR}, 
+      #{content,jdbcType=CLOB}, #{options,jdbcType=CLOB}, #{resolve,jdbcType=CLOB}, #{optionsTxt,jdbcType=CLOB},
+      #{updateTime,jdbcType=TIMESTAMP},
+      #{tempoparyFlag,jdbcType=VARCHAR},
+      #{queQuestionId,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.codyy.oc.onlinetest.entity.ExamQuestion" >
+    insert into EXAM_QUESTION
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="examQuestionId != null" >
+        EXAM_QUESTION_ID,
+      </if>
+      <if test="baseSemesterId != null" >
+        BASE_SEMESTER_ID,
+      </if>
+      <if test="baseClasslevelId != null" >
+        BASE_CLASSLEVEL_ID,
+      </if>
+      <if test="baseSubjectId != null" >
+        BASE_SUBJECT_ID,
+      </if>
+      <if test="baseUserId != null" >
+        BASE_USER_ID,
+      </if>
+      <if test="examId != null" >
+        EXAM_ID,
+      </if>
+      <if test="contentVideo != null" >
+        CONTENT_VIDEO,
+      </if>
+      <if test="answer != null" >
+        ANSWER,
+      </if>
+      <if test="difficulty != null" >
+        DIFFICULTY,
+      </if>
+      <if test="type != null" >
+        TYPE,
+      </if>
+      <if test="resolveVideo != null" >
+        RESOLVE_VIDEO,
+      </if>
+      <if test="fillInAnswerType != null" >
+        FILL_IN_ANSWER_TYPE,
+      </if>
+      <if test="fillInScoreType != null" >
+        FILL_IN_SCORE_TYPE,
+      </if>
+      <if test="relationalIndicator != null" >
+        RELATIONAL_INDICATOR,
+      </if>
+      <if test="motherId != null" >
+        MOTHER_ID,
+      </if>
+      <if test="score != null" >
+        SCORE,
+      </if>
+      <if test="sort != null" >
+        SORT,
+      </if>
+      <if test="storeServer != null" >
+        STORE_SERVER,
+      </if>
+      <if test="content != null" >
+        CONTENT,
+      </if>
+      <if test="options != null" >
+        OPTIONS,
+      </if>
+      <if test="resolve != null" >
+        RESOLVE,
+      </if>
+      <if test="optionsTxt != null" >
+        OPTIONS_TXT,
+      </if>
+      <if test="updateTime != null" >
+        UPDATE_TIME
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="examQuestionId != null" >
+        #{examQuestionId,jdbcType=VARCHAR},
+      </if>
+      <if test="baseSemesterId != null" >
+        #{baseSemesterId,jdbcType=VARCHAR},
+      </if>
+      <if test="baseClasslevelId != null" >
+        #{baseClasslevelId,jdbcType=VARCHAR},
+      </if>
+      <if test="baseSubjectId != null" >
+        #{baseSubjectId,jdbcType=VARCHAR},
+      </if>
+      <if test="baseUserId != null" >
+        #{baseUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="examId != null" >
+        #{examId,jdbcType=VARCHAR},
+      </if>
+      <if test="contentVideo != null" >
+        #{contentVideo,jdbcType=VARCHAR},
+      </if>
+      <if test="answer != null" >
+        #{answer,jdbcType=VARCHAR},
+      </if>
+      <if test="difficulty != null" >
+        #{difficulty,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null" >
+        #{type,jdbcType=VARCHAR},
+      </if>
+      <if test="resolveVideo != null" >
+        #{resolveVideo,jdbcType=VARCHAR},
+      </if>
+      <if test="fillInAnswerType != null" >
+        #{fillInAnswerType,jdbcType=VARCHAR},
+      </if>
+      <if test="fillInScoreType != null" >
+        #{fillInScoreType,jdbcType=VARCHAR},
+      </if>
+      <if test="relationalIndicator != null" >
+        #{relationalIndicator,jdbcType=VARCHAR},
+      </if>
+      <if test="motherId != null" >
+        #{motherId,jdbcType=VARCHAR},
+      </if>
+      <if test="score != null" >
+        #{score,jdbcType=DECIMAL},
+      </if>
+      <if test="sort != null" >
+        #{sort,jdbcType=DECIMAL},
+      </if>
+      <if test="storeServer != null" >
+        #{storeServer,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null" >
+        #{content,jdbcType=CLOB},
+      </if>
+      <if test="options != null" >
+        #{options,jdbcType=CLOB},
+      </if>
+      <if test="resolve != null" >
+        #{resolve,jdbcType=CLOB},
+      </if>
+      <if test="optionsTxt != null" >
+        #{optionsTxt,jdbcType=CLOB},
+      </if>
+       <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP}
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.codyy.oc.onlinetest.entity.ExamQuestion" >
+    update EXAM_QUESTION
+    <set >
+      <if test="baseSemesterId != null" >
+        BASE_SEMESTER_ID = #{baseSemesterId,jdbcType=VARCHAR},
+      </if>
+      <if test="baseClasslevelId != null" >
+        BASE_CLASSLEVEL_ID = #{baseClasslevelId,jdbcType=VARCHAR},
+      </if>
+      <if test="baseSubjectId != null" >
+        BASE_SUBJECT_ID = #{baseSubjectId,jdbcType=VARCHAR},
+      </if>
+      <if test="baseUserId != null" >
+        BASE_USER_ID = #{baseUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="examId != null" >
+        EXAM_ID = #{examId,jdbcType=VARCHAR},
+      </if>
+      <if test="contentVideo != null" >
+        CONTENT_VIDEO = #{contentVideo,jdbcType=VARCHAR},
+      </if>
+      <if test="answer != null" >
+        ANSWER = #{answer,jdbcType=VARCHAR},
+      </if>
+      <if test="difficulty != null" >
+        DIFFICULTY = #{difficulty,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null" >
+        TYPE = #{type,jdbcType=VARCHAR},
+      </if>
+      <if test="resolveVideo != null" >
+        RESOLVE_VIDEO = #{resolveVideo,jdbcType=VARCHAR},
+      </if>
+      <if test="fillInAnswerType != null" >
+        FILL_IN_ANSWER_TYPE = #{fillInAnswerType,jdbcType=VARCHAR},
+      </if>
+      <if test="fillInScoreType != null" >
+        FILL_IN_SCORE_TYPE = #{fillInScoreType,jdbcType=VARCHAR},
+      </if>
+      <if test="relationalIndicator != null" >
+        RELATIONAL_INDICATOR = #{relationalIndicator,jdbcType=VARCHAR},
+      </if>
+      <if test="motherId != null" >
+        MOTHER_ID = #{motherId,jdbcType=VARCHAR},
+      </if>
+      <if test="score != null" >
+        SCORE = #{score,jdbcType=DECIMAL},
+      </if>
+      <if test="sort != null" >
+        SORT = #{sort,jdbcType=DECIMAL},
+      </if>
+      <if test="storeServer != null" >
+        STORE_SERVER = #{storeServer,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null" >
+        CONTENT = #{content,jdbcType=CLOB},
+      </if>
+      <if test="options != null" >
+        OPTIONS = #{options,jdbcType=CLOB},
+      </if>
+      <if test="resolve != null" >
+        RESOLVE = #{resolve,jdbcType=CLOB},
+      </if>
+      <if test="optionsTxt != null" >
+        OPTIONS_TXT = #{optionsTxt,jdbcType=CLOB},
+      </if>
+      <if test="updateTime != null" >
+        UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="tempoparyFlag != null" >
+        TEMPORARY_FLAG = #{tempoparyFlag,jdbcType=VARCHAR},
+      </if>
+      <if test="queQuestionId != null" >
+        QUE_QUESTION_ID = #{queQuestionId,jdbcType=VARCHAR}
+      </if>
+    </set>
+    where EXAM_QUESTION_ID = #{examQuestionId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateSelective" parameterType="com.codyy.oc.onlinetest.entity.ExamQuestion" >
+    update EXAM_QUESTION
+    <set >
+      <if test="baseSemesterId != null" >
+        BASE_SEMESTER_ID = #{baseSemesterId,jdbcType=VARCHAR},
+      </if>
+      <if test="baseClasslevelId != null" >
+        BASE_CLASSLEVEL_ID = #{baseClasslevelId,jdbcType=VARCHAR},
+      </if>
+      <if test="baseSubjectId != null" >
+        BASE_SUBJECT_ID = #{baseSubjectId,jdbcType=VARCHAR},
+      </if>
+      <if test="baseUserId != null" >
+        BASE_USER_ID = #{baseUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="contentVideo != null" >
+        CONTENT_VIDEO = #{contentVideo,jdbcType=VARCHAR},
+      </if>
+      <if test="answer != null" >
+        ANSWER = #{answer,jdbcType=VARCHAR},
+      </if>
+      <if test="difficulty != null" >
+        DIFFICULTY = #{difficulty,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null" >
+        TYPE = #{type,jdbcType=VARCHAR},
+      </if>
+      <if test="resolveVideo != null" >
+        RESOLVE_VIDEO = #{resolveVideo,jdbcType=VARCHAR},
+      </if>
+      <if test="fillInAnswerType != null" >
+        FILL_IN_ANSWER_TYPE = #{fillInAnswerType,jdbcType=VARCHAR},
+      </if>
+      <if test="fillInScoreType != null" >
+        FILL_IN_SCORE_TYPE = #{fillInScoreType,jdbcType=VARCHAR},
+      </if>
+      <if test="relationalIndicator != null" >
+        RELATIONAL_INDICATOR = #{relationalIndicator,jdbcType=VARCHAR},
+      </if>
+      <if test="motherId != null" >
+        MOTHER_ID = #{motherId,jdbcType=VARCHAR},
+      </if>
+      <if test="score != null" >
+        SCORE = #{score,jdbcType=DECIMAL},
+      </if>
+      <if test="sort != null" >
+        SORT = #{sort,jdbcType=DECIMAL},
+      </if>
+      <if test="storeServer != null" >
+        STORE_SERVER = #{storeServer,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null" >
+        CONTENT = #{content,jdbcType=CLOB},
+      </if>
+      <if test="options != null" >
+        OPTIONS = #{options,jdbcType=CLOB},
+      </if>
+      <if test="resolve != null" >
+        RESOLVE = #{resolve,jdbcType=CLOB},
+      </if>
+      <if test="optionsTxt != null" >
+        OPTIONS_TXT = #{optionsTxt,jdbcType=CLOB},
+      </if>
+      <if test="updateTime != null" >
+        UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="tempoparyFlag != null" >
+        TEMPORARY_FLAG = #{tempoparyFlag,jdbcType=VARCHAR}
+      </if>
+    </set>
+    where EXAM_ID = #{examId,jdbcType=VARCHAR} and QUE_QUESTION_ID = #{queQuestionId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.codyy.oc.onlinetest.entity.ExamQuestion" >
+    update EXAM_QUESTION
+    set BASE_SEMESTER_ID = #{baseSemesterId,jdbcType=VARCHAR},
+      BASE_CLASSLEVEL_ID = #{baseClasslevelId,jdbcType=VARCHAR},
+      BASE_SUBJECT_ID = #{baseSubjectId,jdbcType=VARCHAR},
+      BASE_USER_ID = #{baseUserId,jdbcType=VARCHAR},
+      EXAM_ID = #{examId,jdbcType=VARCHAR},
+      CONTENT_VIDEO = #{contentVideo,jdbcType=VARCHAR},
+      ANSWER = #{answer,jdbcType=VARCHAR},
+      DIFFICULTY = #{difficulty,jdbcType=VARCHAR},
+      TYPE = #{type,jdbcType=VARCHAR},
+      RESOLVE_VIDEO = #{resolveVideo,jdbcType=VARCHAR},
+      FILL_IN_ANSWER_TYPE = #{fillInAnswerType,jdbcType=VARCHAR},
+      FILL_IN_SCORE_TYPE = #{fillInScoreType,jdbcType=VARCHAR},
+      RELATIONAL_INDICATOR = #{relationalIndicator,jdbcType=VARCHAR},
+      MOTHER_ID = #{motherId,jdbcType=VARCHAR},
+      SCORE = #{score,jdbcType=DECIMAL},
+      SORT = #{sort,jdbcType=DECIMAL},
+      STORE_SERVER = #{storeServer,jdbcType=VARCHAR},
+      CONTENT = #{content,jdbcType=CLOB},
+      OPTIONS = #{options,jdbcType=CLOB},
+      RESOLVE = #{resolve,jdbcType=CLOB},
+      OPTIONS_TXT = #{optionsTxt,jdbcType=CLOB},
+      UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP}
+    where EXAM_QUESTION_ID = #{examQuestionId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.codyy.oc.onlinetest.entity.ExamQuestion" >
+    update EXAM_QUESTION
+    set BASE_SEMESTER_ID = #{baseSemesterId,jdbcType=VARCHAR},
+      BASE_CLASSLEVEL_ID = #{baseClasslevelId,jdbcType=VARCHAR},
+      BASE_SUBJECT_ID = #{baseSubjectId,jdbcType=VARCHAR},
+      BASE_USER_ID = #{baseUserId,jdbcType=VARCHAR},
+      EXAM_ID = #{examId,jdbcType=VARCHAR},
+      CONTENT_VIDEO = #{contentVideo,jdbcType=VARCHAR},
+      ANSWER = #{answer,jdbcType=VARCHAR},
+      DIFFICULTY = #{difficulty,jdbcType=VARCHAR},
+      TYPE = #{type,jdbcType=VARCHAR},
+      RESOLVE_VIDEO = #{resolveVideo,jdbcType=VARCHAR},
+      FILL_IN_ANSWER_TYPE = #{fillInAnswerType,jdbcType=VARCHAR},
+      FILL_IN_SCORE_TYPE = #{fillInScoreType,jdbcType=VARCHAR},
+      RELATIONAL_INDICATOR = #{relationalIndicator,jdbcType=VARCHAR},
+      MOTHER_ID = #{motherId,jdbcType=VARCHAR},
+      SCORE = #{score,jdbcType=DECIMAL},
+      SORT = #{sort,jdbcType=DECIMAL},
+      STORE_SERVER = #{storeServer,jdbcType=VARCHAR},
+      UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP}
+    where EXAM_QUESTION_ID = #{examQuestionId,jdbcType=VARCHAR}
+  </update>
+ 
+ 
+ 
+ 
+  <!-- 获取知识点 -->
+  <select id="selectRKnowledge"  parameterType="String" resultMap="qstRKnowledgeResultMap">
+      select EXAM_QUESTION_ID,BASE_KNOWLEDGE_ID,BASE_SUB_KNOWLEDGE1_ID,BASE_SUB_KNOWLEDGE2_ID, BASE_SUB_KNOWLEDGE3_ID,
+         BASE_SUB_KNOWLEDGE4_ID,BASE_SUB_KNOWLEDGE5_ID,BASE_END_KNOWLEDGE_ID
+      from EXAM_QUESTION_R_KNOWLEDGE where EXAM_question_id = #{EXAM_QUESTION_ID}   
+  </select> 
+ 
+ 
+ 
+  <!-- 获取关联的填空题答案 -->
+  <select id="selectFillInAnswer" parameterType="String" resultMap="FillInAnswerResultMap"> 
+     select 
+       EXAM_QUE_FILL_IN_ANSWER_ID, EXAM_QUESTION_ID, SORT,
+       ANSWER_GRP1, ANSWER_GRP2, ANSWER_GRP3, ANSWER_GRP4, ANSWER_GRP1_TXT, ANSWER_GRP2_TXT, 
+       ANSWER_GRP3_TXT, ANSWER_GRP4_TXT
+    from  EXAM_QUE_FILL_IN_ANSWER
+    where EXAM_QUESTION_ID = #{EXAM_QUESTION_ID}  
+  </select>
+  
+  <!-- 获取章节 -->
+  <select id="selectRChapter"  parameterType="String" resultMap="qstRChapterResultMap">
+     select  
+         EXAM_QUESTION_R_CHAPTER_ID, EXAM_QUESTION_ID, BASE_VERSION_ID, 
+         BASE_SECTION_ID, BASE_CHAPTER_ID, BASE_VOLUME_ID
+     from EXAM_QUESTION_R_CHAPTER where EXAM_QUESTION_ID = #{EXAM_QUESTION_ID}   
+  </select>  
+  
+  <!-- 学校空间 -查看测试-题目详情 -->
+  <select id="getExamQuestionByExamTaskId" parameterType="java.lang.String" resultMap="QuestionWithBLOBs"> 
+    select 
+      q.EXAM_QUESTION_ID, q.CONTENT_VIDEO, q.ANSWER, q.DIFFICULTY, q.TYPE, q.RESOLVE_VIDEO, 
+      q.FILL_IN_ANSWER_TYPE,q.FILL_IN_SCORE_TYPE, q.RELATIONAL_INDICATOR, q.UPDATE_TIME, 
+      q.CONTENT, q.OPTIONS, q.RESOLVE, q.OPTIONS_TXT,
+      qu.num,
+      erq.score,
+    (select count(1) from exam_question eq where eq.exam_question_id = q.exam_question_id) EXAM_TIMES
+    
+    from EXAM_QUESTION q
+     
+    left join  
+       (select eq.type,count(1) as num from (
+             select q.exam_question_id, q.type as type
+             from EXAM_QUESTION q
+             left join exam_task_r_exam_question etrq
+                 on etrq.exam_question_id=q.exam_question_id
+             where etrq.exam_task_id = #{examTaskId}
+       ) eq
+       group by eq.type) qu
+      on qu.type=q.type
+    left join EXAM_TASK_R_EXAM_QUESTION erq
+         on  erq.EXAM_QUESTION_ID=q.EXAM_QUESTION_ID
+    where erq.exam_task_id = #{examTaskId} order by erq.SORT 
+  </select>
+  
+  <!-- 查看试卷-题目详情 -->
+  <select id="getExamQuestionByExamId" parameterType="java.lang.String" resultMap="QuestionWithBLOBs"> 
+    select 
+      q.*,
+      qu.num,
+      (select count(1) from exam_question eq where eq.exam_question_id = q.exam_question_id) EXAM_TIMES
+    
+    from EXAM_QUESTION q
+     
+    left join  
+       (select eq.type,count(1) as num from (
+             select q.exam_question_id, q.type as type
+             from EXAM_QUESTION q
+             where q.exam_id = #{examId}
+             
+       ) eq
+       group by eq.type) qu
+      on qu.type=q.type
+    where q.exam_id = #{examId} order by q.SORT 
+  </select>
+  
+  <!-- 获取测试任务试题类型-->
+  <select id="getQuestionTypeByExamTaskId" parameterType="java.lang.String" resultType="com.codyy.oc.onlinetest.entity.ExamQuestion">
+    select 
+      distinct q.type as type
+    from EXAM_QUESTION q
+    left join exam_task_r_exam_question etq
+      on etq.exam_question_id = q.exam_question_id
+    where etq.exam_task_id = #{examTaskId}
+    order by q.type desc
+  </select>
+  
+    <!-- 获取试卷试题类型-->
+  <select id="getQuestionTypeByExamId" parameterType="java.lang.String" resultType="com.codyy.oc.onlinetest.entity.ExamQuestion">
+    select 
+      distinct q.type as type
+    from EXAM_QUESTION q
+    where q.exam_id = #{examId}
+    order by q.type desc
+  </select>
+  
+  <!-- 学校空间 - 查看学生答题 -->
+  <select id="getStudentExamAnswer" parameterType="java.util.Map" resultMap="QuestionWithBLOBs">
+     select  
+          eq.EXAM_QUESTION_ID, eq.CONTENT_VIDEO, eq.ANSWER, eq.DIFFICULTY, eq.TYPE, 
+          eq.RESOLVE_VIDEO, eq.FILL_IN_ANSWER_TYPE,eq.FILL_IN_SCORE_TYPE, eq.RELATIONAL_INDICATOR, 
+          eq.UPDATE_TIME, eq.CONTENT, eq.OPTIONS, eq.RESOLVE, eq.OPTIONS_TXT,
+          etrq.score,
+          trunc(t1.avgscore,2)   as avgScore,
+          t2.myscore   as myScore,
+          t2.myanswer  as myAnswer,
+          t2.teacher_comment  as teacherComment,
+          t2.answer_video
+     from exam_question eq
+     
+     left join (
+           select
+               distinct eqr.exam_question_id,
+               avg(eqr.score) over (partition by eqr.exam_question_id) as avgscore
+               
+           from exam_question_result eqr
+
+           where eqr.exam_result_id in
+               (select er.exam_result_id
+                from exam_result er
+                 where er.exam_task_id = #{examTaskId} and er.status='CHECKED') 
+           ) t1
+          on t1.exam_question_id= eq.exam_question_id
+  
+     left join (
+        
+        select 
+         
+          eqr.exam_question_id,
+          eqr.score   as myscore,
+          eqr.answer  as myanswer,
+          eqr.teacher_comment,
+          eqr.answer_video  
+        
+        from exam_question_result  eqr
+        
+        left join  exam_result er
+        
+         on  eqr.exam_result_id=er.exam_result_id
+         
+         where er.exam_task_id = #{examTaskId}
+        
+         and er.base_user_id = #{baseUserId}
+       )  t2
+     
+     on t2.exam_question_id=eq.exam_question_id
+     
+   left join exam_question_result eqr
+     on eqr.exam_question_id=eq.exam_question_id
+     
+   left join exam_result er
+     on eqr.exam_result_id=er.exam_result_id
+   
+   left join exam_task_r_exam_question  etrq
+     
+       on etrq.exam_question_id = eq.exam_question_id and etrq.exam_task_id=er.exam_task_id
+     
+     
+   where er.exam_task_id = #{examTaskId}
+        
+    and er.base_user_id = #{baseUserId}
+    
+    and er.status = 'CHECKED'
+  
+   order by etrq.sort
+       
+  </select>
+  
+  <!-- 学校空间 - 班级测试 - 详细统计 -->
+  <select id="getClassExamStatistics" parameterType="java.util.Map" resultMap="QuestionWithBLOBs">
+	
+	select t1.EXAM_QUESTION_ID,
+       t1.CONTENT_VIDEO,
+       t1.ANSWER,
+       t1.DIFFICULTY,
+       t1.TYPE,
+       t1.RESOLVE_VIDEO,
+       t1.FILL_IN_ANSWER_TYPE,
+       t1.FILL_IN_SCORE_TYPE,
+       t1.RELATIONAL_INDICATOR,
+       t1.UPDATE_TIME,
+       t1.CONTENT,
+       t1.OPTIONS,
+       t1.RESOLVE,
+       t1.OPTIONS_TXT,
+       trunc((t1.rightCnt / t1.total) * 100, 2) as rigthRate,
+       t1.avgScore,
+       t1.score
+
+  from (select
+        
+         eq.EXAM_QUESTION_ID,
+         eq.CONTENT_VIDEO,
+         eq.ANSWER,
+         eq.DIFFICULTY,
+         eq.TYPE,
+         eq.RESOLVE_VIDEO,
+         eq.FILL_IN_ANSWER_TYPE,
+         eq.FILL_IN_SCORE_TYPE,
+         eq.RELATIONAL_INDICATOR,
+         eq.UPDATE_TIME,
+         eq.CONTENT,
+         eq.OPTIONS,
+         eq.RESOLVE,
+         eq.OPTIONS_TXT,
+         etrq.score,
+         sum(eqr.result) over(partition by eqr.exam_question_id) as rightCnt,
+         count(eqr.exam_question_id) over(partition by eqr.exam_question_id) as total,
+         avg(eqr.score) over(partition by eqr.exam_question_id) as avgScore,
+         row_number() over(partition by eq.exam_question_id order by etrq.sort) as rnum
+        
+          from exam_question_result eqr
+        
+          left join exam_question eq
+        
+            on eqr.exam_question_id = eq.exam_question_id
+        
+          left join exam_task_r_exam_question etrq
+            on etrq.exam_question_id = eqr.exam_question_id
+        
+          left join exam_result er
+            on er.exam_result_id = eqr.exam_result_id
+        
+         where er.exam_task_id = #{examTaskId}
+              
+           and er.base_classlevel_id = #{classlevelId}
+           and er.base_class_id = #{classId}
+           and er.status='CHECKED'
+        
+         order by etrq.sort) t1
+        where t1.rnum &lt;= 1
+	
+  </select>
+  
+  <!-- 获取知识点 -->
+  <select id="getExamQstRKnowledgeByExamQstId" parameterType="java.lang.String"  resultType="com.codyy.oc.onlinetest.entity.ExamQstRKnowledgeExtend">
+   select BASE_KNOWLEDGE_ID as baseKnowledgeId, EXAM_QUESTION_ID as examQuestionId, BASE_SUB_KNOWLEDGE1_ID as baseSubKnowledge1Id, BASE_SUB_KNOWLEDGE2_ID as baseSubKnowledge2Id,
+    BASE_SUB_KNOWLEDGE3_ID as baseSubKnowledge3Id, BASE_SUB_KNOWLEDGE4_ID as baseSubKnowledge4Id, BASE_SUB_KNOWLEDGE5_ID as baseSubKnowledge5Id,
+    BASE_END_KNOWLEDGE_ID as baseEndKnowledgeId,EXAM_QUESTION_R_KNOWLEDGE_ID as examQuestionRKnowledgeId
+    from EXAM_QUESTION_R_KNOWLEDGE where EXAM_QUESTION_ID = #{examQuestionId}
+  </select>
+  
+  <!-- 获取巩固测试知识点 -->
+  <select id="getPracticeExamKnowledge" parameterType="java.lang.String" resultType="com.codyy.oc.onlinetest.entity.ExamQstRKnowledgeExtend">
+	 select 
+	 BASE_KNOWLEDGE_ID as baseKnowledgeId, BASE_SUB_KNOWLEDGE1_ID as baseSubKnowledge1Id, BASE_SUB_KNOWLEDGE2_ID as baseSubKnowledge2Id,
+     BASE_SUB_KNOWLEDGE3_ID as baseSubKnowledge3Id, BASE_SUB_KNOWLEDGE4_ID as baseSubKnowledge4Id, BASE_SUB_KNOWLEDGE5_ID as baseSubKnowledge5Id,
+     BASE_END_KNOWLEDGE_ID as baseEndKnowledgeId,EXAM_QUESTION_R_KNOWLEDGE_ID as examQuestionRKnowledgeId,
+     EXAM_PRACTICE_QUESTION_ID as examPracticeQuestionId
+    from EXAM_QUESTION_R_KNOWLEDGE where EXAM_PRACTICE_QUESTION_ID = #{examPracticeQuestionId}
+  </select>
+  
+  <!-- 家长空间 - 学生空间    查看待批阅 -->
+  <select id="getSubmittedExamByTaskId" parameterType="java.util.Map" resultMap="QuestionWithBLOBs">
+	select 
+        eq.EXAM_QUESTION_ID, 
+        eq.CONTENT_VIDEO, 
+        eq.DIFFICULTY, eq.TYPE, 
+        eq.RESOLVE_VIDEO, 
+        eq.FILL_IN_ANSWER_TYPE,
+        eq.FILL_IN_SCORE_TYPE, 
+        eq.RELATIONAL_INDICATOR, 
+        eq.UPDATE_TIME, 
+        eq.CONTENT, 
+        eq.OPTIONS, 
+        eq.RESOLVE, 
+        eq.OPTIONS_TXT,
+        eqr.answer        as myAnswer,
+        eqr.answer_video,
+        etrq.score
+      from exam_question_result eqr
+      
+      left join EXAM_TASK_R_EXAM_QUESTION etrq
+         on  etrq.EXAM_QUESTION_ID=eqr.EXAM_QUESTION_ID
+         
+     left join exam_question  eq
+        on  eqr.exam_question_id=eq.exam_question_id
+        
+     left join exam_result er
+       on er.exam_result_id=eqr.exam_result_id
+    
+      where etrq.exam_task_id = #{examTaskId}
+        and er.base_user_id = #{userId}
+       order by etrq.sort 
+  
+  </select>
+  
+  <select id="selectByExamId" resultMap="QuestionResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from EXAM_QUESTION
+    where TEMPORARY_FLAG = 'N'
+    and EXAM_ID = #{examId,jdbcType=VARCHAR}
+  </select>
+  
+  <select id="selectByExamQuestionId" resultMap="QuestionResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from EXAM_QUESTION
+    where EXAM_QUESTION_ID = #{examQuestionId,jdbcType=VARCHAR}
+  </select>
+    
+  <select id="getExamQuestion" resultType="com.codyy.oc.onlinetest.entity.ExamQuestion">
+   select 
+        eq.EXAM_QUESTION_ID as examQuestionId,
+        eq.TYPE             as type,
+        eq.ANSWER           as answer,
+        etrq.score          as score
+   from EXAM_QUESTION eq
+   left join exam_task_r_exam_question etrq
+     on etrq.exam_question_id = eq.exam_question_id
+  where eq.EXAM_QUESTION_ID = #{examQuestionId}
+    and etrq.exam_task_id = #{examTaskId}
+
+  </select>
+
+  <delete id="deleteByExamIdAndExamQuestionId" parameterType="java.util.Map">
+	delete from exam_question where exam_id = #{examId} and exam_question_id not in
+	<foreach item="item" index="" collection="questionIds" open="(" separator="," close=")">
+		#{item}  
+	</foreach>
+  </delete>
+  
+   <delete id="deleteByExamIdAndQuestionId" parameterType="java.util.Map">
+	delete from exam_question where exam_id = #{examId} and exam_question_id not in
+	<foreach item="item" index="" collection="questionIds" open="(" separator="," close=")">
+		#{item}  
+	</foreach>
+   </delete>
+   
+  <!-- 学生空间 - 获取测试试题的错误本题 -->
+  <select id="getPracticeExamByResultId" parameterType="java.lang.String" resultMap="ResultMapWithBLOBs">
+    select 
+    
+      eq.EXAM_QUESTION_ID, eq.CONTENT_VIDEO, eq.ANSWER, eq.DIFFICULTY, eq.TYPE, 
+      eq.RESOLVE_VIDEO, eq.FILL_IN_ANSWER_TYPE,eq.FILL_IN_SCORE_TYPE, eq.RELATIONAL_INDICATOR, 
+      eq.UPDATE_TIME, eq.CONTENT, eq.OPTIONS, eq.RESOLVE, eq.OPTIONS_TXT,eq.MOTHER_ID,
+	  eq.QUE_QUESTION_ID
+	from exam_question eq
+
+	left join exam_question_result eqr
+      on eq.exam_question_id = eqr.exam_question_id
+
+	where eqr.exam_result_id = #{examResultId}
+      
+	 and eqr.result = '0'
+  </select>
+  
+  <!-- 学生空间 - 获取差一题的原来的题目 -->
+  <select id="getOriginExamResults" resultMap="ResultMapWithBLOBs">
+    select  
+     <include refid="Base_Column_List" />
+     ,
+     <include refid="Blob_Column_List" />
+	
+	from exam_question eq
+	
+	where eq.que_question_id in 
+	     
+	    <foreach collection="queIds" item="item" open="(" close=")" separator="union all" >  
+            select  
+            
+            #{item.queQuestionId}
+            
+            from dual
+       </foreach>
+       
+       and eq.exam_question_id in
+       
+          <foreach collection="examQuestions" item="item" open="(" close=")" separator="union all" >  
+            select  
+            
+            #{item.examQuestionId}
+            
+            from dual
+       </foreach>
+
+  </select>
+  
+  <!-- 学生空间  通过知识点的题目id 获取题目 -->
+  <select id="getExamQuestionList" parameterType="java.util.List" resultMap="ResultMapWithBLOBs">
+     select 
+      
+      <include refid="Base_Column_List" />
+       ,
+      <include refid="Blob_Column_List" />
+     
+     from exam_question eq
+     
+     where eq.exam_question_id in 
+       
+         <foreach collection="list" item="item" open="(" close=")" separator="union all" >  
+            select  
+            
+            #{item.examQuestionId}
+            
+            from dual
+        </foreach>
+     
+
+
+  </select>
+  
+  <!-- 学生空间 - 获取错两题的原题 -->
+  <select id="getOrgExamQuestion" parameterType="java.util.List" resultMap="ResultMapWithBLOBs">
+    with q as (
+	
+	   <foreach collection="list" item="item" open="(" close=")" separator="union all" >  
+            select  
+            
+            #{item} as exam_question_id
+            
+            from dual
+        </foreach>
+	
+	
+	
+	)
+    
+    select
+      <include refid="Base_Column_List" />
+       ,
+      <include refid="Blob_Column_List" /> 
+      
+    from exam_question q
+
+ 	where q.exam_question_id in
+       (
+        select exam_question_id from q
+       )
+       
+  </select>
+  
+  <!-- 获取原题 -->
+  <select id="getOriginalExamQuestion" resultMap="QuestionWithBLOBs">
+     select
+     
+      <include refid="Base_Column_List" />
+       ,
+      <include refid="Blob_Column_List" /> 
+       
+     from  exam_question q
+     
+     where q.exam_question_id in 
+        <foreach collection="examQuestionIds" item="item" open="(" close=")" separator="union all" >  
+            select  
+            
+            #{item}
+            
+            from dual
+        </foreach>
+     
+     
+  
+  </select>
+  
+  
+  <!-- 根据试卷任务的id来获取所有的年级班级集合-->
+  <select id="selecClassByTaskExamId" parameterType="java.lang.String" resultType="com.codyy.oc.onlinetest.view.ClassLevelClassView">
+    select distinct r.base_classlevel_id as classLevalId,r.base_class_id as classId,r.classlevel_name as classLevalName,r.class_name  as className from exam_result r 
+    where r.exam_task_id=#{taskExamId}
+  </select>
+  
+  <!-- 获得本次任务主观题的总个数-->
+  <select id="getSubjetiveNum" resultType="java.lang.Integer" parameterType="java.lang.String">
+      select count(*) from exam_task_r_exam_question k left join exam_question eq on k.exam_question_id=eq.exam_question_id where 
+   k.exam_task_id=#{examTaskId} and eq.type in ('ASK_ANSWER', 'COMPUTING')  
+  </select>
+  
+  <!-- 所属班级未批阅的主观题的个数-->
+  <select id="getSubjUnChecked" resultType="java.lang.Integer" parameterType="com.codyy.oc.onlinetest.view.ClassLevelClassView">
+     select count(*) from (select  distinct eq.exam_question_id from exam_question_result eq left join exam_result u on u.exam_result_id=eq.exam_result_id where 
+  u.exam_task_id=#{taskExamId} and u.base_classlevel_id=#{classLevalId} and u.base_class_id=#{classId}
+    and eq.result is null)
+  </select>
+  
+  <!-- 显示批阅的学生列表-->
+  <select id="showStuStatuPageList" parameterType="com.codyy.commons.page.Page" resultType="com.codyy.oc.onlinetest.view.StudentView">
+    select t.exam_result_id as resultId, t.is_delay as lazyStatus,s.realname as realName,t.base_user_id as baseUserId from exam_result t 
+    left join base_user s on t.base_user_id=s.base_user_id
+    where t.exam_task_id=#{map.examTaskId} and t.STATUS='SUBMITTED'
+    <if test="map.realName!=null and map.realName!=''">
+     and s.realname like '%' || #{map.realName} || '%' ESCAPE '/'
+    </if>
+    <if test="map.classLevId!=null and map.classLevId!='' and map.classId!=null and map.classId!=''">
+     and t.base_class_id=#{map.classId} and t.base_classlevel_id=#{map.classLevId}
+    </if>
+  </select>
+  
+  <!--显示主观题的在线批阅列表--> 
+  <select id="getTestQuestionList" parameterType="map" resultType="com.codyy.oc.onlinetest.entity.ExamQuestion">
+	select distinct e.exam_question_id as examQuestionId,q.type as type,wmsys.wm_concat( distinct q.resolve) as resolve,
+	wmsys.wm_concat(distinct q.content) as content,q.score as score from exam_result r
+	right join exam_question_result e on r.exam_result_id=e.exam_result_id
+	right join exam_question q on q.exam_question_id=e.exam_question_id
+	where r.exam_task_id=#{examTaskId} 
+	and r.base_classlevel_id=#{baseClasslevelId}
+	and r.base_class_id=#{baseClassId}
+	and e.result is null
+	group by q.type,e.exam_question_id,q.score
+  </select>
+  
+  <!-- 纵向批阅   批阅某个学生的所有客观题和未批阅的主观题-->
+  <select id="selecObjectByStu" parameterType="java.lang.String" resultMap="BaseResultMap">
+  select etr.exam_task_id,
+       eqr.exam_question_result_id,
+       eqr.score  as MYSCORE,
+       eqr.answer_video,
+       eqr.result,
+       eqr.answer as myAnswer,
+       etr.sort,
+       eq.type,
+       eq.content,
+       eq.answer,
+       eq.options,
+       eq.difficulty,
+       eq.content_video,
+       eq.fill_in_answer_type,
+       eq.fill_in_score_type,
+       etr.score,
+       eq.resolve,
+       eq.resolve_video,
+       eq.exam_question_id,
+       eqr.exam_result_id
+  from exam_question_result eqr 
+  left join exam_question eq on eqr.exam_question_id = eq.exam_question_id
+  left join exam_result er on er.exam_result_id = eqr.exam_result_id
+  left join exam_task_r_exam_question etr on etr.exam_task_id = er.exam_task_id and etr.exam_question_id = eqr.exam_question_id
+  
+
+ where eqr.exam_result_id =#{resultId}
+   and ((eq.type in ('ASK_ANSWER', 'COMPUTING') and eqr.result is null) or
+       eq.type not in ('ASK_ANSWER', 'COMPUTING')) order by etr.sort
+  </select>
+
+	<select id="getQueIdsByExamId" parameterType="java.lang.String" resultType="java.lang.String">
+		   select e.que_question_id from exam_question e where e.exam_id = #{id}
+	</select>
+	
+  <!-- 学校空间 - 获取题目 -->
+  <select id="getExamQuestionByQuestionId" parameterType="java.lang.String" resultType="com.codyy.oc.onlinetest.entity.ExamQuestion">
+     select 
+       EXAM_QUESTION_ID    as   examQuestionId, 
+       TYPE                as   type, 
+       CONTENT             as   content, 
+       OPTIONS             as   options,
+     from exam_question eq
+     where eq.exam_question_id = #{examQuestionId}
+  </select>
+	
+  <!-- 更新评价和主观题的分数-->
+  <update id="updateQuestionCommScore" parameterType="com.codyy.oc.onlinetest.view.TeachCommentView">
+    update exam_question_result
+      <set>
+         teacher_comment=#{teacheComment,jdbcType=VARCHAR},
+         <if test="score!=null">
+          score=#{score,jdbcType=FLOAT},
+         </if>
+         <if test="result!=2">
+          RESULT=#{result,jdbcType=INTEGER}
+         </if>
+     </set>
+      where exam_question_result_id=#{examResultQuestionId,jdbcType=VARCHAR}
+  </update>	
+  
+  <!--统计更新主观题分数后的题的总分-->
+  <select id="getSumScore" parameterType="java.lang.String" resultType="java.lang.Float">
+    select sum(score) as totalScore from exam_question_result u where u.exam_result_id=#{examResultId}
+  </select>
+  
+  <!--将统计好的总分插入对应学生的总分的字段中并更新学生状态为已批阅-->
+  <update id="updateTotalScore" parameterType="com.codyy.oc.onlinetest.view.ExamScoreView">
+      update exam_result set score=#{score},status='CHECKED' where exam_result_id=#{examResultId}
+  </update>
+  
+  <!-- 根据年级和班级的id来获得测试的人数-->
+  <select id="countTestPerson" parameterType="com.codyy.oc.onlinetest.view.ExamTestView" resultType="java.lang.Integer">
+    select  COUNT(*) as testCountPerson from exam_result r where r.exam_task_id=#{examTaskId} and r.base_classlevel_id=#{classLeveId} 
+    and r.base_class_id=#{classId}
+    <if test="status=='SUBMITTED'">
+    and r.status='SUBMITTED'
+    </if>
+    <if test="status=='INIT'">
+    and r.status='INIT'
+    </if>
+  </select>
+  
+  <!--更新批阅数-->
+  <update id="updateReadOverCount" parameterType="java.lang.String">
+     update exam_task sk set sk.read_over_count=sk.read_over_count+1 where sk.exam_task_id=#{examTaskId}
+  </update>
+  
+  <select id="getExamQuestionById" resultType="com.codyy.oc.onlinetest.entity.ExamQuestion" parameterType="java.lang.String">
+	select 
+        eq.EXAM_QUESTION_ID as examQuestionId,
+        eq.TYPE             as type,
+        eq.ANSWER           as answer
+   from EXAM_QUESTION eq
+    where eq.EXAM_QUESTION_ID = #{examQuestionId}
+  </select>
+</mapper>

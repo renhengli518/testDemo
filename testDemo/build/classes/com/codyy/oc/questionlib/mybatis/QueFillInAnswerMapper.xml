@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.codyy.oc.questionlib.dao.QueFillInAnswerMapper" >
+  <resultMap id="BaseResultMap" type="com.codyy.oc.questionlib.entity.QueFillInAnswer" >
+    <id column="QUE_FILL_IN_ANSWER_ID" property="queFillInAnswerId" jdbcType="VARCHAR" />
+    <result column="QUE_QUESTION_ID" property="queQuestionId" jdbcType="VARCHAR" />
+    <result column="SORT" property="sort" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <resultMap id="ResultMapWithBLOBs" type="com.codyy.oc.questionlib.entity.QueFillInAnswer" extends="BaseResultMap" >
+    <id column="QUE_FILL_IN_ANSWER_ID" property="queFillInAnswerId" jdbcType="VARCHAR" />
+    <result column="QUE_QUESTION_ID" property="queQuestionId" jdbcType="VARCHAR" />
+    <result column="ANSWER_GRP1" property="answerGrp1" jdbcType="CLOB" />
+    <result column="ANSWER_GRP2" property="answerGrp2" jdbcType="CLOB" />
+    <result column="ANSWER_GRP3" property="answerGrp3" jdbcType="CLOB" />
+    <result column="ANSWER_GRP4" property="answerGrp4" jdbcType="CLOB" />
+    <result column="ANSWER_GRP1_TXT" property="answerGrp1Txt" jdbcType="CLOB" />
+    <result column="ANSWER_GRP2_TXT" property="answerGrp2Txt" jdbcType="CLOB" />
+    <result column="ANSWER_GRP3_TXT" property="answerGrp3Txt" jdbcType="CLOB" />
+    <result column="ANSWER_GRP4_TXT" property="answerGrp4Txt" jdbcType="CLOB" />
+    <result column="SORT" property="sort" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    QUE_FILL_IN_ANSWER_ID, QUE_QUESTION_ID, SORT
+  </sql>
+  <sql id="Blob_Column_List" >
+    QUE_FILL_IN_ANSWER_ID, QUE_QUESTION_ID,ANSWER_GRP1, ANSWER_GRP2, ANSWER_GRP3, ANSWER_GRP4, ANSWER_GRP1_TXT, ANSWER_GRP2_TXT, 
+    ANSWER_GRP3_TXT, ANSWER_GRP4_TXT,SORT
+  </sql>
+  
+  
+  <!--  插入单个填空题答案-->
+  <insert id="addQuestionFillInAnswer" parameterType="com.codyy.oc.questionlib.entity.QueFillInAnswer">
+		insert into QUE_FILL_IN_ANSWER (<include refid="Blob_Column_List"/>)
+		                        values (#{queFillInAnswerId},#{queQuestionId},
+		                                   #{answerGrp1},#{answerGrp2},
+		                                     #{answerGrp3},#{answerGrp4},#{answerGrp1Txt},#{answerGrp2Txt},#{answerGrp3Txt},#{answerGrp4Txt},#{sort}
+		                                    )		
+  </insert>
+  
+  <!-- 删除指定填空题中的所有内容-->
+  <delete id="deleFillInAnswerById" parameterType="java.lang.String">
+     delete from QUE_FILL_IN_ANSWER where QUE_QUESTION_ID=#{queQuestionId}
+  </delete>
+  
+  <!-- 修改指定的填空题-->
+  <!-- <update id="updateQuestionFillInAnswer" parameterType="java.lang.String">
+       <set>
+			<if test="answerGrp1 != null">
+				ANSWER_GRP1 = #{answerGrp1,jdbcType=VARCHAR},
+			</if>
+			<if test="answerGrp2 != null">
+				ANSWER_GRP2 = #{answerGrp2,jdbcType=VARCHAR},
+			</if>
+			<if test="answerGrp3 != null">
+				ANSWER_GRP3 = #{answerGrp3,jdbcType=VARCHAR},
+			</if>
+			<if test="answerGrp4 != null">
+				ANSWER_GRP4 = #{answerGrp4,jdbcType=VARCHAR},
+			</if>
+			<if test="answerGrp1Txt != null">
+				answerGrp1Txt = #{answerGrp1Txt,jdbcType=VARCHAR},
+			</if>
+			<if test="answerGrp2Txt != null">
+				answerGrp2Txt = #{answerGrp2Txt,jdbcType=VARCHAR},
+			</if>
+			<if test="answerGrp3Txt != null">
+				answerGrp3Txt = #{answerGrp3Txt,jdbcType=VARCHAR},
+			</if>
+			<if test="answerGrp4Txt != null">
+				answerGrp4Txt = #{answerGrp4Txt,jdbcType=VARCHAR},
+			</if>	
+		</set>
+		   where QUE_QUESTION_ID = #{queQuestionId,jdbcType=VARCHAR}
+  </update> -->
+  
+  
+  <!--  根据题目ID查询填空题答案-->
+  <select id="selectByQuestion" resultMap="ResultMapWithBLOBs" parameterType="java.lang.String" >
+  	select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from QUE_FILL_IN_ANSWER
+    where QUE_QUESTION_ID = #{queQuestionId,jdbcType=VARCHAR}
+  </select>
+  
+  
+  
+  
+  
+  
+  
+  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from QUE_FILL_IN_ANSWER
+    where QUE_FILL_IN_ANSWER_ID = #{queFillInAnswerId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from QUE_FILL_IN_ANSWER
+    where QUE_FILL_IN_ANSWER_ID = #{queFillInAnswerId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.codyy.oc.questionlib.entity.QueFillInAnswer" >
+    insert into QUE_FILL_IN_ANSWER (QUE_FILL_IN_ANSWER_ID, QUE_QUESTION_ID, 
+      SORT, ANSWER_GRP1, ANSWER_GRP2, 
+      ANSWER_GRP3, ANSWER_GRP4, ANSWER_GRP1_TXT, 
+      ANSWER_GRP2_TXT, ANSWER_GRP3_TXT, ANSWER_GRP4_TXT
+      )
+    values (#{queFillInAnswerId,jdbcType=VARCHAR}, #{queQuestionId,jdbcType=VARCHAR}, 
+      #{sort,jdbcType=VARCHAR}, #{answerGrp1,jdbcType=CLOB}, #{answerGrp2,jdbcType=CLOB}, 
+      #{answerGrp3,jdbcType=CLOB}, #{answerGrp4,jdbcType=CLOB}, #{answerGrp1Txt,jdbcType=CLOB}, 
+      #{answerGrp2Txt,jdbcType=CLOB}, #{answerGrp3Txt,jdbcType=CLOB}, #{answerGrp4Txt,jdbcType=CLOB}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.codyy.oc.questionlib.entity.QueFillInAnswer" >
+    insert into QUE_FILL_IN_ANSWER
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="queFillInAnswerId != null" >
+        QUE_FILL_IN_ANSWER_ID,
+      </if>
+      <if test="queQuestionId != null" >
+        QUE_QUESTION_ID,
+      </if>
+      <if test="sort != null" >
+        SORT,
+      </if>
+      <if test="answerGrp1 != null" >
+        ANSWER_GRP1,
+      </if>
+      <if test="answerGrp2 != null" >
+        ANSWER_GRP2,
+      </if>
+      <if test="answerGrp3 != null" >
+        ANSWER_GRP3,
+      </if>
+      <if test="answerGrp4 != null" >
+        ANSWER_GRP4,
+      </if>
+      <if test="answerGrp1Txt != null" >
+        ANSWER_GRP1_TXT,
+      </if>
+      <if test="answerGrp2Txt != null" >
+        ANSWER_GRP2_TXT,
+      </if>
+      <if test="answerGrp3Txt != null" >
+        ANSWER_GRP3_TXT,
+      </if>
+      <if test="answerGrp4Txt != null" >
+        ANSWER_GRP4_TXT,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="queFillInAnswerId != null" >
+        #{queFillInAnswerId,jdbcType=VARCHAR},
+      </if>
+      <if test="queQuestionId != null" >
+        #{queQuestionId,jdbcType=VARCHAR},
+      </if>
+      <if test="sort != null" >
+        #{sort,jdbcType=VARCHAR},
+      </if>
+      <if test="answerGrp1 != null" >
+        #{answerGrp1,jdbcType=CLOB},
+      </if>
+      <if test="answerGrp2 != null" >
+        #{answerGrp2,jdbcType=CLOB},
+      </if>
+      <if test="answerGrp3 != null" >
+        #{answerGrp3,jdbcType=CLOB},
+      </if>
+      <if test="answerGrp4 != null" >
+        #{answerGrp4,jdbcType=CLOB},
+      </if>
+      <if test="answerGrp1Txt != null" >
+        #{answerGrp1Txt,jdbcType=CLOB},
+      </if>
+      <if test="answerGrp2Txt != null" >
+        #{answerGrp2Txt,jdbcType=CLOB},
+      </if>
+      <if test="answerGrp3Txt != null" >
+        #{answerGrp3Txt,jdbcType=CLOB},
+      </if>
+      <if test="answerGrp4Txt != null" >
+        #{answerGrp4Txt,jdbcType=CLOB},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.codyy.oc.questionlib.entity.QueFillInAnswer" >
+    update QUE_FILL_IN_ANSWER
+    <set >
+      <if test="queQuestionId != null" >
+        QUE_QUESTION_ID = #{queQuestionId,jdbcType=VARCHAR},
+      </if>
+      <if test="sort != null" >
+        SORT = #{sort,jdbcType=VARCHAR},
+      </if>
+      <if test="answerGrp1 != null" >
+        ANSWER_GRP1 = #{answerGrp1,jdbcType=CLOB},
+      </if>
+      <if test="answerGrp2 != null" >
+        ANSWER_GRP2 = #{answerGrp2,jdbcType=CLOB},
+      </if>
+      <if test="answerGrp3 != null" >
+        ANSWER_GRP3 = #{answerGrp3,jdbcType=CLOB},
+      </if>
+      <if test="answerGrp4 != null" >
+        ANSWER_GRP4 = #{answerGrp4,jdbcType=CLOB},
+      </if>
+      <if test="answerGrp1Txt != null" >
+        ANSWER_GRP1_TXT = #{answerGrp1Txt,jdbcType=CLOB},
+      </if>
+      <if test="answerGrp2Txt != null" >
+        ANSWER_GRP2_TXT = #{answerGrp2Txt,jdbcType=CLOB},
+      </if>
+      <if test="answerGrp3Txt != null" >
+        ANSWER_GRP3_TXT = #{answerGrp3Txt,jdbcType=CLOB},
+      </if>
+      <if test="answerGrp4Txt != null" >
+        ANSWER_GRP4_TXT = #{answerGrp4Txt,jdbcType=CLOB},
+      </if>
+    </set>
+    where QUE_FILL_IN_ANSWER_ID = #{queFillInAnswerId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.codyy.oc.questionlib.entity.QueFillInAnswer" >
+    update QUE_FILL_IN_ANSWER
+    set QUE_QUESTION_ID = #{queQuestionId,jdbcType=VARCHAR},
+      SORT = #{sort,jdbcType=VARCHAR},
+      ANSWER_GRP1 = #{answerGrp1,jdbcType=CLOB},
+      ANSWER_GRP2 = #{answerGrp2,jdbcType=CLOB},
+      ANSWER_GRP3 = #{answerGrp3,jdbcType=CLOB},
+      ANSWER_GRP4 = #{answerGrp4,jdbcType=CLOB},
+      ANSWER_GRP1_TXT = #{answerGrp1Txt,jdbcType=CLOB},
+      ANSWER_GRP2_TXT = #{answerGrp2Txt,jdbcType=CLOB},
+      ANSWER_GRP3_TXT = #{answerGrp3Txt,jdbcType=CLOB},
+      ANSWER_GRP4_TXT = #{answerGrp4Txt,jdbcType=CLOB}
+    where QUE_FILL_IN_ANSWER_ID = #{queFillInAnswerId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.codyy.oc.questionlib.entity.QueFillInAnswer" >
+    update QUE_FILL_IN_ANSWER
+    set QUE_QUESTION_ID = #{queQuestionId,jdbcType=VARCHAR},
+      SORT = #{sort,jdbcType=VARCHAR}
+    where QUE_FILL_IN_ANSWER_ID = #{queFillInAnswerId,jdbcType=VARCHAR}
+  </update>
+</mapper>

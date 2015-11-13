@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.codyy.oc.homework.dao.WorkDocMapper" >
+  <resultMap id="BaseResultMap" type="com.codyy.oc.homework.entity.WorkDoc" >
+    <id column="WORK_DOC_ID" property="workDocId" jdbcType="VARCHAR" />
+    <result column="WORK_HOMEWORK_ID" property="workHomeworkId" jdbcType="VARCHAR" />
+    <result column="DOC_NAME" property="docName" jdbcType="VARCHAR" />
+    <result column="DOC_PATH" property="docPath" jdbcType="VARCHAR" />
+    <result column="DOC_SIZE" property="docSize" jdbcType="DECIMAL" />
+    <result column="CREATE_TIME" property="createTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    WORK_DOC_ID, WORK_HOMEWORK_ID, DOC_NAME, DOC_PATH, DOC_SIZE, CREATE_TIME
+  </sql>
+  
+  <select id="selectByHomework" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from WORK_DOC
+    where WORK_HOMEWORK_ID = #{workHomeworkId,jdbcType=VARCHAR}
+    order by CREATE_TIME
+  </select>
+  <delete id="deleteByHomework" parameterType="java.lang.String" >
+    delete from WORK_DOC
+    where WORK_HOMEWORK_ID = #{workHomeworkId,jdbcType=VARCHAR}
+  </delete>
+  <select id="selectCountByHomework" resultType="int" parameterType="java.lang.String" >
+    select 
+    count(1)
+    from WORK_DOC
+    where WORK_HOMEWORK_ID = #{workHomeworkId,jdbcType=VARCHAR}
+  </select>
+  
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from WORK_DOC
+    where WORK_DOC_ID = #{workDocId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from WORK_DOC
+    where WORK_DOC_ID = #{workDocId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.codyy.oc.homework.entity.WorkDoc" >
+    insert into WORK_DOC (WORK_DOC_ID, WORK_HOMEWORK_ID, DOC_NAME, 
+      DOC_PATH, DOC_SIZE, CREATE_TIME
+      )
+    values (#{workDocId,jdbcType=VARCHAR}, #{workHomeworkId,jdbcType=VARCHAR}, #{docName,jdbcType=VARCHAR}, 
+      #{docPath,jdbcType=VARCHAR}, #{docSize,jdbcType=DECIMAL}, #{createTime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.codyy.oc.homework.entity.WorkDoc" >
+    insert into WORK_DOC
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="workDocId != null" >
+        WORK_DOC_ID,
+      </if>
+      <if test="workHomeworkId != null" >
+        WORK_HOMEWORK_ID,
+      </if>
+      <if test="docName != null" >
+        DOC_NAME,
+      </if>
+      <if test="docPath != null" >
+        DOC_PATH,
+      </if>
+      <if test="docSize != null" >
+        DOC_SIZE,
+      </if>
+      <if test="createTime != null" >
+        CREATE_TIME,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="workDocId != null" >
+        #{workDocId,jdbcType=VARCHAR},
+      </if>
+      <if test="workHomeworkId != null" >
+        #{workHomeworkId,jdbcType=VARCHAR},
+      </if>
+      <if test="docName != null" >
+        #{docName,jdbcType=VARCHAR},
+      </if>
+      <if test="docPath != null" >
+        #{docPath,jdbcType=VARCHAR},
+      </if>
+      <if test="docSize != null" >
+        #{docSize,jdbcType=DECIMAL},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.codyy.oc.homework.entity.WorkDoc" >
+    update WORK_DOC
+    <set >
+      <if test="workHomeworkId != null" >
+        WORK_HOMEWORK_ID = #{workHomeworkId,jdbcType=VARCHAR},
+      </if>
+      <if test="docName != null" >
+        DOC_NAME = #{docName,jdbcType=VARCHAR},
+      </if>
+      <if test="docPath != null" >
+        DOC_PATH = #{docPath,jdbcType=VARCHAR},
+      </if>
+      <if test="docSize != null" >
+        DOC_SIZE = #{docSize,jdbcType=DECIMAL},
+      </if>
+      <if test="createTime != null" >
+        CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where WORK_DOC_ID = #{workDocId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.codyy.oc.homework.entity.WorkDoc" >
+    update WORK_DOC
+    set WORK_HOMEWORK_ID = #{workHomeworkId,jdbcType=VARCHAR},
+      DOC_NAME = #{docName,jdbcType=VARCHAR},
+      DOC_PATH = #{docPath,jdbcType=VARCHAR},
+      DOC_SIZE = #{docSize,jdbcType=DECIMAL},
+      CREATE_TIME = #{createTime,jdbcType=TIMESTAMP}
+    where WORK_DOC_ID = #{workDocId,jdbcType=VARCHAR}
+  </update>
+</mapper>

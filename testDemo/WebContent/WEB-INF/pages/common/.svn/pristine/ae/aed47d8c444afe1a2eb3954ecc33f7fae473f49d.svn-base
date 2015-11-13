@@ -1,0 +1,140 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page import="com.codyy.commons.HostConfig" %>
+<%@ page import="com.codyy.commons.context.SpringContext" %>
+<%@ page import="com.codyy.commons.utils.RedisCacheUtils" %>
+<%@ page import="com.codyy.commons.CommonsConstant" %>
+<%@ page import="com.codyy.commons.sso.SessionUser" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%
+Object sessionUserTopHeader = request.getSession().getAttribute(CommonsConstant.SESSION_USER);
+if(sessionUserTopHeader != null) {
+	SessionUser userTopHeader = (SessionUser) sessionUserTopHeader;
+	if(CommonsConstant.USER_TYPE_AREA_USER.equals(userTopHeader.getUserType())){
+		pageContext.setAttribute("headerName", RedisCacheUtils.getFrontAreaConfigData(userTopHeader.getAreaId(), "front.homepage.name"));
+	} else {
+		pageContext.setAttribute("headerName", RedisCacheUtils.getFrontSchoolConfigData(userTopHeader.getSchoolId(), "front.homepage.name"));
+	}
+}
+%>
+<div class="header_up_wrap">
+    <div class="header_up_inner_wrap">
+        <ul class="_header">
+            <li class="header_item header_item_title">
+                <span class="header_title">${headerName.textContent }</span>
+            </li>
+            <li class="header_item header_item_nav">
+                <ul class="nav" id="menuList">
+                	<c:forEach items="${sessionScope.SESSION_USER.homePageMenuList}" var="menuList">
+                		<a class="nav_item" href="${sessionScope.SESSION_USER.homeHost}/${menuList.url}">${menuList.menuName}</a>
+                	</c:forEach>
+                </ul>
+            </li>
+            <li class="header_item header_item_search">
+                <span class="search_wrap" id="search_box_id">
+                    
+                </span>
+                <div class="search_box hide" id="searchInfo">
+                    <select name="" class="search_type">
+                        <option value="info">资讯</option>
+                        <option value="video">视频</option>
+                        <option value="doc">文档</option>
+                    </select>
+                    <input type="text" name="" class="search_fileName">
+                    <span class="search_btn">
+                    </span>
+                </div>
+            </li>
+           
+           <c:choose>
+           		<c:when test="${empty sessionScope.SESSION_USER}">
+           			<!-- 添加一个空的li 占位 -->
+           			<li class="header_item header_item_user "> 
+		            </li>
+	        		<li class="header_item header_item_quit">
+	              		<a class="quit" href="javascript:void(0);" id="topLoginBtn">登录</a>
+	          		</li>
+           		</c:when>
+           		<c:otherwise>
+	           		<li class="header_item header_item_user "> 
+	           			<c:choose>
+	           				<c:when test="${sessionScope.SESSION_USER.userType eq 'AREA_USR' || sessionScope.SESSION_USER.userType eq 'SCHOOL_USR'}">
+		           				<a href="<%=SpringContext.getBean(HostConfig.class).getUserCenter()%>/bench/index.html">
+	                    			<div class="user_center mc_kzkd"><span title="${sessionScope.SESSION_USER.realname}的工作台">${sessionScope.SESSION_USER.realname}的工作台</span></div>
+               					</a>
+	           				</c:when>
+		           			<c:otherwise>
+		           				<a href="<%=SpringContext.getBean(HostConfig.class).getUserCenter()%>/toUserIndex/${sessionScope.SESSION_USER.userId}.html">
+	                    			<div class="user_center mc_kzkd"><span title="${sessionScope.SESSION_USER.realname}的空间">${sessionScope.SESSION_USER.realname}的空间</span></div>
+	               				</a>
+		           			</c:otherwise>
+	           			</c:choose>
+		            </li>
+		            <li class="header_item header_item_quit">
+		                <a class="quit" href="<%=SpringContext.getBean(HostConfig.class).getUserCenter()%>/user/Logout.html">退出</a>
+		            </li>
+           		</c:otherwise>
+           </c:choose>
+            
+        </ul>
+    </div>
+</div>
+<script type="text/javascript">
+	//搜索功能的添加
+	$('.search_btn').click(function(){
+		var pageType = $('.search_type').val();
+		var key = $('.search_fileName').val();
+		var homeHost = "${sessionScope.SESSION_USER.homeHost}";
+		if(homeHost!=null&&homeHost!=""){
+			window.location.href=homeHost+"/search/changeSearchPage.html?pageType="+pageType+"&key="+encodeURIComponent(key);
+		}else {
+			window.location.href='${root}/search/changeSearchPage.html?pageType='+pageType+"&key="+encodeURIComponent(key);
+		}
+	});
+		
+</script>
+<script type="text/javascript">
+	var userHost = "<%=SpringContext.getBean(HostConfig.class).getUserCenter()%>";
+	var loginStatusUrl = userHost + "/user/LoginStatus.html?callback=?";
+	var host = "http://" + window.location.hostname;
+	if (window.location.port != 80 && window.location.port != ""){
+		host = host + ":" + window.location.port;
+	}
+	host = host + "${root}";
+	var logout = host + "/Logout";
+
+	jQuery.getJSON(loginStatusUrl, {}, function(r){
+		if (r.result == false){
+			jQuery.getJSON(logout + "?callback=?", {}, function(r){
+				window.location.reload(true);
+			});
+		} else {
+			//两边session都有效，检查两边randomId是否相同
+			var homeRandomId = "${sessionScope.SESSION_USER.randomId}";
+			console.log("center:" + r.randomId);
+			console.log("app:" + homeRandomId);
+			if (homeRandomId != r.randomId){
+				console.log("not equals, reload");
+				jQuery.getJSON(logout + "?callback=?", {}, function(r){
+					window.location.reload(true);
+				});
+			}
+		}
+	});
+</script>
+<script>
+	$(function() {
+		var userType = "${sessionScope.SESSION_USER.userType}";
+		if (userType == "TEACHER") {
+			$("body").addClass("teacherRole");
+		} else if (userType == "SCHOOL_USR") {
+			$("body").addClass("schoolRole");
+		} else if (userType == "PARENT"
+				|| userType == "STUDENT") {
+			$("body").addClass("parOrChildRole");
+		} else if (userType == "AREA_USR") {
+			$("body").addClass("management");
+		}
+	})
+</script>

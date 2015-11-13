@@ -1,0 +1,613 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.codyy.oc.onlinetest.dao.ExamExamMapper" >
+  <resultMap id="BaseResultMap" type="com.codyy.oc.onlinetest.entity.ExamExam" >
+    <id column="EXAM_ID" property="examId" jdbcType="VARCHAR" />
+    <result column="EXAM_CATEGORY_TYPE" property="examCategoryType" jdbcType="VARCHAR" />
+    <result column="EXAM_TYPE_ID" property="examTypeId" jdbcType="VARCHAR" />
+    <result column="BASE_USER_ID" property="baseUserId" jdbcType="VARCHAR" />
+    <result column="TITLE" property="title" jdbcType="VARCHAR" />
+    <result column="ANSWER_TIME" property="answerTime" jdbcType="DECIMAL" />
+    <result column="SCORE" property="score" jdbcType="DECIMAL" />
+    <result column="CREATE_TIME" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="UPDATE_TIME" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="BASE_SEMESTER_ID" property="baseSemesterId" jdbcType="VARCHAR" />
+    <result column="BASE_SUBJECT_ID" property="baseSubjectId" jdbcType="VARCHAR" />
+    <result column="BASE_CLASSLEVEL_ID" property="baseClasslevelId" jdbcType="VARCHAR" />
+    <result column="IS_DELETE" property="isDelete" jdbcType="CHAR" />
+    <result column="EXAM_RESULT_ID" property="examResultId" jdbcType="VARCHAR" />
+    <result column="EXAM_PRACTICE_ID" property="examPracticeId" jdbcType="VARCHAR" />
+    <result column="YEAR" property="year" jdbcType="VARCHAR" />
+    <result column="AREA_NAME" property="areaName" jdbcType="VARCHAR" />
+    <result column="USE_COUNT" property="useCount" jdbcType="DECIMAL" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    EXAM_ID, EXAM_CATEGORY_TYPE, EXAM_TYPE_ID, BASE_USER_ID, TITLE, ANSWER_TIME, SCORE, 
+    CREATE_TIME, BASE_SEMESTER_ID, BASE_SUBJECT_ID, BASE_CLASSLEVEL_ID, IS_DELETE, EXAM_RESULT_ID, 
+    EXAM_PRACTICE_ID, YEAR ,USE_COUNT,PUBLIC_FLAG,AREA_NAME,UPDATE_TIME
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from EXAM_EXAM
+    where EXAM_ID = #{examId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from EXAM_EXAM
+    where EXAM_ID = #{examId,jdbcType=VARCHAR}
+  </delete>
+  
+  
+  <delete id="deleteByTaskId" parameterType="java.lang.String">
+  	delete from EXAM_EXAM
+    where EXAM_ID = (select et.exam_id from exam_task et where et.exam_task_id = #{examTaskId,jdbcType=VARCHAR} )
+  </delete>
+  <insert id="insert" parameterType="com.codyy.oc.onlinetest.entity.ExamExam" >
+    insert into EXAM_EXAM (EXAM_ID, EXAM_CATEGORY_TYPE, EXAM_TYPE_ID, 
+      BASE_USER_ID, TITLE, ANSWER_TIME, 
+      SCORE, CREATE_TIME, BASE_SEMESTER_ID, 
+      BASE_SUBJECT_ID, BASE_CLASSLEVEL_ID, IS_DELETE, 
+      EXAM_RESULT_ID, EXAM_PRACTICE_ID,UPDATE_TIME,USE_COUNT
+      <if test="year != null">
+      	,YEAR
+      </if>
+       <if test="areaName != null">
+      	,AREA_NAME
+      </if>
+      )
+    values (#{examId,jdbcType=VARCHAR}, #{examCategoryType,jdbcType=VARCHAR}, #{examTypeId,jdbcType=VARCHAR}, 
+      #{baseUserId,jdbcType=VARCHAR}, #{title,jdbcType=VARCHAR}, #{answerTime,jdbcType=DECIMAL}, 
+      #{score,jdbcType=DECIMAL}, #{createTime,jdbcType=TIMESTAMP}, #{baseSemesterId,jdbcType=VARCHAR}, 
+      #{baseSubjectId,jdbcType=VARCHAR}, #{baseClasslevelId,jdbcType=VARCHAR}, #{isDelete,jdbcType=CHAR}, 
+      #{examResultId,jdbcType=VARCHAR}, #{examPracticeId,jdbcType=VARCHAR},#{updateTime,jdbcType=TIMESTAMP}
+      ,0
+      <if test="year != null">
+      , #{year,jdbcType=VARCHAR}
+      </if>
+      <if test="areaName != null">
+      , #{areaName,jdbcType=VARCHAR}
+      </if>
+      
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.codyy.oc.onlinetest.entity.ExamExam" >
+    insert into EXAM_EXAM
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="examId != null" >
+        EXAM_ID,
+      </if>
+      <if test="examCategoryType != null" >
+        EXAM_CATEGORY_TYPE,
+      </if>
+      <if test="examTypeId != null" >
+        EXAM_TYPE_ID,
+      </if>
+      <if test="baseUserId != null" >
+        BASE_USER_ID,
+      </if>
+      <if test="title != null" >
+        TITLE,
+      </if>
+      <if test="answerTime != null" >
+        ANSWER_TIME,
+      </if>
+      <if test="score != null" >
+        SCORE,
+      </if>
+      <if test="createTime != null" >
+        CREATE_TIME,
+      </if>
+      <if test="baseSemesterId != null" >
+        BASE_SEMESTER_ID,
+      </if>
+      <if test="baseSubjectId != null" >
+        BASE_SUBJECT_ID,
+      </if>
+      <if test="baseClasslevelId != null" >
+        BASE_CLASSLEVEL_ID,
+      </if>
+      <if test="isDelete != null" >
+        IS_DELETE,
+      </if>
+      <if test="examResultId != null" >
+        EXAM_RESULT_ID,
+      </if>
+      <if test="examPracticeId != null" >
+        EXAM_PRACTICE_ID,
+      </if>
+      <if test="year != null" >
+        YEAR,
+      </if>
+       <if test="updateTime != null" >
+        UPDATE_TIME,
+      </if>
+      <if test="publicFlag != null" >
+        PUBLIC_FLAG,
+      </if>
+      <if test="areaName != null" >
+        AREA_NAME,
+      </if>
+      <if test="useCount != null" >
+        USE_COUNT
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="examId != null" >
+        #{examId,jdbcType=VARCHAR},
+      </if>
+      <if test="examCategoryType != null" >
+        #{examCategoryType,jdbcType=VARCHAR},
+      </if>
+      <if test="examTypeId != null" >
+        #{examTypeId,jdbcType=VARCHAR},
+      </if>
+      <if test="baseUserId != null" >
+        #{baseUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="title != null" >
+        #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="answerTime != null" >
+        #{answerTime,jdbcType=DECIMAL},
+      </if>
+      <if test="score != null" >
+        #{score,jdbcType=DECIMAL},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="baseSemesterId != null" >
+        #{baseSemesterId,jdbcType=VARCHAR},
+      </if>
+      <if test="baseSubjectId != null" >
+        #{baseSubjectId,jdbcType=VARCHAR},
+      </if>
+      <if test="baseClasslevelId != null" >
+        #{baseClasslevelId,jdbcType=VARCHAR},
+      </if>
+      <if test="isDelete != null" >
+        #{isDelete,jdbcType=CHAR},
+      </if>
+      <if test="examResultId != null" >
+        #{examResultId,jdbcType=VARCHAR},
+      </if>
+      <if test="examPracticeId != null" >
+        #{examPracticeId,jdbcType=VARCHAR},
+      </if>
+      <if test="year != null" >
+        #{year,jdbcType=VARCHAR},
+      </if>
+       <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="publicFlag != null" >
+        #{publicFlag,jdbcType=VARCHAR},
+      </if>
+      <if test="areaName != null" >
+        #{areaName,jdbcType=VARCHAR},
+      </if>
+      <if test="useCount != null" >
+        #{useCount,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.codyy.oc.onlinetest.entity.ExamExam" >
+    update EXAM_EXAM
+    <set >
+      <if test="examCategoryType != null" >
+        EXAM_CATEGORY_TYPE = #{examCategoryType,jdbcType=VARCHAR},
+      </if>
+      <if test="examTypeId != null" >
+        EXAM_TYPE_ID = #{examTypeId,jdbcType=VARCHAR},
+      </if>
+      <if test="baseUserId != null" >
+        BASE_USER_ID = #{baseUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="title != null" >
+        TITLE = #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="answerTime != null" >
+        ANSWER_TIME = #{answerTime,jdbcType=DECIMAL},
+      </if>
+      <if test="score != null" >
+        SCORE = #{score,jdbcType=DECIMAL},
+      </if>
+      <if test="createTime != null" >
+        CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="baseSemesterId != null" >
+        BASE_SEMESTER_ID = #{baseSemesterId,jdbcType=VARCHAR},
+      </if>
+      <if test="baseSubjectId != null" >
+        BASE_SUBJECT_ID = #{baseSubjectId,jdbcType=VARCHAR},
+      </if>
+      <if test="baseClasslevelId != null" >
+        BASE_CLASSLEVEL_ID = #{baseClasslevelId,jdbcType=VARCHAR},
+      </if>
+      <if test="isDelete != null" >
+        IS_DELETE = #{isDelete,jdbcType=CHAR},
+      </if>
+      <if test="examResultId != null" >
+        EXAM_RESULT_ID = #{examResultId,jdbcType=VARCHAR},
+      </if>
+      <if test="examPracticeId != null" >
+        EXAM_PRACTICE_ID = #{examPracticeId,jdbcType=VARCHAR},
+      </if>
+      <if test="year != null" >
+        YEAR = #{year,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null" >
+        UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="publicFlag != null" >
+        PUBLIC_FLAG = #{publicFlag,jdbcType=VARCHAR},
+      </if>
+      <if test="areaName != null" >
+        AREA_NAME = #{areaName,jdbcType=VARCHAR},
+      </if>
+      <if test="useCount != null" >
+        USE_COUNT = #{useCount,jdbcType=DECIMAL}
+      </if>
+    </set>
+    where EXAM_ID = #{examId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.codyy.oc.onlinetest.entity.ExamExam" >
+    update EXAM_EXAM
+    set EXAM_CATEGORY_TYPE = #{examCategoryType,jdbcType=VARCHAR},
+      EXAM_TYPE_ID = #{examTypeId,jdbcType=VARCHAR},
+      BASE_USER_ID = #{baseUserId,jdbcType=VARCHAR},
+      TITLE = #{title,jdbcType=VARCHAR},
+      ANSWER_TIME = #{answerTime,jdbcType=DECIMAL},
+      SCORE = #{score,jdbcType=DECIMAL},
+      CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
+      BASE_SEMESTER_ID = #{baseSemesterId,jdbcType=VARCHAR},
+      BASE_SUBJECT_ID = #{baseSubjectId,jdbcType=VARCHAR},
+      BASE_CLASSLEVEL_ID = #{baseClasslevelId,jdbcType=VARCHAR},
+      IS_DELETE = #{isDelete,jdbcType=CHAR},
+      EXAM_RESULT_ID = #{examResultId,jdbcType=VARCHAR},
+      EXAM_PRACTICE_ID = #{examPracticeId,jdbcType=VARCHAR},
+      YEAR = #{year,jdbcType=VARCHAR},
+      USE_COUNT = #{useCount,jdbcType=DECIMAL}
+    where EXAM_ID = #{examId,jdbcType=VARCHAR}
+  </update>
+  
+  <insert id="copyFillInAnswer"  parameterType="map">
+		insert into exam_que_fill_in_answer
+		  (EXAM_QUE_FILL_IN_ANSWER_ID,
+		   EXAM_QUESTION_ID,
+		   ANSWER_GRP1,
+		   ANSWER_GRP2,
+		   ANSWER_GRP3,
+		   ANSWER_GRP4,
+		   ANSWER_GRP1_TXT,
+		   ANSWER_GRP2_TXT,
+		   ANSWER_GRP3_TXT,
+		   ANSWER_GRP4_TXT,
+		   SORT)
+		
+		  (select  sys_guid() EXAM_QUSETION_FILL_IN_ID,
+		   #{examQuestionId,jdbcType=VARCHAR} EXAM_question_id,
+		   ANSWER_GRP1,
+		   ANSWER_GRP2,
+		   ANSWER_GRP3,
+		   ANSWER_GRP4,
+		   ANSWER_GRP1_TXT,
+		   ANSWER_GRP2_TXT,
+		   ANSWER_GRP3_TXT,
+		   ANSWER_GRP4_TXT,
+		   SORT
+		     from que_fill_in_answer qf
+		    where qf.QUE_QUESTION_ID = #{questionId,jdbcType=VARCHAR})
+	</insert>
+	
+	<insert id="copyQuestionRKnowledge"  parameterType="map">
+		insert into EXAM_QUESTION_R_KNOWLEDGE (EXAM_QUESTION_R_KNOWLEDGE_ID, EXAM_QUESTION_ID, 
+      BASE_KNOWLEDGE_ID, BASE_SUB_KNOWLEDGE1_ID, BASE_SUB_KNOWLEDGE2_ID, 
+      BASE_SUB_KNOWLEDGE3_ID, BASE_SUB_KNOWLEDGE4_ID, 
+      BASE_SUB_KNOWLEDGE5_ID, BASE_END_KNOWLEDGE_ID 
+      )
+      (select 
+         sys_guid() EXAM_QUESTION_R_KNOWLEDGE_ID,
+        #{examQuestionId,jdbcType=VARCHAR} EXAM_question_id,
+         BASE_KNOWLEDGE_ID, BASE_SUB_KNOWLEDGE1_ID, BASE_SUB_KNOWLEDGE2_ID, 
+         BASE_SUB_KNOWLEDGE3_ID, BASE_SUB_KNOWLEDGE4_ID, 
+         BASE_SUB_KNOWLEDGE5_ID, BASE_END_KNOWLEDGE_ID 
+          from que_question_r_knowledge qr
+         where qr.QUE_QUESTION_ID = #{questionId,jdbcType=VARCHAR})
+	</insert>
+	
+	<insert id="copyQuestionRChapter"  parameterType="map">
+		 insert into EXAM_QUESTION_R_CHAPTER
+		 	
+		   (EXAM_QUESTION_R_CHAPTER_ID,
+		    EXAM_QUESTION_ID,
+		    BASE_VERSION_ID,
+		    BASE_VOLUME_ID,
+		    BASE_CHAPTER_ID,
+		    BASE_SECTION_ID
+		    )
+		   (select sys_guid() EXAM_QUESTION_R_CHAPTER_ID,
+		           #{examQuestionId,jdbcType=VARCHAR} EXAM_QUESTION_ID,
+		           BASE_VERSION_ID,
+		           BASE_VOLUME_ID,
+		           BASE_CHAPTER_ID,
+		           BASE_SECTION_ID
+		           
+		      from que_question_r_chapter qr
+		     where qr.QUE_QUESTION_ID = #{questionId,jdbcType=VARCHAR} )
+	</insert>
+	
+	<select id="getRealExamPageList" parameterType="com.codyy.commons.page.Page" resultType="com.codyy.oc.onlinetest.view.ExamView">
+		select  a.exam_id as examId,
+				a.title,
+				a.score              as    score,
+				a.answer_time        as    answerTime,
+				a.create_time		   as 	 createTime,
+				d.subject_name       as    subjectName,
+        		c.classlevel_name    as    classlevelName,
+         		et.name               as    examTypeName,
+         		b.semester_name	   as	 semesterName,
+		        nvl(a.use_count,0) as useCount,
+		       (select count(1) from exam_question t where t.exam_id = a.exam_id and t.temporary_flag &lt;&gt;'Y') as questionCount
+		  from exam_exam a
+		  left join base_semester b
+		    on a.base_semester_id = b.base_semester_id
+		  left join base_classlevel c
+		    on a.base_classlevel_id = c.base_classlevel_id
+		  left join base_subject d
+		    on a.base_subject_id = d.base_subject_id
+		  left join base_user e
+   			on a.base_user_id = e.base_user_id
+   		  left join  exam_type  et 
+       		on  a.exam_type_id = et.exam_type_id  
+		 where a.exam_category_type='REAL' and  a.is_delete = 'N'
+		   <if test='map.schoolId != null and map.schoolId != "" '>
+		   	and e.school_id = #{map.schoolId} 
+		   </if>
+		   <if test='map.areaName != null and map.areaName != "" and map.areaName != "全部" '>
+		   	and a.area_name = #{map.areaName}
+		   </if>
+		   <if test='map.year != null and map.year != "" and map.year != "全部" '>
+		   		<choose>
+		   			<when test="map.year == '其他'">
+		   				and a.year not in 
+		   				<foreach item="item" index="" collection="map.years" open="(" separator="," close=")">
+							#{item}  
+						</foreach> 
+		   			</when>
+		   			<otherwise>
+					   	and a.year = #{map.year}
+		   			</otherwise>
+		   		</choose>
+		   </if>
+		   <if test='map.examTypeId != null and map.examTypeId != "" and map.examTypeId != "0" '>
+		   	and a.exam_type_id = #{map.examTypeId}
+		   </if>
+		   <if test='map.baseSemesterId != null and map.baseSemesterId != "" and map.baseSemesterId != "0" '>
+		   	and a.base_semester_id = #{map.baseSemesterId}
+		   </if>
+		   <if test='map.baseClasslevelId != null and map.baseClasslevelId != "" and map.baseClasslevelId != "0" '>
+		   	and a.base_classlevel_id = #{map.baseClasslevelId}
+		   </if>
+		   <if test='map.baseSubjectId != null and map.baseSubjectId != "" and map.baseSubjectId != "0" '>
+		   	and a.base_subject_id = #{map.baseSubjectId}
+		   </if>
+		   <if test='map.createTimeSort != null and map.createTimeSort != "" and  map.createTimeSort=="down"'>
+		   	order by a.update_time asc
+		   </if>
+		   <if test='map.createTimeSort != null and map.createTimeSort != "" and  map.createTimeSort=="up"'>
+		   	order by a.update_time desc
+		   </if>
+		   <if test='map.useCountSort != null and map.useCountSort != "" and map.useCountSort=="down" '>
+		   	,a.use_count asc
+		   </if>
+		   <if test='map.useCountSort != null and map.useCountSort != "" and map.useCountSort=="up" '>
+		   	,a.use_count desc 
+		   </if>
+	</select>
+	
+	
+  <!-- 老师空间 -班级试卷列表 -->
+  <select id="getExamPageList" parameterType="com.codyy.commons.page.Page" resultType="com.codyy.oc.onlinetest.view.ExamView">
+       
+     select       
+         ex.exam_id            as    examId,
+         ex.exam_category_type   as   examCategoryType,
+         ex.title              as    title,
+         ex.score              as    score,
+         ex.answer_time        as    answerTime,
+         ex.create_time		   as 	 createTime,
+         bs.subject_name       as    subjectName,
+         bc.classlevel_name    as    classlevelName,
+         et.name               as    examTypeName,
+         bse.semester_name	   as	 semesterName,
+         nvl(startnumtab.startnum,0)  as	 startnum,
+         (select count(1) from exam_question t where t.exam_id = ex.exam_id) as questionCount
+         
+     from  exam_exam ex
+     
+     left join  exam_type  et 
+       on  ex.exam_type_id = et.exam_type_id
+       
+     left join  base_subject  bs
+       on  ex.base_subject_id = bs.base_subject_id
+       
+     left join  base_classlevel bc
+       on  bc.base_classlevel_id = ex.base_classlevel_id
+     
+     left join	BASE_SEMESTER bse
+       on bse.BASE_SEMESTER_ID = ex.base_semester_id                                                                                                                                                                                                                                                                                                                                                                                                                                     
+     
+     left join (
+		select distinct exam_id,sum(delable)  over(partition by exam_id order by exam_id) startnum from (
+			select et.exam_id,et.exam_task_id,et.start_time,case when et.start_time>sysdate then 0 else 1 end delable from exam_task et
+		)
+     ) startnumtab 
+     	on ex.exam_id = startnumtab.exam_id
+     
+     where 1=1 
+     
+     <if test="map.beginTime != null and map.beginTime !=''">
+        and ex.update_time &gt;= #{map.beginTime}
+     </if>
+     <if test="map.endTime != null and map.endTime !=''">
+        and ex.update_time &lt;= #{map.endTime}
+     </if>
+     <if test="map.subjectId != null and map.subjectId !=''">
+        and (bs.base_subject_id = #{map.subjectId} or  #{map.subjectId} = '0')
+     </if>
+     <if test="map.classlevelId != null and map.classlevelId !=''">
+        and (bc.base_classlevel_id = #{map.classlevelId} or #{map.classlevelId} = '0')
+     </if>
+
+     <if test="map.examTypeId != null and map.examTypeId !=''">
+        and (et.exam_type_id = #{map.examTypeId} or #{map.examTypeId} = '0')
+     </if>
+     <if test="map.examName != null and map.examName !=''">
+        and ex.title like '%' || #{map.examName} || '%' ESCAPE '/'
+     </if>
+     
+     	and ex.BASE_USER_ID = #{map.createUserId} 
+    
+     order by ex.update_time desc
+  </select>
+  
+  
+   <!-- 学校空间 -班级试卷列表 -->
+  <select id="getSchoolExamPageList" parameterType="com.codyy.commons.page.Page" resultType="com.codyy.oc.onlinetest.view.ExamView">
+     with schooluser as (
+     	select bu.base_user_id id
+  			from base_user bu
+ 		where bu.school_id =
+       (select u.school_id
+          from base_user u
+         where u.base_user_id = #{map.createUserId}) and bu.user_type = 'SCHOOL_USR'
+     
+     )
+     
+     
+     select       
+         ex.exam_id            as    examId,
+         ex.exam_category_type   as   examCategoryType,
+         ex.title              as    title,
+         ex.score              as    score,
+         ex.answer_time        as    answerTime,
+         ex.create_time		   as 	 createTime,
+         bs.subject_name       as    subjectName,
+         bc.classlevel_name    as    classlevelName,
+         et.name               as    examTypeName,
+         bse.semester_name	   as	 semesterName,
+         nvl(startnumtab.startnum,0)  as	 startnum,
+         (select count(1) from exam_question t where t.exam_id = ex.exam_id) as questionCount
+         
+     from  exam_exam ex
+     
+     left join  exam_type  et 
+       on  ex.exam_type_id = et.exam_type_id
+       
+     left join  base_subject  bs
+       on  ex.base_subject_id = bs.base_subject_id
+       
+     left join  base_classlevel bc
+       on  bc.base_classlevel_id = ex.base_classlevel_id
+     
+     left join	BASE_SEMESTER bse
+       on bse.BASE_SEMESTER_ID = ex.base_semester_id                                                                                                                                                                                                                                                                                                                                                                                                                                     
+     
+     left join (
+		select distinct exam_id,sum(delable)  over(partition by exam_id order by exam_id) startnum from (
+			select et.exam_id,et.exam_task_id,et.start_time,case when et.start_time>sysdate then 0 else 1 end delable from exam_task et
+		)
+     ) startnumtab 
+     	on ex.exam_id = startnumtab.exam_id
+     	 
+     where 1=1 
+     
+     <if test="map.beginTime != null and map.beginTime !=''">
+        and ex.update_time &gt;= #{map.beginTime}
+     </if>
+     <if test="map.endTime != null and map.endTime !=''">
+        and ex.update_time &lt;= #{map.endTime}
+     </if>
+     <if test="map.subjectId != null and map.subjectId !=''">
+        and (bs.base_subject_id = #{map.subjectId} or  #{map.subjectId} = '0')
+     </if>
+     <if test="map.classlevelId != null and map.classlevelId !=''">
+        and (bc.base_classlevel_id = #{map.classlevelId} or #{map.classlevelId} = '0')
+     </if>
+
+     <if test="map.examTypeId != null and map.examTypeId !=''">
+        and (et.exam_type_id = #{map.examTypeId} or #{map.examTypeId} = '0')
+     </if>
+     <if test="map.examName != null and map.examName !=''">
+        and ex.title like '%' || #{map.examName} || '%' ESCAPE '/'
+     </if>
+     
+     	and ex.exam_category_type = 'CLASSLEVEL' 
+     	and ex.BASE_USER_ID in (select id from schooluser) 
+    
+     order by ex.update_time desc
+  </select>
+  
+  <select id="getExamViewById" resultType="com.codyy.oc.onlinetest.view.ExamView" parameterType="java.lang.String">
+  	 select       
+         ex.exam_id            as    examId,
+         ex.exam_category_type   as   examCategoryType,
+         ex.title              as    title,
+         ex.score              as    score,
+         ex.answer_time        as    answerTime,
+         ex.create_time		   as 	 createTime,
+         ex.update_time		   as 	 updateTime,
+         ex.year			   as	 year,
+         (select count(1) from exam_question t where t.exam_id = ex.exam_id) as questionCount,
+         ex.area_name		   as	 areaName,
+         ex.use_count		   as	 useCount,
+         ex.exam_type_id       as	 examTypeId,
+         ex.base_semester_id   as	 baseSemesterId,
+         ex.base_subject_id   as	 baseSubjectId,
+         ex.base_classlevel_id as baseClasslevelId,
+         bs.subject_name       as    subjectName,
+         bc.classlevel_name    as    classlevelName,
+         et.name               as    examTypeName,
+         bse.semester_name	   as	 semesterName
+        
+         
+     from  exam_exam ex
+     
+     left join  exam_type  et 
+       on  ex.exam_type_id = et.exam_type_id
+       
+     left join  base_subject  bs
+       on  ex.base_subject_id = bs.base_subject_id
+       
+     left join  base_classlevel bc
+       on  bc.base_classlevel_id = ex.base_classlevel_id
+     
+     left join	BASE_SEMESTER bse
+       on bse.BASE_SEMESTER_ID = ex.base_semester_id
+                                                                                                                                                                                                                                                                                                                                                                                                                                            
+     where   exam_id = #{examId}
+  </select>
+  
+  <update id="updateExamExamById" parameterType="java.util.Map">
+    update EXAM_EXAM
+    set 
+      EXAM_RESULT_ID = #{examResultId},
+      EXAM_PRACTICE_ID = #{examPracticeId}
+    where EXAM_ID = #{examId}
+  
+  </update>
+  
+  <update id="addUseNum" parameterType="java.util.List">
+  	update que_question q set q.use_count = q.use_count+1 where q.que_question_id in
+  	<foreach collection="list" index="index" item="item" open="(" separator="," close=")">   
+        #{item}   
+    </foreach>
+  </update>
+  
+  <update id="addRealExamUseNum" parameterType="java.lang.String">
+	update exam_exam e set e.use_count = nvl(e.use_count,0)+1 where e.exam_id = #{id}
+  </update>
+  
+  
+</mapper>

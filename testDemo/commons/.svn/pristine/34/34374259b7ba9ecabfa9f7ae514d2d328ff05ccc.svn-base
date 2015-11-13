@@ -1,0 +1,7 @@
+# Do not execute filter URL
+message/doAddMesInformation=mesInfos
+info/addInfo=richContent
+info/editInfo=richContent
+prepare/lessonPlan/lessonPlanAddSave=richContent
+prepare/lessonPlan/lessonPlanEditSave=richContent
+createquestionlib/createquestion=edt_content,edt_resolve,edt_options,content_title,indep_*,comb_*

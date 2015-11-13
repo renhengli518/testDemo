@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.codyy.oc.onlinetest.dao.ExamQuestionRChapterMapper" >
+  <resultMap id="BaseResultMap" type="com.codyy.oc.onlinetest.entity.ExamQuestionRChapter" >
+    <id column="EXAM_QUESTION_R_CHAPTER_ID" property="examQuestionRChapterId" jdbcType="VARCHAR" />
+    <result column="EXAM_QUESTION_ID" property="examQuestionId" jdbcType="VARCHAR" />
+    <result column="BASE_VERSION_ID" property="baseVersionId" jdbcType="VARCHAR" />
+    <result column="BASE_SECTION_ID" property="baseSectionId" jdbcType="VARCHAR" />
+    <result column="BASE_CHAPTER_ID" property="baseChapterId" jdbcType="VARCHAR" />
+    <result column="BASE_VOLUME_ID" property="baseVolumeId" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    EXAM_QUESTION_R_CHAPTER_ID, EXAM_QUESTION_ID, BASE_VERSION_ID, BASE_SECTION_ID, BASE_CHAPTER_ID, 
+    BASE_VOLUME_ID
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from EXAM_QUESTION_R_CHAPTER
+    where EXAM_QUESTION_R_CHAPTER_ID = #{examQuestionRChapterId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from EXAM_QUESTION_R_CHAPTER
+    where EXAM_QUESTION_R_CHAPTER_ID = #{examQuestionRChapterId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.codyy.oc.onlinetest.entity.ExamQuestionRChapter" >
+    insert into EXAM_QUESTION_R_CHAPTER (EXAM_QUESTION_R_CHAPTER_ID, EXAM_QUESTION_ID, 
+      BASE_VERSION_ID, BASE_SECTION_ID, BASE_CHAPTER_ID, 
+      BASE_VOLUME_ID)
+    values (#{examQuestionRChapterId,jdbcType=VARCHAR}, #{examQuestionId,jdbcType=VARCHAR}, 
+      #{baseVersionId,jdbcType=VARCHAR}, #{baseSectionId,jdbcType=VARCHAR}, #{baseChapterId,jdbcType=VARCHAR}, 
+      #{baseVolumeId,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.codyy.oc.onlinetest.entity.ExamQuestionRChapter" >
+    insert into EXAM_QUESTION_R_CHAPTER
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="examQuestionRChapterId != null" >
+        EXAM_QUESTION_R_CHAPTER_ID,
+      </if>
+      <if test="examQuestionId != null" >
+        EXAM_QUESTION_ID,
+      </if>
+      <if test="baseVersionId != null" >
+        BASE_VERSION_ID,
+      </if>
+      <if test="baseSectionId != null" >
+        BASE_SECTION_ID,
+      </if>
+      <if test="baseChapterId != null" >
+        BASE_CHAPTER_ID,
+      </if>
+      <if test="baseVolumeId != null" >
+        BASE_VOLUME_ID,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="examQuestionRChapterId != null" >
+        #{examQuestionRChapterId,jdbcType=VARCHAR},
+      </if>
+      <if test="examQuestionId != null" >
+        #{examQuestionId,jdbcType=VARCHAR},
+      </if>
+      <if test="baseVersionId != null" >
+        #{baseVersionId,jdbcType=VARCHAR},
+      </if>
+      <if test="baseSectionId != null" >
+        #{baseSectionId,jdbcType=VARCHAR},
+      </if>
+      <if test="baseChapterId != null" >
+        #{baseChapterId,jdbcType=VARCHAR},
+      </if>
+      <if test="baseVolumeId != null" >
+        #{baseVolumeId,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.codyy.oc.onlinetest.entity.ExamQuestionRChapter" >
+    update EXAM_QUESTION_R_CHAPTER
+    <set >
+      <if test="examQuestionId != null" >
+        EXAM_QUESTION_ID = #{examQuestionId,jdbcType=VARCHAR},
+      </if>
+      <if test="baseVersionId != null" >
+        BASE_VERSION_ID = #{baseVersionId,jdbcType=VARCHAR},
+      </if>
+      <if test="baseSectionId != null" >
+        BASE_SECTION_ID = #{baseSectionId,jdbcType=VARCHAR},
+      </if>
+      <if test="baseChapterId != null" >
+        BASE_CHAPTER_ID = #{baseChapterId,jdbcType=VARCHAR},
+      </if>
+      <if test="baseVolumeId != null" >
+        BASE_VOLUME_ID = #{baseVolumeId,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where EXAM_QUESTION_R_CHAPTER_ID = #{examQuestionRChapterId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.codyy.oc.onlinetest.entity.ExamQuestionRChapter" >
+    update EXAM_QUESTION_R_CHAPTER
+    set EXAM_QUESTION_ID = #{examQuestionId,jdbcType=VARCHAR},
+      BASE_VERSION_ID = #{baseVersionId,jdbcType=VARCHAR},
+      BASE_SECTION_ID = #{baseSectionId,jdbcType=VARCHAR},
+      BASE_CHAPTER_ID = #{baseChapterId,jdbcType=VARCHAR},
+      BASE_VOLUME_ID = #{baseVolumeId,jdbcType=VARCHAR}
+    where EXAM_QUESTION_R_CHAPTER_ID = #{examQuestionRChapterId,jdbcType=VARCHAR}
+  </update>
+  
+  <!-- 根据examQuestionId删除所有的关联章节-->
+  <delete id="deleteExamQuesChapterByExamQuestionId" parameterType="java.lang.String" >
+    delete from EXAM_QUESTION_R_CHAPTER
+    where EXAM_QUESTION_ID = #{examQuestionId,jdbcType=VARCHAR}
+  </delete>
+  
+  <!-- 根据examQuestionId查询对应的章节 -->
+  <select id="selectByExamQuestionId" parameterType="java.lang.String" resultMap="BaseResultMap">
+	select  <include refid="Base_Column_List" /> 
+	from exam_question_r_chapter where exam_question_id = #{examQuestionId}
+  </select>
+  
+</mapper>

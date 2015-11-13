@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.codyy.oc.onlinetest.dao.ExamPracQuesRKnowledgeMapper" >
+  <resultMap id="BaseResultMap" type="com.codyy.oc.onlinetest.entity.ExamPracQuesRKnowledge" >
+    <result column="EXAM_PRACTICE_QUESTION_ID" property="examPracticeQuestionId" jdbcType="VARCHAR" />
+    <result column="BASE_KNOWLEDGE_ID" property="baseKnowledgeId" jdbcType="VARCHAR" />
+  </resultMap>
+  <insert id="insert" parameterType="com.codyy.oc.onlinetest.entity.ExamPracQuesRKnowledge" >
+    insert into EXAM_PRAC_QUES_R_KNOWLEDGE (EXAM_PRACTICE_QUESTION_ID, BASE_KNOWLEDGE_ID
+      )
+    values (#{examPracticeQuestionId,jdbcType=VARCHAR}, #{baseKnowledgeId,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.codyy.oc.onlinetest.entity.ExamPracQuesRKnowledge" >
+    insert into EXAM_PRAC_QUES_R_KNOWLEDGE
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="examPracticeQuestionId != null" >
+        EXAM_PRACTICE_QUESTION_ID,
+      </if>
+      <if test="baseKnowledgeId != null" >
+        BASE_KNOWLEDGE_ID,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="examPracticeQuestionId != null" >
+        #{examPracticeQuestionId,jdbcType=VARCHAR},
+      </if>
+      <if test="baseKnowledgeId != null" >
+        #{baseKnowledgeId,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  
+  
+  <insert id="insertPracKnowlegeBatch" parameterType="java.util.List">
+     insert into EXAM_PRAC_QUES_R_KNOWLEDGE (
+       EXAM_PRACTICE_QUESTION_ID, 
+       BASE_KNOWLEDGE_ID
+      )
+    <foreach collection="list" item="item" open="(" close=")" separator="union all" >  
+         select  
+           #{item.examPracticeQuestionId},
+           #{item.baseKnowledgeId}
+         from dual
+      </foreach>  
+  
+  </insert>
+  
+  <!-- 获取巩固测试的基础知识点 -->
+  <select id="getAllBaseKnowledge" parameterType="java.lang.String" resultType="com.codyy.oc.base.entity.BaseKnowledge">
+	select 
+      a.BASE_KNOWLEDGE_ID    as   baseKnowledgeId, 
+      a.BASE_SEMESTER_ID     as   baseSemesterId, 
+      a.BASE_SUBJECT_ID      as   baseSubjectId, 
+      a.KNOWLEDGE_NAME       as   knowledgeName, 
+      a.PARENT_ID            as   parentId, 
+      a.SORT                 as   sort
+    from BASE_KNOWLEDGE a
+    left join EXAM_PRAC_QUES_R_KNOWLEDGE  erk
+       on  erk.BASE_KNOWLEDGE_ID = a.BASE_KNOWLEDGE_ID
+    where erk.EXAM_PRACTICE_QUESTION_ID = #{examPracticeQuestionId}
+  
+  </select>
+  
+</mapper>

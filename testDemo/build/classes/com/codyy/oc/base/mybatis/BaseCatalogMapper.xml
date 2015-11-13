@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.codyy.oc.base.dao.BaseCatalogDao" >
+  <resultMap id="BaseResultMap" type="com.codyy.oc.base.entity.BaseCatalog" >
+    <id column="BASE_CATALOG_ID" property="baseCatalogId" jdbcType="VARCHAR" />
+    <result column="BASE_VER_CLSLVL_DISPL_ID" property="baseVerClasslevelDisciplineId" jdbcType="VARCHAR" />
+    <result column="CATALOG_NAME" property="catalogName" jdbcType="VARCHAR" />
+    <result column="SORT" property="sort" jdbcType="DECIMAL" />
+    <result column="CATALOG_LEVEL" property="catalogLevel" jdbcType="DECIMAL" />
+    <result column="PARENT_ID" property="parentId" jdbcType="VARCHAR" />
+    <result column="CLASSLEVEL_NAME" property="classlevelName" jdbcType="VARCHAR" />
+    <result column="level" property="level" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    a.BASE_CATALOG_ID, a.BASE_VER_CLSLVL_DISPL_ID, a.CATALOG_NAME, a.SORT, a.CATALOG_LEVEL, a.PARENT_ID
+  </sql>
+ <select id="getAllBaseVersionByClassLevelAndDiscipline" parameterType="map" resultMap="BaseResultMap">
+     select 
+     a.BASE_VERSION_ID AS BASE_CATALOG_ID,a.BASE_VER_CLSLVL_DISPL_ID BASE_VER_CLSLVL_DISPL_ID , c.name CATALOG_NAME,c.sort
+    from BASE_VER_CLSLVL_DISPL a
+    left join base_classlevel_discipline b on a.base_clslvl_displ_id = b.base_classlevel_discipline_id
+    LEFT JOIN BASE_VERSION C ON A.BASE_VERSION_ID = C.BASE_VERSION_ID
+    where b.base_classlevel_id = #{baseClasslevelId} and b.base_discipline_id=#{baseDisciplineId}  order by c.sort 
+  </select>
+  
+   <select id="getAllBaseCatalogByClassLevelAndDiscipline" parameterType="map" resultMap="BaseResultMap">
+    select a.base_catalog_id,a.catalog_name,a.sort,a.catalog_level,a.parent_id,a.base_ver_clslvl_displ_id 
+	from BASE_CATALOG a
+	left join BASE_VER_CLSLVL_DISPL b on a.base_ver_clslvl_displ_id = b.base_ver_clslvl_displ_id
+	left join BASE_CLASSLEVEL_DISCIPLINE c on b.base_clslvl_displ_id = c.base_classlevel_discipline_id
+    where c.base_classlevel_id = #{baseClasslevelId} and c.base_discipline_id=#{baseDisciplineId}  order by a.sort 
+  </select>
+  
+  <select id="getAllBaseVersion"  resultMap="BaseResultMap">
+     select 
+     C.BASE_VERSION_ID AS BASE_CATALOG_ID, C.NAME CATALOG_NAME
+    from  BASE_VERSION C   order by c.sort 
+  </select>
+  
+  <select id="getAllBaseVolumeByVersion" parameterType="java.lang.String" resultMap="BaseResultMap">
+     select 
+    <include refid="Base_Column_List" />
+    from BASE_CATALOG a
+    where a.base_ver_clslvl_displ_id = #{baseVersionId} and parent_id = '-1' order by sort 
+  </select>
+  
+     <select id="getAllBaseChapterByVolume" parameterType="java.lang.String" resultMap="BaseResultMap">
+     select 
+    <include refid="Base_Column_List" />
+    from BASE_CATALOG a
+    where  a.parent_id  = #{baseVolumeId}
+    order by sort
+  </select>
+  
+    <select id="getAllBaseSectionByChapter" parameterType="java.lang.String" resultMap="BaseResultMap">
+     select 
+    <include refid="Base_Column_List" />
+    from BASE_CATALOG a
+    where a.parent_id  = #{baseChapterId}
+    order by sort
+  </select>
+  
+    <select id="getAllChapterTree"  parameterType="java.lang.String" resultMap="BaseResultMap">
+  	select 
+    <include refid="Base_Column_List" />,level
+    from BASE_CATALOG a 
+    where level>1
+    start with a.base_catalog_id = #{baseChapterId,jdbcType=VARCHAR}  connect by prior a.base_catalog_id = a.parent_id 
+  	</select>
+  	
+ 	<!-- 智能选题获取年级章节列表  -->
+  	  <select id="getByIntelligence"  parameterType="map" resultMap="BaseResultMap">
+        SELECT BC.BASE_CATALOG_ID,BC.CATALOG_NAME,BC.PARENT_ID,BCL.CLASSLEVEL_NAME
+ 		  FROM BASE_CATALOG BC,(  
+         SELECT VC.BASE_VER_CLSLVL_DISPL_ID ,C.BASE_CLASSLEVEL_ID
+           FROM BASE_VERSION V,
+                 BASE_CLASSLEVEL_DISCIPLINE C,
+                 BASE_VER_CLSLVL_DISPL VC
+          WHERE VC.BASE_VERSION_ID = V.BASE_VERSION_ID
+            AND VC.BASE_CLSLVL_DISPL_ID = C.BASE_CLASSLEVEL_DISCIPLINE_ID
+            AND C.BASE_CLASSLEVEL_ID IN (SELECT C.BASE_CLASSLEVEL_ID
+                                           FROM BASE_CLASSLEVEL C
+                                          WHERE C.BASE_SEMESTER_ID = #{baseSemesterId,jdbcType=VARCHAR} 
+                                         )
+            AND C.BASE_SUBJECT_ID = #{baseSubjectId,jdbcType=VARCHAR}  
+            AND VC.BASE_VERSION_ID = #{baseVersionId,jdbcType=VARCHAR} 
+         )BVC , BASE_CLASSLEVEL BCL WHERE  BC.BASE_VER_CLSLVL_DISPL_ID = BVC.BASE_VER_CLSLVL_DISPL_ID AND BVC.BASE_CLASSLEVEL_ID = BCL.BASE_CLASSLEVEL_ID
+         AND LEVEL &lt;= 2
+         AND NOT (BC.PARENT_ID = '-1' AND connect_by_isleaf = '1' )
+         start with BC.PARENT_ID='-1'  connect by prior BC.base_catalog_id = BC.parent_id
+ 	 </select>
+</mapper>

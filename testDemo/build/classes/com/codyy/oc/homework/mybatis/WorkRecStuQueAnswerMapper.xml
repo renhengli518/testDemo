@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.codyy.oc.homework.dao.WorkRecStuQueAnswerMapper" >
+  <resultMap id="BaseResultMap" type="com.codyy.oc.homework.entity.WorkRecStuQueAnswer" >
+    <id column="WORK_REC_STU_QUE_ANSWER_ID" property="workRecStuQueAnswerId" jdbcType="VARCHAR" />
+    <result column="WORK_RECEIVE_STU_ID" property="workReceiveStuId" jdbcType="VARCHAR" />
+    <result column="WORK_QUESTION_ID" property="workQuestionId" jdbcType="VARCHAR" />
+    <result column="CORRECT_FLAG" property="correctFlag" jdbcType="CHAR" />
+    <result column="READ_OVER_FLAG" property="readOverFlag" jdbcType="CHAR" />
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="com.codyy.oc.homework.entity.WorkRecStuQueAnswer" extends="BaseResultMap" >
+    <result column="MY_ANSWER" property="myAnswer" jdbcType="CLOB" />
+    <result column="COMMENT" property="comment" jdbcType="CLOB" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    WORK_REC_STU_QUE_ANSWER_ID, WORK_RECEIVE_STU_ID, WORK_QUESTION_ID, CORRECT_FLAG, 
+    READ_OVER_FLAG
+  </sql>
+  
+  <insert id="insertBatch" parameterType="com.codyy.oc.homework.entity.WorkRecStuQueAnswer" >
+    insert into WORK_REC_STU_QUE_ANSWER (WORK_REC_STU_QUE_ANSWER_ID, WORK_RECEIVE_STU_ID, 
+      WORK_QUESTION_ID, CORRECT_FLAG, READ_OVER_FLAG,MY_ANSWER,ANSWER_VIDEO)
+    <foreach item="item" collection="list" separator="union all">    
+    select 
+      #{item.workRecStuQueAnswerId,jdbcType=VARCHAR}, 
+      #{item.workReceiveStuId,jdbcType=VARCHAR}, 
+      #{item.workQuestionId,jdbcType=VARCHAR}, 
+      #{item.correctFlag,jdbcType=CHAR}, 
+      #{item.readOverFlag,jdbcType=CHAR}, 
+      #{item.myAnswer,jdbcType=CLOB},
+      #{item.answerVideo,jdbcType=VARCHAR} from dual
+    </foreach>  
+  </insert>
+  <select id="selectQueUncheckedNum" resultType="int" parameterType="map" >
+  	SELECT count(DISTINCT wrsqa.WORK_QUESTION_ID) 
+	FROM WORK_REC_STU_QUE_ANSWER wrsqa,WORK_RECEIVE_STU wrs,WORK_QUESTION wq
+	WHERE WRS.WORK_RECEIVE_STU_ID = WRSQA.WORK_RECEIVE_STU_ID
+	and wq.WORK_QUESTION_ID = wrsqa.WORK_QUESTION_ID
+	AND WRS.BASE_CLASS_ID = #{classId}
+	AND WRS.WORK_HOMEWORK_ID = #{homeworkId}
+	and (wq.TYPE = 'ASK_ANSWER' or wq.TYPE = 'COMPUTING')
+	AND wrsqa.READ_OVER_FLAG = 'N'
+  </select>
+  <select id="selectQuestionAnswer" resultType="com.codyy.oc.homework.view.ReadByQueAnswerView" parameterType="map">
+  	SELECT WORK_REC_STU_QUE_ANSWER_ID workRecStuQueAnswerId,WORK_RECEIVE_STU_ID workReceiveStuId,MY_ANSWER answer,ANSWER_VIDEO as answerVideo,
+	"COMMENT" "comment",READ_OVER_FLAG readFlag,ANSWER_VIDEO answerVideo FROM WORK_REC_STU_QUE_ANSWER 
+	WHERE WORK_RECEIVE_STU_ID = #{workReceiveStuId}
+	and WORK_QUESTION_ID = #{workQueId}
+  </select>
+  <select id="selectQuestionNoReadNum" resultType="int" parameterType="map">
+  	SELECT count(1) 
+	FROM WORK_RECEIVE_STU wrs 
+	join WORK_REC_STU_QUE_ANSWER wrsqa ON WRSQA.WORK_RECEIVE_STU_ID = WRS.WORK_RECEIVE_STU_ID
+	WHERE WRS.WORK_HOMEWORK_ID = #{homeworkId}
+	AND WRS.BASE_CLASS_ID = #{classId}
+	AND wrsqa.WORK_QUESTION_ID = #{workQueId}
+	AND wrsqa.READ_OVER_FLAG = 'N'
+  </select>
+  <select id="selectReadByStuQuestion" resultType="com.codyy.oc.homework.view.ReadByStuQuestionView" parameterType="java.lang.String" >
+  	SELECT WQ.WORK_QUESTION_ID workQuestionId, WQ.CONTENT content,WQ.CONTENT_VIDEO contentVideo,WQ.ANSWER answer,WQ.DIFFICULTY difficulty,
+  	WQ.TYPE type,WQ.OPTIONS options,WQ.FILL_IN_ANSWER_TYPE fillInAnswerType,WRSQA.ANSWER_VIDEO answerVideo,
+  	WRSQA.MY_ANSWER myAnswer,WRSQA.CORRECT_FLAG correctFlag,WRSQA.WORK_REC_STU_QUE_ANSWER_ID workRecStuQueAnswerId
+	FROM WORK_REC_STU_QUE_ANSWER wrsqa
+	join WORK_QUESTION wq ON WRSQA.WORK_QUESTION_ID = WQ.WORK_QUESTION_ID
+	WHERE wrsqa.READ_OVER_FLAG = 'N'
+	AND wrsqa.WORK_RECEIVE_STU_ID = #{workReceiveStuId}
+	ORDER BY wq.SORT
+  </select>
+  
+  <sql id="Blob_Column_List" >
+    MY_ANSWER, "COMMENT"
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from WORK_REC_STU_QUE_ANSWER
+    where WORK_REC_STU_QUE_ANSWER_ID = #{workRecStuQueAnswerId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from WORK_REC_STU_QUE_ANSWER
+    where WORK_REC_STU_QUE_ANSWER_ID = #{workRecStuQueAnswerId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.codyy.oc.homework.entity.WorkRecStuQueAnswer" >
+    insert into WORK_REC_STU_QUE_ANSWER (WORK_REC_STU_QUE_ANSWER_ID, WORK_RECEIVE_STU_ID, 
+      WORK_QUESTION_ID, CORRECT_FLAG, READ_OVER_FLAG, 
+      MY_ANSWER, "COMMENT")
+    values (#{workRecStuQueAnswerId,jdbcType=VARCHAR}, #{workReceiveStuId,jdbcType=VARCHAR}, 
+      #{workQuestionId,jdbcType=VARCHAR}, #{correctFlag,jdbcType=CHAR}, #{readOverFlag,jdbcType=CHAR}, 
+      #{myAnswer,jdbcType=CLOB}, #{comment,jdbcType=CLOB})
+  </insert>
+  <insert id="insertSelective" parameterType="com.codyy.oc.homework.entity.WorkRecStuQueAnswer" >
+    insert into WORK_REC_STU_QUE_ANSWER
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="workRecStuQueAnswerId != null" >
+        WORK_REC_STU_QUE_ANSWER_ID,
+      </if>
+      <if test="workReceiveStuId != null" >
+        WORK_RECEIVE_STU_ID,
+      </if>
+      <if test="workQuestionId != null" >
+        WORK_QUESTION_ID,
+      </if>
+      <if test="correctFlag != null" >
+        CORRECT_FLAG,
+      </if>
+      <if test="readOverFlag != null" >
+        READ_OVER_FLAG,
+      </if>
+      <if test="myAnswer != null" >
+        MY_ANSWER,
+      </if>
+      <if test="comment != null" >
+        "COMMENT",
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="workRecStuQueAnswerId != null" >
+        #{workRecStuQueAnswerId,jdbcType=VARCHAR},
+      </if>
+      <if test="workReceiveStuId != null" >
+        #{workReceiveStuId,jdbcType=VARCHAR},
+      </if>
+      <if test="workQuestionId != null" >
+        #{workQuestionId,jdbcType=VARCHAR},
+      </if>
+      <if test="correctFlag != null" >
+        #{correctFlag,jdbcType=CHAR},
+      </if>
+      <if test="readOverFlag != null" >
+        #{readOverFlag,jdbcType=CHAR},
+      </if>
+      <if test="myAnswer != null" >
+        #{myAnswer,jdbcType=CLOB},
+      </if>
+      <if test="comment != null" >
+        #{comment,jdbcType=CLOB},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.codyy.oc.homework.entity.WorkRecStuQueAnswer" >
+    update WORK_REC_STU_QUE_ANSWER
+    <set >
+      <if test="workReceiveStuId != null" >
+        WORK_RECEIVE_STU_ID = #{workReceiveStuId,jdbcType=VARCHAR},
+      </if>
+      <if test="workQuestionId != null" >
+        WORK_QUESTION_ID = #{workQuestionId,jdbcType=VARCHAR},
+      </if>
+      <if test="correctFlag != null" >
+        CORRECT_FLAG = #{correctFlag,jdbcType=CHAR},
+      </if>
+      <if test="readOverFlag != null" >
+        READ_OVER_FLAG = #{readOverFlag,jdbcType=CHAR},
+      </if>
+      <if test="myAnswer != null" >
+        MY_ANSWER = #{myAnswer,jdbcType=CLOB},
+      </if>
+      <if test="comment != null" >
+        "COMMENT" = #{comment,jdbcType=CLOB},
+      </if>
+    </set>
+    where WORK_REC_STU_QUE_ANSWER_ID = #{workRecStuQueAnswerId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.codyy.oc.homework.entity.WorkRecStuQueAnswer" >
+    update WORK_REC_STU_QUE_ANSWER
+    set WORK_RECEIVE_STU_ID = #{workReceiveStuId,jdbcType=VARCHAR},
+      WORK_QUESTION_ID = #{workQuestionId,jdbcType=VARCHAR},
+      CORRECT_FLAG = #{correctFlag,jdbcType=CHAR},
+      READ_OVER_FLAG = #{readOverFlag,jdbcType=CHAR},
+      MY_ANSWER = #{myAnswer,jdbcType=CLOB},
+      "COMMENT" = #{comment,jdbcType=CLOB}
+    where WORK_REC_STU_QUE_ANSWER_ID = #{workRecStuQueAnswerId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.codyy.oc.homework.entity.WorkRecStuQueAnswer" >
+    update WORK_REC_STU_QUE_ANSWER
+    set WORK_RECEIVE_STU_ID = #{workReceiveStuId,jdbcType=VARCHAR},
+      WORK_QUESTION_ID = #{workQuestionId,jdbcType=VARCHAR},
+      CORRECT_FLAG = #{correctFlag,jdbcType=CHAR},
+      READ_OVER_FLAG = #{readOverFlag,jdbcType=CHAR}
+    where WORK_REC_STU_QUE_ANSWER_ID = #{workRecStuQueAnswerId,jdbcType=VARCHAR}
+  </update>
+  
+  <update id="updateBystuIdAndQueId" parameterType="java.util.Map">
+  
+  update work_rec_stu_que_answer wrsqa
+   set wrsqa."COMMENT" = #{comment}, wrsqa.read_over_flag = 'Y'
+ where wrsqa.work_receive_stu_id = #{receiveStuId}
+   and wrsqa.work_question_id = #{questionId}
+
+  </update>
+</mapper>

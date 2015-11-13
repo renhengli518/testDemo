@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.codyy.oc.questionlib.dao.QueQuestionRChapterMapper" >
+  <resultMap id="BaseResultMap" type="com.codyy.oc.questionlib.entity.QueQuestionRChapter" >
+    <id column="QUE_QUESTION_R_CHAPTER_ID" property="queQuestionRChapterId" jdbcType="VARCHAR" />
+    <result column="QUE_QUESTION_ID" property="queQuestionId" jdbcType="VARCHAR" />
+    <result column="BASE_VERSION_ID" property="baseVersionId" jdbcType="VARCHAR" />
+    <result column="BASE_SECTION_ID" property="baseSectionId" jdbcType="VARCHAR" />
+    <result column="BASE_CHAPTER_ID" property="baseChapterId" jdbcType="VARCHAR" />
+    <result column="BASE_VOLUME_ID" property="baseVolumeId" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    QUE_QUESTION_R_CHAPTER_ID, QUE_QUESTION_ID, BASE_VERSION_ID,BASE_VOLUME_ID,  BASE_CHAPTER_ID, 
+    BASE_SECTION_ID  
+  </sql>
+  
+  <!-- 批量新增习题关联章节内容-->
+  <insert id="addQuestionRChapterBatch" parameterType="java.util.List">
+		insert into QUE_QUESTION_R_CHAPTER (<include refid="Base_Column_List"/>)
+		<foreach collection="qstRChapterLi" item="item" index="index" separator="union all">
+			select #{item.queQuestionRChapterId,jdbcType=VARCHAR},
+			#{item.queQuestionId,jdbcType=VARCHAR},
+			#{item.baseVersionId,jdbcType=VARCHAR},
+			#{item.baseVolumeId,jdbcType=VARCHAR},
+			#{item.baseChapterId,jdbcType=VARCHAR},
+			#{item.baseSectionId,jdbcType=VARCHAR}			
+			 from dual
+		</foreach>      	
+</insert>
+  
+  
+  <!--批量删除母题绑定的所有章节 -->
+  <delete id="deleteQuesChapterByMotherId" parameterType="java.lang.String">
+      delete from QUE_QUESTION_R_CHAPTER where QUE_QUESTION_ID=#{queQuestionId}
+  </delete>
+  
+
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from QUE_QUESTION_R_CHAPTER
+    where QUE_QUESTION_R_CHAPTER_ID = #{queQuestionRChapterId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from QUE_QUESTION_R_CHAPTER
+    where QUE_QUESTION_R_CHAPTER_ID = #{queQuestionRChapterId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.codyy.oc.questionlib.entity.QueQuestionRChapter" >
+    insert into QUE_QUESTION_R_CHAPTER (QUE_QUESTION_R_CHAPTER_ID, QUE_QUESTION_ID, 
+      BASE_VERSION_ID, BASE_SECTION_ID, BASE_CHAPTER_ID, 
+      BASE_VOLUME_ID)
+    values (#{queQuestionRChapterId,jdbcType=VARCHAR}, #{queQuestionId,jdbcType=VARCHAR}, 
+      #{baseVersionId,jdbcType=VARCHAR}, #{baseSectionId,jdbcType=VARCHAR}, #{baseChapterId,jdbcType=VARCHAR}, 
+      #{baseVolumeId,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.codyy.oc.questionlib.entity.QueQuestionRChapter" >
+    insert into QUE_QUESTION_R_CHAPTER
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="queQuestionRChapterId != null" >
+        QUE_QUESTION_R_CHAPTER_ID,
+      </if>
+      <if test="queQuestionId != null" >
+        QUE_QUESTION_ID,
+      </if>
+      <if test="baseVersionId != null" >
+        BASE_VERSION_ID,
+      </if>
+      <if test="baseSectionId != null" >
+        BASE_SECTION_ID,
+      </if>
+      <if test="baseChapterId != null" >
+        BASE_CHAPTER_ID,
+      </if>
+      <if test="baseVolumeId != null" >
+        BASE_VOLUME_ID,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="queQuestionRChapterId != null" >
+        #{queQuestionRChapterId,jdbcType=VARCHAR},
+      </if>
+      <if test="queQuestionId != null" >
+        #{queQuestionId,jdbcType=VARCHAR},
+      </if>
+      <if test="baseVersionId != null" >
+        #{baseVersionId,jdbcType=VARCHAR},
+      </if>
+      <if test="baseSectionId != null" >
+        #{baseSectionId,jdbcType=VARCHAR},
+      </if>
+      <if test="baseChapterId != null" >
+        #{baseChapterId,jdbcType=VARCHAR},
+      </if>
+      <if test="baseVolumeId != null" >
+        #{baseVolumeId,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.codyy.oc.questionlib.entity.QueQuestionRChapter" >
+    update QUE_QUESTION_R_CHAPTER
+    <set >
+      <if test="queQuestionId != null" >
+        QUE_QUESTION_ID = #{queQuestionId,jdbcType=VARCHAR},
+      </if>
+      <if test="baseVersionId != null" >
+        BASE_VERSION_ID = #{baseVersionId,jdbcType=VARCHAR},
+      </if>
+      <if test="baseSectionId != null" >
+        BASE_SECTION_ID = #{baseSectionId,jdbcType=VARCHAR},
+      </if>
+      <if test="baseChapterId != null" >
+        BASE_CHAPTER_ID = #{baseChapterId,jdbcType=VARCHAR},
+      </if>
+      <if test="baseVolumeId != null" >
+        BASE_VOLUME_ID = #{baseVolumeId,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where QUE_QUESTION_R_CHAPTER_ID = #{queQuestionRChapterId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.codyy.oc.questionlib.entity.QueQuestionRChapter" >
+    update QUE_QUESTION_R_CHAPTER
+    set QUE_QUESTION_ID = #{queQuestionId,jdbcType=VARCHAR},
+      BASE_VERSION_ID = #{baseVersionId,jdbcType=VARCHAR},
+      BASE_SECTION_ID = #{baseSectionId,jdbcType=VARCHAR},
+      BASE_CHAPTER_ID = #{baseChapterId,jdbcType=VARCHAR},
+      BASE_VOLUME_ID = #{baseVolumeId,jdbcType=VARCHAR}
+    where QUE_QUESTION_R_CHAPTER_ID = #{queQuestionRChapterId,jdbcType=VARCHAR}
+  </update>
+</mapper>

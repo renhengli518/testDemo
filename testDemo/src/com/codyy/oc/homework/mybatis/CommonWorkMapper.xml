@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.codyy.oc.homework.dao.CommonWorkMapper">
+<resultMap type="com.codyy.oc.homework.entity.QuestionKnowLedge" id="questionKnowLedgeMap">
+    <result column="BASE_KNOWLEDGE_ID" property="baseKnowLedgeId" jdbcType="VARCHAR" />
+	<result column="KNOWLEDGE_NAME" property="knowLedgeName" jdbcType="VARCHAR" />
+</resultMap>
+<!-- 查看习题解析 -->
+<select id="findQueResolve" parameterType="string" resultType="com.codyy.oc.homework.entity.Resolve">
+select wq.work_homework_id as homeWorkId,wq.work_question_id as questionId,wq.resolve as resolve from work_question wq where wq.work_question_id=#{queId}
+</select>
+<!-- 查询批阅人 -->
+<select id="findUserType" parameterType="java.util.Map" resultType="com.codyy.oc.homework.entity.ReadOverUser">
+select  a.read_over_stu_id as userId,bs.realname as userName
+from base_user bs
+join 
+(
+select wrs.read_over_stu_id
+  from work_receive_stu wrs
+ where wrs.base_user_id = #{userId}
+   and wrs.work_homework_id = #{workId}
+) a on bs.base_user_id=a.read_over_stu_id
+</select>
+ 
+<!-- 查询习题的知识点 -->
+<select id="getQuestionKnowLedge" parameterType="java.lang.String" resultMap="questionKnowLedgeMap">
+ select  bk.knowledge_name from base_knowledge bk
+ join 
+ (
+ select  wk.base_end_knowledge_id from work_question_r_knowledge wk where wk.work_question_id=#{queId}
+ )a
+ on bk.base_knowledge_id=a.base_end_knowledge_id order by bk.sort 
+</select>
+</mapper>

@@ -1,0 +1,269 @@
+package com.codyy.commons.controller;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.InetSocketAddress;
+import java.net.Socket;
+import java.net.UnknownHostException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.util.Map;
+import java.util.Properties;
+
+import javax.servlet.http.HttpServletRequest;
+
+import net.sf.json.JSONObject;
+
+import org.springframework.data.redis.core.BoundHashOperations;
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.alibaba.fastjson.JSON;
+import com.codyy.commons.context.SpringContext;
+
+/**
+ * 测试配置文件是否正确
+ * 
+ * @author Lee
+ *
+ */
+@Controller
+public class ConfigureTestController {
+	public static String ORACLE = "oracle";
+	public static String REDIS = "redis";
+
+	/**
+	 * 转换服务器测试
+	 * 
+	 * @param callback
+	 * @throws IOException
+	 */
+	@RequestMapping("transServiceTest")
+	@ResponseBody
+	public String transServiceTest(HttpServletRequest request, String callback) {
+		Entity result = new Entity();
+		InputStream input = Thread.currentThread().getContextClassLoader().getResourceAsStream("trans-servers.properties");
+		if (input == null) {
+			result.setResult("trans-servers.properties不存在");
+			return callback + "(" + JSON.toJSONString(result) + ")";
+		}
+		Properties prop = new Properties();
+		try {
+			prop.load(input);
+			input.close();
+		} catch (IOException e1) {
+			result.setResult("trans-servers.properties不存在");
+			e1.printStackTrace();
+		}
+		String serviceIp = "";
+		int servicePort = 80;
+		for (Map.Entry<Object, Object> entry : prop.entrySet()) {
+			String key = entry.getKey().toString();
+			String val = entry.getValue().toString();
+			if (!key.equalsIgnoreCase("local.ip") && !key.equalsIgnoreCase("local.port") && !key.equalsIgnoreCase("doc.trans.thread")
+					&& !key.equalsIgnoreCase("video.trans.thread") && !key.equalsIgnoreCase("trans.timeout")) {
+				serviceIp = key;
+				servicePort = Integer.valueOf(val);
+			}
+		}
+		result.setUrl(serviceIp);
+		result.setPort(servicePort + "");
+		Socket socket = new Socket();
+		try {
+			socket.connect(new InetSocketAddress(serviceIp, servicePort), 5000);
+			socket.close();
+			result.setResult("1");
+		} catch (IOException e) {
+			result.setResult("0");
+		}
+		result.setTransState(getTransState(serviceIp, servicePort));
+		return callback + "(" + JSON.toJSONString(result) + ")";
+	}
+
+	/**
+	 * 数据库测试
+	 * 
+	 * @param dbType
+	 * @param callback
+	 */
+	@RequestMapping("dbTest")
+	@ResponseBody
+	public String dbTest(String dbType, String callback) {
+		Entity result = new Entity();
+		try {
+			String url = getDbUrl(dbType);
+			result.setUrl(url);
+			int flag = 0;
+			if (ORACLE.equals(dbType)) {
+				flag = oracleTest();
+			} else if (REDIS.equals(dbType)) {
+				flag = redisTest();
+			}
+			result.setResult(flag + "");
+		} catch (IOException e) {
+			result.setResult("0");
+			e.printStackTrace();
+		}
+		return callback + "(" + JSON.toJSONString(result) + ")";
+	}
+
+	private int oracleTest() throws IOException {
+		InputStream in = Thread.currentThread().getContextClassLoader()
+				.getResourceAsStream("jdbc.properties");
+		Properties properties = new Properties();
+		properties.load(in);
+		in.close();
+		String driver = properties.getProperty("datasource.driverClassName");
+		String url = properties.getProperty("datasource.url");
+		String username = properties.getProperty("datasource.username");
+		String password = properties.getProperty("datasource.password");
+		Connection conn = null;
+		int result = 0;
+		try {
+			Class.forName(driver);
+			conn = DriverManager.getConnection(url, username, password);
+			if (conn != null) {
+				result = 1;
+			}
+		} catch (ClassNotFoundException e) {
+			result = 0;
+		} catch (SQLException e) {
+			result = 0;
+		} finally {
+			if (conn != null) {
+				try {
+					conn.close();
+				} catch (SQLException e) {
+					result = 0;
+				}
+			}
+		}
+		return result;
+	}
+
+	private int redisTest() {
+		StringRedisTemplate template = SpringContext.getBean(StringRedisTemplate.class);
+		BoundHashOperations<String, String, String> operations = template.boundHashOps("Test");
+		operations.put("TEST", "TEST");
+		template.delete("Test");
+		return 1;
+	}
+
+	/**
+	 * 获取数据库连接
+	 * 
+	 * @param dbType
+	 * @return
+	 * @throws IOException
+	 */
+	private String getDbUrl(String dbType) throws IOException {
+		String url = "";
+		String userName = "";
+		String result = "";
+		Properties properties = new Properties();
+		if (ORACLE.equals(dbType)) {
+			InputStream in = Thread.currentThread().getContextClassLoader()
+					.getResourceAsStream("jdbc.properties");
+			properties.load(in);
+			url = properties.getProperty("datasource.url");
+			userName = properties.getProperty("datasource.username");
+			result = url.substring(url.indexOf("@") + 1) + " userName:"
+					+ userName;
+			in.close();
+		} else if (REDIS.equals(dbType)) {
+			InputStream in1 = Thread.currentThread()
+					.getContextClassLoader()
+					.getResourceAsStream("redis.properties");
+			Properties p1 = new Properties();
+			p1.load(in1);
+			url = p1.getProperty("redis.host");
+			userName = p1.getProperty("redis.port");
+			result = url + ":" + userName;
+			in1.close();
+		}
+		return result;
+	}
+
+	private String getTransState(String ip, int port) {
+		String result = "";
+		try {
+			JSONObject jobject = new JSONObject();
+			jobject.put("command", "server_status_task");// 服务器状态
+			String sjson = jobject.toString();
+			Socket socket = new Socket(ip, port);
+			OutputStream output = socket.getOutputStream();
+			int jsonlen = sjson.getBytes().length;
+			byte[] b = new byte[jsonlen + 1];
+			byte[] bjson = sjson.getBytes();
+			System.arraycopy(bjson, 0, b, 0, jsonlen);
+			b[jsonlen] = 0;
+			output.write(b);
+			output.flush();
+			System.out.println("client1===" + sjson);
+
+			InputStream input = socket.getInputStream();
+			StringBuffer strb = new StringBuffer();
+			int intChar;
+			System.out.println("read:");
+			while (true) {
+				intChar = input.read();
+				if (intChar == 0)
+					break;
+				strb.append((char) intChar);
+			}
+			System.out.println("client3===" + strb.toString());
+			result = strb.toString();
+			output.close();
+			input.close();
+			socket.close();
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
+
+	public class Entity {
+		private String url;
+		private String port;
+		private String result;
+		private String transState;
+
+		public String getUrl() {
+			return url;
+		}
+
+		public void setUrl(String url) {
+			this.url = url;
+		}
+
+		public String getPort() {
+			return port;
+		}
+
+		public void setPort(String port) {
+			this.port = port;
+		}
+
+		public String getResult() {
+			return result;
+		}
+
+		public void setResult(String result) {
+			this.result = result;
+		}
+
+		public String getTransState() {
+			return transState;
+		}
+
+		public void setTransState(String transState) {
+			this.transState = transState;
+		}
+	}
+}

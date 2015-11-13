@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.codyy.oc.onlinetest.dao.ExamQuestionResultMapper" >
+  <resultMap id="BaseResultMap" type="com.codyy.oc.onlinetest.entity.ExamQuestionResult" >
+    <id column="EXAM_QUESTION_RESULT_ID" property="examQuestionResultId" jdbcType="VARCHAR" />
+    <result column="EXAM_RESULT_ID" property="examResultId" jdbcType="VARCHAR" />
+    <result column="EXAM_QUESTION_ID" property="examQuestionId" jdbcType="VARCHAR" />
+    <result column="RESULT" property="result" jdbcType="DECIMAL" />
+    <result column="SORT_NO" property="sortNo" jdbcType="DECIMAL" />
+    <result column="SCORE" property="score" jdbcType="DECIMAL" />
+    <result column="ANSWER_VIDEO" property="answerVideo" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="com.codyy.oc.onlinetest.entity.ExamQuestionResult" extends="BaseResultMap" >
+    <result column="TEACHER_COMMENT" property="teacherComment" jdbcType="CLOB" />
+    <result column="ANSWER" property="answer" jdbcType="CLOB" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    EXAM_QUESTION_RESULT_ID, EXAM_RESULT_ID, EXAM_QUESTION_ID, RESULT, SORT_NO, SCORE
+  </sql>
+  <sql id="Blob_Column_List" >
+    TEACHER_COMMENT, ANSWER
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from EXAM_QUESTION_RESULT
+    where EXAM_QUESTION_RESULT_ID = #{examQuestionResultId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from EXAM_QUESTION_RESULT
+    where EXAM_QUESTION_RESULT_ID = #{examQuestionResultId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.codyy.oc.onlinetest.entity.ExamQuestionResult" >
+    insert into EXAM_QUESTION_RESULT (EXAM_QUESTION_RESULT_ID, EXAM_RESULT_ID, 
+      EXAM_QUESTION_ID, RESULT, SORT_NO, 
+      SCORE, TEACHER_COMMENT, ANSWER
+      )
+    values (#{examQuestionResultId,jdbcType=VARCHAR}, #{examResultId,jdbcType=VARCHAR}, 
+      #{examQuestionId,jdbcType=VARCHAR}, #{result,jdbcType=DECIMAL}, #{sortNo,jdbcType=DECIMAL}, 
+      #{score,jdbcType=DECIMAL}, #{teacherComment,jdbcType=CLOB}, #{answer,jdbcType=CLOB}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.codyy.oc.onlinetest.entity.ExamQuestionResult" >
+    insert into EXAM_QUESTION_RESULT
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="examQuestionResultId != null" >
+        EXAM_QUESTION_RESULT_ID,
+      </if>
+      <if test="examResultId != null" >
+        EXAM_RESULT_ID,
+      </if>
+      <if test="examQuestionId != null" >
+        EXAM_QUESTION_ID,
+      </if>
+      <if test="result != null" >
+        RESULT,
+      </if>
+      <if test="sortNo != null" >
+        SORT_NO,
+      </if>
+      <if test="score != null" >
+        SCORE,
+      </if>
+      <if test="teacherComment != null" >
+        TEACHER_COMMENT,
+      </if>
+      <if test="answer != null" >
+        ANSWER,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="examQuestionResultId != null" >
+        #{examQuestionResultId,jdbcType=VARCHAR},
+      </if>
+      <if test="examResultId != null" >
+        #{examResultId,jdbcType=VARCHAR},
+      </if>
+      <if test="examQuestionId != null" >
+        #{examQuestionId,jdbcType=VARCHAR},
+      </if>
+      <if test="result != null" >
+        #{result,jdbcType=DECIMAL},
+      </if>
+      <if test="sortNo != null" >
+        #{sortNo,jdbcType=DECIMAL},
+      </if>
+      <if test="score != null" >
+        #{score,jdbcType=DECIMAL},
+      </if>
+      <if test="teacherComment != null" >
+        #{teacherComment,jdbcType=CLOB},
+      </if>
+      <if test="answer != null" >
+        #{answer,jdbcType=CLOB},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.codyy.oc.onlinetest.entity.ExamQuestionResult" >
+    update EXAM_QUESTION_RESULT
+    <set >
+      <if test="examResultId != null" >
+        EXAM_RESULT_ID = #{examResultId,jdbcType=VARCHAR},
+      </if>
+      <if test="examQuestionId != null" >
+        EXAM_QUESTION_ID = #{examQuestionId,jdbcType=VARCHAR},
+      </if>
+      <if test="result != null" >
+        RESULT = #{result,jdbcType=DECIMAL},
+      </if>
+      <if test="sortNo != null" >
+        SORT_NO = #{sortNo,jdbcType=DECIMAL},
+      </if>
+      <if test="score != null" >
+        SCORE = #{score,jdbcType=DECIMAL},
+      </if>
+      <if test="teacherComment != null" >
+        TEACHER_COMMENT = #{teacherComment,jdbcType=CLOB},
+      </if>
+      <if test="answer != null" >
+        ANSWER = #{answer,jdbcType=CLOB},
+      </if>
+    </set>
+    where EXAM_QUESTION_RESULT_ID = #{examQuestionResultId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.codyy.oc.onlinetest.entity.ExamQuestionResult" >
+    update EXAM_QUESTION_RESULT
+    set EXAM_RESULT_ID = #{examResultId,jdbcType=VARCHAR},
+      EXAM_QUESTION_ID = #{examQuestionId,jdbcType=VARCHAR},
+      RESULT = #{result,jdbcType=DECIMAL},
+      SORT_NO = #{sortNo,jdbcType=DECIMAL},
+      SCORE = #{score,jdbcType=DECIMAL},
+      TEACHER_COMMENT = #{teacherComment,jdbcType=CLOB},
+      ANSWER = #{answer,jdbcType=CLOB}
+    where EXAM_QUESTION_RESULT_ID = #{examQuestionResultId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.codyy.oc.onlinetest.entity.ExamQuestionResult" >
+    update EXAM_QUESTION_RESULT
+    set EXAM_RESULT_ID = #{examResultId,jdbcType=VARCHAR},
+      EXAM_QUESTION_ID = #{examQuestionId,jdbcType=VARCHAR},
+      RESULT = #{result,jdbcType=DECIMAL},
+      SORT_NO = #{sortNo,jdbcType=DECIMAL},
+      SCORE = #{score,jdbcType=DECIMAL}
+    where EXAM_QUESTION_RESULT_ID = #{examQuestionResultId,jdbcType=VARCHAR}
+  </update>
+  
+  <!-- 学校空间 - 获取主观题结果统计 -->
+  <select id="getExamQuestionOtherStatics" parameterType="java.util.Map" resultType="com.codyy.oc.onlinetest.entity.ExamQuestionResult">
+        select 
+           distinct eqr.SCORE,
+           count(1) over (partition by eqr.score)  scoreCount
+        from exam_question_result eqr
+		left join exam_result er  
+		    on er.exam_result_id = eqr.exam_result_id
+		where er.exam_task_id = #{examTaskId}
+          and eqr.exam_question_id = #{examQuestionId}
+          and er.base_classlevel_id = #{classlevelId}
+          and er.base_class_id = #{classId}
+          and er.status = 'CHECKED'
+  </select>
+  
+  <!-- 学校空间 - 获取单选题答案 -->
+  <select id="getExamQuestionStatistics" parameterType="java.util.Map" resultType="com.codyy.oc.onlinetest.entity.ExamQuestionResult">
+         select 
+          eqr.ANSWER   as answer
+    from exam_question_result eqr
+    left join exam_result er  
+       on er.exam_result_id = eqr.exam_result_id
+    where er.exam_task_id = #{examTaskId}
+          and eqr.exam_question_id = #{examQuestionId}
+          and er.base_classlevel_id = #{classlevelId}
+          and er.base_class_id = #{classId}
+          and er.status = 'CHECKED'
+  </select>
+  
+  <!-- 学校空间 - 获取多选题答案 -->
+  <select id="getMultiChoiceStatistics" parameterType="java.util.Map" resultType="com.codyy.oc.onlinetest.entity.ExamQuestionResult">
+         select 
+          distinct to_char(eqr.answer) as optionAnswer,
+          count(1) over(partition by to_char(eqr.answer)) answerCount
+        from exam_question_result eqr
+		left join exam_result er
+		   on eqr.exam_result_id = er.exam_result_id
+		where er.exam_task_id = #{examTaskId}
+          and eqr.exam_question_id = #{examQuestionId}
+          and er.base_classlevel_id = #{classlevelId}
+          and er.base_class_id = #{classId}
+          and eqr.answer is not null
+          and er.status = 'CHECKED'
+  </select>
+  
+  <!-- 批量添加答题结果 -->
+  <insert id="insertExamQuestionResults" parameterType="java.util.List">
+      insert into EXAM_QUESTION_RESULT (EXAM_QUESTION_RESULT_ID, EXAM_RESULT_ID, 
+        EXAM_QUESTION_ID, RESULT, SCORE, ANSWER, ANSWER_VIDEO)
+      <foreach collection="list" item="item" open="(" close=")" separator="union all" >  
+         select 
+           #{item.examQuestionResultId},
+           #{item.examResultId},
+           #{item.examQuestionId},
+           #{item.result},
+           #{item.score},
+           #{item.answer},
+           #{item.answerVideo}
+         from dual
+      </foreach>  
+  
+  </insert>
+  
+  <!-- 查询某个学生的某个测试任务的某一题的答案 -->
+  <select id="getQuestionAnswer" parameterType="map" resultMap="ResultMapWithBLOBs"> 
+  	 select b.*
+     from exam_result a
+     join exam_question_result b
+       on a.exam_result_id = b.exam_result_id
+     join base_user c
+       on a.base_user_id = c.base_user_id
+      and a.exam_task_id = #{examTaskId}
+      and a.base_user_id = #{baseUserId}
+      and a.base_class_id = #{baseClassId}
+      and b.exam_question_id = #{examQuestionId}
+  </select>
+  
+  <!-- 统计当前剩余没批阅学生 -->
+  <select id="noReviewStudentCountByQuestionId" parameterType="map" resultType="java.lang.Integer"> 
+  	 select count(1)
+     from exam_result a
+     join exam_question_result b
+       on a.exam_result_id = b.exam_result_id
+     join base_user c
+       on a.base_user_id = c.base_user_id
+      and a.exam_task_id = #{examTaskId}
+      and a.base_class_id = #{baseClassId}
+      and b.exam_question_id = #{examQuestionId}
+      and b.result is null
+  </select>
+  
+  <!-- 更新老师评语和得分 -->
+  <update id="updateTeaherCommentById" parameterType="map">
+	update exam_question_result
+	<set>
+		<if test="score!='' or score!=null">
+			score = #{score},
+		</if>
+		<if test="teacherComment!='' or teacherComment!=null">
+			teacher_comment = #{teacherComment},
+		</if>
+		<if test="result!='' or result!=null">
+			result = #{result}
+		</if>
+	</set>
+	where exam_question_result_id = #{examQuestionResultId}
+</update>
+   
+  <!-- 获取非主观题 题目总分 --> 
+  <select id="getQuestionScore" parameterType="java.lang.String" resultType="java.lang.String">
+	select 
+	   sum(score)  as score
+
+	from exam_question_result eqr
+    
+    where eqr.exam_result_id = #{examResultId}
+
+  </select>
+  
+  
+  
+  
+</mapper>

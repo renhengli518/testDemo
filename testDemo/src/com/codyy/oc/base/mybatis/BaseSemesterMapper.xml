@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.codyy.oc.base.dao.BaseSemesterDao">
+  <resultMap id="BaseResultMap" type="com.codyy.oc.base.entity.BaseSemester">
+    <id column="BASE_SEMESTER_ID" jdbcType="VARCHAR" property="baseSemesterId" />
+    <result column="SEMESTER_NAME" jdbcType="VARCHAR" property="semesterName" />
+    <result column="SORT" jdbcType="DECIMAL" property="sort" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    BASE_SEMESTER_ID, SEMESTER_NAME, SORT
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from BASE_SEMESTER
+    where BASE_SEMESTER_ID = #{baseSemesterId,jdbcType=VARCHAR}
+  </select>
+<!--   <select id="getAllBaseSemester" resultMap="BaseResultMap">
+     select 
+    <include refid="Base_Column_List" />
+    from BASE_SEMESTER order by sort
+  </select> -->
+  
+  <select id="getAllBaseSemesterExam" resultMap="BaseResultMap" parameterType="String">
+  select *
+  from BASE_SEMESTER bs
+ where bs.base_semester_id in
+       (select distinct bcl.base_semester_id
+          from base_classlevel bcl
+         where bcl.base_classlevel_id in
+               (select bc.base_classlevel_id
+                  from base_classroom bc
+                 where bc.base_teacher_id in
+                       (select bt.base_teacher_id
+                          from base_teacher bt
+                         where bt.base_user_id = #{teacherId})
+                    or bc.base_classroom_id in
+                       (select distinct bct.base_classroom_id
+                          from BASE_CLASSROOM_TEACHER bct
+                         where bct.base_teacher_id in
+                               (select bt.base_teacher_id
+                                  from base_teacher bt
+                                 where bt.base_user_id = #{teacherId})
+                        
+                        ))) order by sort
+  </select> 
+  
+   <select id="getAllBaseSemester" resultMap="BaseResultMap" parameterType="String">
+   		 select * from BASE_SEMESTER  order by sort
+   </select>
+  
+  <select id="selectNameById" parameterType="java.lang.String" resultType="java.lang.String">
+  	select semester_name from BASE_SEMESTER where  BASE_SEMESTER_ID = #{baseSemesterId,jdbcType=VARCHAR}
+  </select>
+  
+    <select id="getscdIds" resultType="String">
+		select t.base_semester_id  id from base_semester t where t.semester_name = #{semester}
+		union all
+		select bc.base_classlevel_id id from base_classlevel bc where bc.classlevel_name = #{classlevel} and bc.base_semester_id = (select t.base_semester_id from base_semester t where t.semester_name = #{semester})
+		union all
+		select bd.base_subject_id id from base_subject bd where bd.subject_name = #{discipline}
+    </select>
+    
+   <!-- 通过传来的年级，学科的id来获得版本章节的id，将传来的中文的版本章节的id转化为对应的id再进行比对-->
+    <select id="getchapterIds" resultType="String">
+	   
+		  
+		with tab as
+ (
+  
+  select bvc.base_classlevel_subject_ver_id
+    from base_classlevel_subject_ver bvc
+   where bvc.base_version_id =
+         (select bv.base_version_id
+            from base_version bv
+           where bv.version_name = #{version})
+     and bvc.base_classlevel_subject_id =
+         (select bcd.base_classlevel_subject_id
+            from base_classlevel_subject bcd
+           where bcd.base_classlevel_id =#{classlevelId}
+             and bcd.base_subject_id =#{disciplineId})
+  
+  ),
+   tabnum as
+    (select 1 num from dual
+  union all
+  select 2 num from dual
+  union all
+  select 3 num from dual
+  union all
+  select 4 num
+    from dual)
+
+select nvl(t.id, 0) from tabnum
+  left join
+
+ (
+  
+  select bv.base_version_id id, 1 num
+    from base_version bv
+   where bv.version_name = #{version}
+  union all
+  select bv.base_volume_id, 2
+    from base_volume bv
+   where bv.base_classlevel_subject_ver_id = (select * from tab)
+     and bv.volume_name = #{one}
+  union all
+  select bc.base_chapter_id, 3
+    from base_chapter bc
+   where bc.chapter_name = #{two}
+     and bc.base_volume_id =
+         (select bv.base_volume_id
+            from base_volume bv
+           where bv.base_classlevel_subject_ver_id = (select * from tab)
+             and bv.volume_name =#{one})
+  union all
+  select bs.base_section_id, 4
+    from base_section bs
+   where bs.section_name =#{three}
+     and bs.base_chapter_id =
+         (select bc.base_chapter_id
+            from base_chapter bc
+           where bc.chapter_name =#{two}
+             and bc.base_volume_id =
+                 (select bv.base_volume_id
+                    from base_volume bv
+                   where bv.base_classlevel_subject_ver_id =
+                         (select * from tab)
+                     and bv.volume_name =#{one}))) t
+    on tabnum.num = t.num
+ order by tabnum.num
+
+		    	 
+    </select>
+    
+    <select id="getKnowledgeid" resultType="String">
+    	select t.base_knowledge_id
+		  from base_knowledge t
+		 where t.base_semester_id = #{semesterId}
+		   and t.base_subject_id = #{disciplineId}
+		   and t.knowledge_name = #{name}
+		   and t.parent_id = #{pid}
+    </select>
+</mapper>

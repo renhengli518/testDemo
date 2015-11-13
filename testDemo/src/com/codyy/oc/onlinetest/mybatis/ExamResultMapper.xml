@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.codyy.oc.onlinetest.dao.ExamResultMapper" >
+  <resultMap id="BaseResultMap" type="com.codyy.oc.onlinetest.entity.ExamResult" >
+    <id column="EXAM_RESULT_ID" property="examResultId" jdbcType="VARCHAR" />
+    <result column="EXAM_TASK_ID" property="examTaskId" jdbcType="VARCHAR" />
+    <result column="BASE_USER_ID" property="baseUserId" jdbcType="VARCHAR" />
+    <result column="STATUS" property="status" jdbcType="VARCHAR" />
+    <result column="SCORE" property="score" jdbcType="DECIMAL" />
+    <result column="QUESTION_COUNT" property="questionCount" jdbcType="DECIMAL" />
+    <result column="ANSWER_COUNT" property="answerCount" jdbcType="DECIMAL" />
+    <result column="COMMIT_TIME" property="commitTime" jdbcType="TIMESTAMP" />
+    <result column="IS_DELAY" property="isDelay" jdbcType="CHAR" />
+    <result column="CREATE_TIME" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="BASE_CLASSLEVEL_ID" property="baseClasslevelId" jdbcType="VARCHAR" />
+    <result column="CLASSLEVEL_NAME" property="classlevelName" jdbcType="VARCHAR" />
+    <result column="BASE_CLASS_ID" property="baseClassId" jdbcType="VARCHAR" />
+    <result column="CLASS_NAME" property="className" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    EXAM_RESULT_ID, EXAM_TASK_ID, BASE_USER_ID, STATUS, SCORE, QUESTION_COUNT, ANSWER_COUNT, 
+    COMMIT_TIME, IS_DELAY, CREATE_TIME, BASE_CLASSLEVEL_ID, CLASSLEVEL_NAME, BASE_CLASS_ID
+    CLASS_NAME
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from EXAM_RESULT
+    where EXAM_RESULT_ID = #{examResultId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from EXAM_RESULT
+    where EXAM_RESULT_ID = #{examResultId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.codyy.oc.onlinetest.entity.ExamResult" >
+    insert into EXAM_RESULT (EXAM_RESULT_ID, EXAM_TASK_ID, BASE_USER_ID, 
+      STATUS, SCORE, QUESTION_COUNT, 
+      ANSWER_COUNT, COMMIT_TIME, IS_DELAY, 
+      CREATE_TIME, BASE_CLASSLEVEL_ID, CLASSLEVEL_NAME, BASE_CLASS_ID
+    CLASS_NAME)
+    values (#{examResultId,jdbcType=VARCHAR}, #{examTaskId,jdbcType=VARCHAR}, #{baseUserId,jdbcType=VARCHAR}, 
+      #{status,jdbcType=VARCHAR}, #{score,jdbcType=DECIMAL}, #{questionCount,jdbcType=DECIMAL}, 
+      #{answerCount,jdbcType=DECIMAL}, #{commitTime,jdbcType=TIMESTAMP}, #{isDelay,jdbcType=CHAR}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{baseClasslevelId,jdbcType=VARCHAR},  #{classlevelName,jdbcType=VARCHAR},
+      #{baseClassId,jdbcType=VARCHAR}, #{className,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.codyy.oc.onlinetest.entity.ExamResult" >
+    insert into EXAM_RESULT
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="examResultId != null" >
+        EXAM_RESULT_ID,
+      </if>
+      <if test="examTaskId != null" >
+        EXAM_TASK_ID,
+      </if>
+      <if test="baseUserId != null" >
+        BASE_USER_ID,
+      </if>
+      <if test="status != null" >
+        STATUS,
+      </if>
+      <if test="score != null" >
+        SCORE,
+      </if>
+      <if test="questionCount != null" >
+        QUESTION_COUNT,
+      </if>
+      <if test="answerCount != null" >
+        ANSWER_COUNT,
+      </if>
+      <if test="commitTime != null" >
+        COMMIT_TIME,
+      </if>
+      <if test="isDelay != null" >
+        IS_DELAY,
+      </if>
+      <if test="createTime != null" >
+        CREATE_TIME,
+      </if>
+      <if test="baseClasslevelId != null" >
+        BASE_CLASSLEVEL_ID,
+      </if>
+      <if test="classlevelName != null" >
+        CLASSLEVEL_NAME,
+      </if>
+      <if test="baseClassId != null" >
+        BASE_CLASS_ID,
+      </if>
+      <if test="className != null" >
+        CLASS_NAME
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="examResultId != null" >
+        #{examResultId,jdbcType=VARCHAR},
+      </if>
+      <if test="examTaskId != null" >
+        #{examTaskId,jdbcType=VARCHAR},
+      </if>
+      <if test="baseUserId != null" >
+        #{baseUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="score != null" >
+        #{score,jdbcType=DECIMAL},
+      </if>
+      <if test="questionCount != null" >
+        #{questionCount,jdbcType=DECIMAL},
+      </if>
+      <if test="answerCount != null" >
+        #{answerCount,jdbcType=DECIMAL},
+      </if>
+      <if test="commitTime != null" >
+        #{commitTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isDelay != null" >
+        #{isDelay,jdbcType=CHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="baseClasslevelId != null" >
+        #{baseClasslevelId,jdbcType=VARCHAR},  
+      </if>
+      <if test="classlevelName != null" >
+        #{classlevelName,jdbcType=VARCHAR},
+      </if>
+      <if test="baseClassId != null" >
+        #{baseClassId,jdbcType=VARCHAR}, 
+      </if>
+      <if test="className != null" >
+        #{className,jdbcType=VARCHAR}
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.codyy.oc.onlinetest.entity.ExamResult" >
+    update EXAM_RESULT
+    <set >
+      <if test="examTaskId != null" >
+        EXAM_TASK_ID = #{examTaskId,jdbcType=VARCHAR},
+      </if>
+      <if test="baseUserId != null" >
+        BASE_USER_ID = #{baseUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        STATUS = #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="score != null" >
+        SCORE = #{score,jdbcType=DECIMAL},
+      </if>
+      <if test="questionCount != null" >
+        QUESTION_COUNT = #{questionCount,jdbcType=DECIMAL},
+      </if>
+      <if test="answerCount != null" >
+        ANSWER_COUNT = #{answerCount,jdbcType=DECIMAL},
+      </if>
+      <if test="commitTime != null" >
+        COMMIT_TIME = #{commitTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isDelay != null" >
+        IS_DELAY = #{isDelay,jdbcType=CHAR},
+      </if>
+      <if test="createTime != null" >
+        CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="baseClasslevelId != null" >
+        BASE_CLASSLEVEL_ID = #{baseClasslevelId,jdbcType=VARCHAR},  
+      </if>
+      <if test="classlevelName != null" >
+        CLASSLEVEL_NAME = #{classlevelName,jdbcType=VARCHAR},
+      </if>
+      <if test="baseClassId != null" >
+        BASE_CLASS_ID = #{baseClassId,jdbcType=VARCHAR}, 
+      </if>
+      <if test="className != null" >
+         CLASS_NAME = #{className,jdbcType=VARCHAR}
+      </if>
+    </set>
+    where EXAM_RESULT_ID = #{examResultId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.codyy.oc.onlinetest.entity.ExamResult" >
+    update EXAM_RESULT
+    set EXAM_TASK_ID = #{examTaskId,jdbcType=VARCHAR},
+      BASE_USER_ID = #{baseUserId,jdbcType=VARCHAR},
+      STATUS = #{status,jdbcType=VARCHAR},
+      SCORE = #{score,jdbcType=DECIMAL},
+      QUESTION_COUNT = #{questionCount,jdbcType=DECIMAL},
+      ANSWER_COUNT = #{answerCount,jdbcType=DECIMAL},
+      COMMIT_TIME = #{commitTime,jdbcType=TIMESTAMP},
+      IS_DELAY = #{isDelay,jdbcType=CHAR},
+      CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
+      BASE_CLASSLEVEL_ID = #{baseClasslevelId,jdbcType=VARCHAR},  
+      CLASSLEVEL_NAME = #{classlevelName,jdbcType=VARCHAR},
+      BASE_CLASS_ID = #{baseClassId,jdbcType=VARCHAR}, 
+      CLASS_NAME = #{className,jdbcType=VARCHAR}
+      
+    where EXAM_RESULT_ID = #{examResultId,jdbcType=VARCHAR}
+  </update>
+  
+  
+  
+  
+   <insert id="insertBatch">
+      insert into EXAM_RESULT (EXAM_RESULT_ID, EXAM_TASK_ID, BASE_USER_ID, 
+      STATUS, CREATE_TIME,BASE_CLASSLEVEL_ID,CLASSLEVEL_NAME, BASE_CLASS_ID,CLASS_NAME, QUESTION_COUNT)
+      
+      select * from (
+    <foreach item="item" separator="union all" collection="stuIds">
+      	select sys_guid() EXAM_RESULT_ID ,#{examTaskId} EXAM_TASK_ID,#{item} BASE_USER_ID, 'INIT' STATUS,sysdate CREATE_TIME, 
+      	c.base_classlevel_id,
+	    cl.classlevel_name,
+       	u.base_class_id,
+       	c.base_class_name
+		  from base_user u
+		  left join base_class c
+		    on u.base_class_id = c.base_class_id
+		  left join base_classlevel cl
+		    on cl.base_classlevel_id = c.base_classlevel_id
+		    WHERE        U.BASE_USER_ID = #{item}
+    </foreach>
+    ) left join (select count(1) from Exam_Question t where t.exam_id = #{examId} ) on 1=1
+  </insert>
+  
+  <!-- 更新答题结果 -->
+  <update id="updateExamResultById" parameterType="com.codyy.oc.onlinetest.entity.ExamResult">
+	update EXAM_RESULT
+       set 
+          STATUS = #{status},
+          ANSWER_COUNT = #{answerCount},
+          COMMIT_TIME = #{commitTime},
+          IS_DELAY = #{isDelay},
+          score = #{score}
+      
+      where EXAM_RESULT_ID = #{examResultId}
+  
+  </update>
+  
+  <!-- 根据测试ID获取待批阅学生列表 -->
+  <select id="getReviewStudentList" parameterType="map" resultType="com.codyy.oc.base.entity.BaseUser">
+	  select b.base_user_id as baseUserId,b.username as username,b.head_pic as headPic,b.realName
+	  from exam_result a
+	  join base_user b
+	    on a.base_user_id = b.base_user_id
+	 where a.exam_task_id = #{examTaskId}
+	   and a.status = 'SUBMITTED'
+	   and a.base_class_id=#{baseClassId}
+	   and a.base_classlevel_id=#{baseClasslevelId}
+  </select>
+  
+  <!-- 获取提交的人数 -->
+  <select id="getExamResultStatus" parameterType="java.lang.String" resultType="com.codyy.oc.onlinetest.entity.ExamResult">
+	select
+
+     (count(*) - count(t.initCnt)) as submitCnt,
+ 
+      count(t.checkCnt) as readOverCnt
+
+  from (
+        
+        select
+        
+         er.exam_task_id,
+          
+          (case
+            when er.status = 'INIT' then
+             count(er.exam_result_id) over(partition by er.exam_result_id)
+          end) initCnt,
+          
+          (case
+            when er.status = 'CHECKED' then
+            
+             count(er.exam_result_id) over(partition by er.exam_result_id)
+          
+          end) checkCnt
+        
+          from exam_result er
+        
+     where er.exam_task_id = #{examTaskId}
+  ) t
+	
+  </select>
+</mapper>

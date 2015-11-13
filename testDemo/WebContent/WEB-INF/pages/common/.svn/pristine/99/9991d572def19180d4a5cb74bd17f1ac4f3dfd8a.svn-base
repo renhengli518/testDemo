@@ -1,0 +1,204 @@
+<%@page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@include file="spaceHeader.jsp"%>
+<div class="header_down_wrap header_dw2">
+    <div class="header_down_inner_wrap">
+        <div class="_header">
+            <div class="title_wrap_p">
+                
+            </div>
+			<div class="my_use" id="my_use" hidden="true">
+				<p class="myuse_p">我的应用</p>
+				<ul id="yylb" class="myuse_ul">
+				
+					<li id="gd_li" class="myuse_li01 use_li_last">
+						<a href='javaScript:void(0)'><img src="${PUBLIC_PATH}/public/img/workplace/myuse_11.png" alt=""><span>更多</span></a>
+					</li>
+				</ul>
+			</div>
+        </div>
+    </div>
+</div>
+<div class="w1200 clearfix marginauto mt70 mb20">
+	<ul class="weibo_nav mb30 clearfix">
+		<li><a id="mainPage" href="#" class="visited">个人主页</a></li>
+		<li><a id="miblog" href="#" >微博</a></li>
+		<li><a id="blog" href="#" >博文</a></li>
+		<li><a id="photo" href="#" >相册</a></li>
+		<li><a href="#" >话题</a></li>
+		<li><a id="resource" href="#">优课资源</a></li>
+	</ul>
+</div>
+<script type="text/javascript">
+/* var teacherClass = [];
+var teachClassCourse = [];
+var teacherSelfCourse = [];
+var teacherInfo = [];//老师信息列表
+var headmasterInfo = [];//班主任信息
+var studentInfo = [];//学生列表
+var baseUserId='';
+var selfInfo=[];
+var baseClassId=''; */
+var arr1=["onlineclass.id",
+          "liveclass.id",
+          "prepare.lession.id",
+          "interact.lession.id",
+          "evaluation.meeting.id",
+          "video.meeting.id",
+          "information.id",
+          "resource.id",
+          "statistic.id",
+          "basicInfo.id",
+          "prepare.lesson.plan.id",
+          "onlineedit.id"];
+var arr2=[
+		"<%=SpringContext.getBean(HostConfig.class).getOnlineClass()%>",
+		"<%=SpringContext.getBean(HostConfig.class).getOnlineClass()%>",
+		"<%=SpringContext.getBean(HostConfig.class).getMeeting()%>",
+		"<%=SpringContext.getBean(HostConfig.class).getMeeting()%>",
+		"<%=SpringContext.getBean(HostConfig.class).getEvaluation()%>",
+		"<%=SpringContext.getBean(HostConfig.class).getMeeting()%>",
+		"<%=SpringContext.getBean(HostConfig.class).getBase()%>",
+		"<%=SpringContext.getBean(HostConfig.class).getResource()%>",
+		"<%=SpringContext.getBean(HostConfig.class).getOnlineClass()%>",
+		"<%=SpringContext.getBean(HostConfig.class).getBase()%>",
+		"<%=SpringContext.getBean(HostConfig.class).getEvaluation()%>",
+		"<%=SpringContext.getBean(HostConfig.class).getResource()%>"
+	];
+
+$(document).ready(function() {
+	baseUserId = "${baseUserId}";
+	$("#mainPage").attr("href", "");
+	$("#miblog").attr("href", "");
+	$("#blog").attr("href", "");
+	$("#photo").attr("href", "");
+	$("#topic").attr("href", "");
+	$("#resource").attr("href", "");
+	$(".weibo_nav li").on("click", "a", function() {
+		if (!$(this).hasClass("visited")) {
+			$(this).addClass("visited").parent(".weibo_nav li").siblings().find("a").removeClass("visited");
+		}
+	});
+	// selectDynamicList();//获取微博
+	// 获取页面传来的baseUserId
+	/*
+	 * var href = window.location.href; var start=href.lastIndexOf("/")+1; var
+	 * end=href.lastIndexOf("."); baseUserId=href.substring(start, end); var
+	 * mainPage = href; var miblogUrl =
+	 * '${root}/home/dynamic/toHomeDynamicIndex.html?baseUserId='+baseUserId;
+	 * $("#more_mblog").attr("href",miblogUrl);
+	 * $("#miblog").attr("href",miblogUrl);
+	 * $("#mainPage").attr("href",mainPage);
+	 */
+	// 根据baseUserId 获取个人资料信息
+	if('${userType}' == 'TEACHER') {
+		//获取教师信息
+		getTeacherInfo(baseUserId);
+	} else if ('${userType}' == 'STUDENT'){
+		//获取学生信息
+		getStudentInfo(baseUserId)
+	}
+	 
+});
+
+function getTeacherInfo(baseUserId) {
+	$.get("${root}/myHome/getSelfInfo.do", {
+		"baseUserId" : baseUserId
+	}, function(data) {
+		if (data) {
+			selfInfo = data;
+			var currentUser = "d52cb049f59e436cb2411211ed9620c9";
+			var html = '<div class="logo_s"><img src="${root}/images/' + selfInfo.headPic + '" width="120" height="120"></div>' + '<div  class="title_s"><span>' + selfInfo.realname;
+			if (currentUser == baseUserId) {
+				html += '<a href="<%=SpringContext.getBean(HostConfig.class).getBase()%>/personalInfo/index.html"><img src="${PUBLIC_PATH}/public/img/workplace/bj_title.png"></a>';
+			}
+			html += '</span><i>';
+			if (selfInfo.schoolName) {
+				if (selfInfo.schoolName.length >= 10) {
+					html += "<i title='" + selfInfo.schoolName + "'>" + selfInfo.schoolName.substring(0, 9) + "</i>";
+				} else {
+					html += "<i title='" + selfInfo.schoolName + "'>" + selfInfo.schoolName + "</i>";
+				}
+			}
+			if (selfInfo.classlevelName) {
+				html += '/' + selfInfo.classlevelName;
+			}
+			if (selfInfo.subjectName) {
+				html += '/' + selfInfo.subjectName;
+			}
+			html += '</i></div>';
+			$(".title_wrap_p").append(html);
+		} else {
+			// not get self info
+		}
+
+	});
+}
+
+function getStudentInfo(baseUserId){
+	$.get("${root}/myHome/getStudentSelfInfo.do", {
+		"baseUserId" : baseUserId
+	}, function(data) {
+		if (data) {
+			selfInfo = data;
+			baseClassId = selfInfo.baseClassId;
+			var currentUser = "${SESSION_USER.userId}";
+			var html = '';
+			html += '<div class="logo_s"><img src="${root}/images/' + selfInfo.headPic + '" width="120" height="120"></div>' + '<div  class="title_s title_stu"><span>' + selfInfo.realname;
+			if (currentUser == baseUserId) {
+				html += '<a href="<%=SpringContext.getBean(HostConfig.class).getBase()%>/personalInfo/index.html"><img src="${PUBLIC_PATH}/public/img/workplace/bj_title.png"></a>';
+				// 获取应用列表
+			}
+			html += '</span>';
+			if (selfInfo.schoolName) {
+				html += "<i>" + selfInfo.schoolName + "</i><br />";
+			}
+			if (selfInfo.baseClassName) {
+				html += '<i>' + selfInfo.baseClassName + "</i>";
+			}
+			html += '</div>';
+
+			$(".title_wrap_p").append(html);
+
+			selectSchoolMenuListByUserId(baseUserId);
+		} else {
+			// not get self info
+		}
+
+	});
+}
+//获取应用列表
+function selectSchoolMenuListByUserId(baseUserId){
+	var currentUser= "${SESSION_USER.userId}";
+	if(currentUser==baseUserId){
+		$("#my_use").show();
+		$.get("${root}/myHome/selectDefaultMenuListByUserId.do", 
+				{
+				"baseUserId" : baseUserId
+				}, function(data) {
+					var html1='';
+					if(data&&data.length>0){
+						data.forEach(function(value,index){
+							//学生展示默认应用
+								if(value.baseMenuId=="onlineclass.id"){
+									value.url="/monitor/broadcast/browser.html?broadcastType=LIVE";
+								}
+								
+								if(index==data.length-1){
+									html1+='<li class="myuse_li01 use_li_last"><a  href="'+arr2[arr1.indexOf(value.baseMenuId)]+value.url+'"><img src="${root}/images/'+value.imagePath+'" alt=""><span >'+value.menuName+'</span></a></li>';
+								}else{
+									html1+='<li class="myuse_li01 "><a  href="'+arr2[arr1.indexOf(value.baseMenuId)]+value.url+'"><img src="${root}/images/'+value.imagePath+'" alt=""><span >'+value.menuName+'</span></a></li>';
+								}
+								$(".more_block").show();
+						});
+						$("#yylb").prepend(html1);
+					}else{
+						$(".my_use").remove();
+					}
+			});
+	}else{
+		$("#my_use").hide();
+	}
+	
+}
+</script>
+	

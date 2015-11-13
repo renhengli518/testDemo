@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.codyy.oc.homework.dao.SubjectMapper">
+<resultMap type="com.codyy.oc.homework.entity.Subject" id="subjectMap">
+<id column="BASE_SUBJECT_ID" property="subjectId" jdbcType="VARCHAR"></id>
+<result column="SUBJECT_NAME" property="subjectName" jdbcType="VARCHAR"></result>
+</resultMap>
+<!-- 查询出教师角色对应下的学科 -->
+<select id="findSubject" parameterType="java.lang.String" resultType="com.codyy.oc.homework.entity.Subject">
+select
+    distinct (but.base_subject_id) subjectId ,
+    bs.subject_name subjectName
+ from   base_subject bs
+ join base_user_teach but  on but.base_subject_id=bs.base_subject_id
+where but.base_user_id=#{userId}
+</select>
+
+<!-- 查询出班级角色对应的学科 -->
+<select id="selectSubjectByClassId" parameterType="java.lang.String" resultType="com.codyy.oc.homework.entity.Subject">
+select bs.base_subject_id as subjectId, bs.subject_name as subjectName
+  from base_subject bs
+  join (select bcs.base_subject_id
+          from Base_Classlevel_Subject bcs
+         where bcs.base_classlevel_id =
+               (select base_classlevel_id
+                  from base_class bc
+                 where bc.base_class_id = #{classId})) b
+    on bs.base_subject_id = b.base_subject_id
+</select>
+
+<!-- 查询出学生角色对应的学科 -->
+<select id="selectSubjectByStuId" parameterType="java.lang.String" resultMap="subjectMap">
+select bs.base_subject_id,bs.subject_name
+from base_subject bs join 
+(
+select bcs.base_subject_id
+from base_classlevel_subject bcs
+where bcs.base_classlevel_id = (
+select bc.base_classlevel_id
+from base_class bc where bc.base_class_id = (
+select bu.base_class_id from  base_user bu 
+where bu.base_user_id = #{stuId}))) a on bs.base_subject_id = a.base_subject_id
+</select>
+
+<!-- 查询出家长角色对应的学科 -->
+<select id="selectSubjectByParentId" parameterType="java.lang.String" resultMap="subjectMap">
+select bs.base_subject_id, bs.subject_name
+  from base_subject bs
+  join (select distinct(bcs.base_subject_id)
+          from base_classlevel_subject bcs
+   join 
+               (select bc.base_classlevel_id
+                  from base_class bc
+               join 
+                       (select bu.base_class_id
+                          from base_user bu
+                         join 
+                               (select bsrp.student_user_id
+                                  from base_student_r_parent bsrp
+                                 where bsrp.parent_user_id = #{parentId}) bsu 
+                                  on bu.base_user_id=bsu.student_user_id) bbu 
+                                  on bc.base_class_id = bbu.base_class_id)bsucl on bcs.base_classlevel_id = bsucl.base_classlevel_id) a
+    on bs.base_subject_id = a.base_subject_id
+</select>
+</mapper>

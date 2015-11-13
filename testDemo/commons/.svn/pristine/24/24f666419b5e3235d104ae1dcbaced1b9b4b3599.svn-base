@@ -1,0 +1,52 @@
+# Do not execute filter URL
+message/doAddMesInformation=mesInfos
+info/addInfo=jsonStr,richContent
+info/editInfo=jsonStr,richContent
+prepare/lessonPlan/lessonPlanAddSave=richContent,jsonStr
+prepare/lessonPlan/lessonPlanEditSave=richContent,jsonStr
+prepareImage/prepareImageSave=jsonStr
+prepareImage/prepareImageCancel=jsonStr
+createquestionlib/createquestion=questionSubArra*,edt_content,edt_resolve,edt_options,content_title,indep_*,comb_*
+createquestionlib/updatequestion=questionSubArra*,edt_content,edt_resolve,edt_options,content_title,indep_*,comb_*
+schoolTest/createTempoparyQuestion=questionSubArra*,edt_content,edt_resolve,edt_options,content_title,indep_*,comb_*
+schoolTest/updateRealQuestion=questionSubArra*,edt_content,edt_resolve,edt_options,content_title,indep_*,comb_*
+studentTest/studentSubmitExam=answerInfo
+questionLib/toeditquestion=questionSubArra*,edt_content,edt_resolve,edt_options,content_title,indep_*,comb_*
+monitor/classWork/classWorkAdd=jsonStr
+monitor/classWork/classWorkCancel=jsonStr
+live/appointment/addLiveAppointment=jsonStr
+monitor/schedule/saveCreateSchedule=json
+monitor/schedule/saveScheduleWeek=json
+monitor/schedule/saveSchedule=json
+class/classWork/classWorkAdd=jsonStr
+class/classWork/classWorkCancel=jsonStr
+
+#home
+shortcut/menu/shortcutMenuUpdate=jsonStr
+#eva
+rethink/rethinkAddSave=rethinkContent
+rethink/rethinkEditSave=rethinkContent
+
+# Base
+user/userAdd=userJson
+user/userEdit=userJson
+user/lowerUserEdit=userJson
+role/roleAdd=roleJson
+role/roleEdit=roleJson
+base/class/schedule/doAddSchedule=jsonStr
+role/deleteUserRoleRelationship=roleAndUserJson
+# Base
+exam/saveVideoTest=jsonParams
+base/classManager=jsonParams
+# Community
+blog/toSaveBlog=blogContent
+blog/updatePublishBlog=blogContent
+
+meeting/downloadNotebook=content
+
+
+homework/createHomework=editorValue,textQueContent,fileStrs,receiveStus,questions
+homework/editHomework=editorValue,textQueContent,fileStrs,receiveStus,questions
+homework/answerHomework=questionResult,txtResult,fileResult
+homework/readByQuestion=teacherComment
+homework/correctHomework=ExercisesCommonets,homeworkTextCommonet,homeworkAnnexCommonet,homeworkGeneralCommonet

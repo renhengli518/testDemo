@@ -1,0 +1,137 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"	pageEncoding="UTF-8"%>
+<div class="w1200 marginauto clearfix mt55">
+	<div class="ft16 mb20 bd1">
+		<p class="pl20 blue_lightBg ft18">我的应用</p>
+		<ul class="pd20 clearfix bdB_dot" id ="CLASS_GROUP">
+			<li class="fl ml30 w95 center"><a href="http://localhost:8080/OnlineClass/monitor/schoolNet/appointment/list.html"><img src="${PUBLIC_PATH}/public/img/second_state/new_zdkt.png" alt=""><span class="ellipsis black">专递课堂专递课堂</span></a></li>
+			<li class="fl ml30 w95 center"><img src="${PUBLIC_PATH}/public/img/second_state/new_zlbkt.png" alt=""><span class="ellipsis">直录播课堂</span></li>
+		</ul>
+		<ul class="pd20 clearfix bdB_dot" id ="ACTIVITY_GROUP">
+			<li class="fl ml30 w95 center"><img src="${PUBLIC_PATH}/public/img/second_state/new_grbk.png" alt=""><span class="ellipsis">个人备课</span></li>
+			<li class="fl ml30 w95 center"><img src="${PUBLIC_PATH}/public/img/second_state/new_jtbk.png" alt=""><span class="ellipsis">集体备课</span></li>
+			<li class="fl ml30 w95 center"><img src="${PUBLIC_PATH}/public/img/second_state/new_hdtk.png" alt=""><span class="ellipsis">互动听课</span></li>
+			<li class="fl ml30 w95 center"><img src="${PUBLIC_PATH}/public/img/second_state/new_pkyk.png" alt=""><span class="ellipsis">评课议课</span></li>
+			<li class="fl ml30 w95 center"><img src="${PUBLIC_PATH}/public/img/second_state/new_sphy.png" alt=""><span class="ellipsis">视频会议</span></li>
+			<li class="fl ml30 w95 center"><img src="${PUBLIC_PATH}/public/img/second_state/new_jxfs.png" alt=""><span class="ellipsis">教学反思</span></li>
+		</ul>
+		<ul class="pd20 clearfix bdB_dot" id ="MEETING_GROUP">
+			<li class="fl ml30 w95 center"><img src="${PUBLIC_PATH}/public/img/second_state/new_kb.png" alt=""><span class="ellipsis">课本</span></li>
+			<li class="fl ml30 w95 center"><img src="${PUBLIC_PATH}/public/img/second_state/new_tk.png" alt=""><span class="ellipsis">题库</span></li>
+			<li class="fl ml30 w95 center"><img src="${PUBLIC_PATH}/public/img/second_state/new_ykzy.png" alt=""><span class="ellipsis">优课资源</span></li>
+			<li class="fl ml30 w95 center"><img src="${PUBLIC_PATH}/public/img/second_state/new_mk.png" alt=""><span class="ellipsis">慕课</span></li>
+			<li class="fl ml30 w95 center"><img src="${PUBLIC_PATH}/public/img/second_state/new_qz.png" alt=""><span class="ellipsis">圈组</span></li>
+			<li class="fl ml30 w95 center"><img src="${PUBLIC_PATH}/public/img/second_state/new_bw.png" alt=""><span class="ellipsis">博文</span></li>
+			<li class="fl ml30 w95 center"><img src="${PUBLIC_PATH}/public/img/second_state/new_wd.png" alt=""><span class="ellipsis">问答</span></li>
+			<li class="fl ml30 w95 center"><img src="${PUBLIC_PATH}/public/img/second_state/new_ht.png" alt=""><span class="ellipsis">话题</span></li>
+		</ul>
+		<ul class="pd20 clearfix bdB_dot no_line" id ="RESOURCE_GROUP">
+			<li class="fl ml30 w95 center"><img src="${PUBLIC_PATH}/public/img/second_state/new_zx.png" alt=""><span class="ellipsis">资讯</span></li>
+			<li class="fl ml30 w95 center"><img src="${PUBLIC_PATH}/public/img/second_state/new_tzgg.png" alt=""><span class="ellipsis">通知公告</span></li>
+			<li class="fl ml30 w95 center"><img src="${PUBLIC_PATH}/public/img/second_state/new_tj.png" alt=""><span class="ellipsis">统计</span></li>
+			<li class="fl ml30 w95 center"><img src="${PUBLIC_PATH}/public/img/second_state/new_dmtjsgl.png" alt=""><span class="ellipsis">多媒体教室管理</span></li>
+			<li class="fl ml30 w95 center"><img src="${PUBLIC_PATH}/public/img/second_state/new_jcsz.png" alt=""><span class="ellipsis">基础设置</span></li>
+		</ul>
+	</div>
+	<div class="ft16 mb20 bd1">
+		<p class="pl20 blue_lightBg ft18" id ="ONLINEEDIT_GROUP">第三方应用</p>
+		<ul class="pd20 clearfix bdB_dot no_line">
+			<li class="fl ml30 w95"><div class="blue_lightBg thirdApp App_add" id="APP_add">+</div></li>
+			<li class="fl ml30 w95 center"><img src="${PUBLIC_PATH}/public/img/second_state/new_tzgg.png" alt=""><span class="ellipsis">应用一</span></li>
+			<li class="fl ml30 w95 center"><img src="${PUBLIC_PATH}/public/img/second_state/new_tj.png" alt=""><span class="ellipsis">应用二</span></li>
+			<li class="fl ml30 w95 center"><img src="${PUBLIC_PATH}/public/img/second_state/new_dmtjsgl.png" alt=""><span class="ellipsis">应用三</span></li>
+			<li class="fl ml30 w95 center"><img src="${PUBLIC_PATH}/public/img/second_state/new_jcsz.png" alt=""><span class="ellipsis">应用四</span></li>
+		</ul>
+	</div>
+</div>
+<textarea id="APP_list" class="hidden">
+	<div style="min-height:556px;">
+		<p class="ft16 right">已经加入的第三方应用</p>
+		<ul class="pd20 clearfix bdB1">
+			<li class="fl ml40 w95 center"><img src="${PUBLIC_PATH}/public/img/second_state/new_tzgg.png" alt="" class="fl"><i class="deleImg fr DwImg"></i><span class="ellipsis clear">应用一</span></li>
+			<li class="fl ml40 w95 center"><img src="${PUBLIC_PATH}/public/img/second_state/new_tj.png" alt="" class="fl"><i class="deleImg fr DwImg"></i><span class="ellipsis clear">应用二</span></li>
+			<li class="fl ml40 w95 center"><img src="${PUBLIC_PATH}/public/img/second_state/new_dmtjsgl.png" alt="" class="fl"><i class="deleImg fr DwImg"></i><span class="ellipsis clear">应用三</span></li>
+			<li class="fl ml40 w95 center"><img src="${PUBLIC_PATH}/public/img/second_state/new_jcsz.png" alt="" class="fl"><i class="deleImg fr DwImg"></i><span class="ellipsis clear">应用四</span></li>
+		</ul>
+		<p class="ft16 mt10 right">应用库</p>
+		<ul class="pd20 clearfix bdB1 no_line">
+			<li class="fl ml40 w95 center"><img src="${PUBLIC_PATH}/public/img/second_state/new_kb.png" alt="" class="fl"><i class="addImg fr DwImg"></i><span class="ellipsis clear">课本</span></li>
+			<li class="fl ml40 w95 center"><img src="${PUBLIC_PATH}/public/img/second_state/new_tk.png" alt="" class="fl"><i class="addImg fr DwImg"></i><span class="ellipsis clear">题库</span></li>
+			<li class="fl ml40 w95 center"><img src="${PUBLIC_PATH}/public/img/second_state/new_ykzy.png" alt="" class="fl"><i class="addImg fr DwImg"></i><span class="ellipsis clear">优课资源</span></li>
+			<li class="fl ml40 w95 center"><img src="${PUBLIC_PATH}/public/img/second_state/new_mk.png" alt="" class="fl"><i class="addImg fr DwImg"></i><span class="ellipsis clear">慕课</span></li>
+			<li class="fl ml40 w95 center"><img src="${PUBLIC_PATH}/public/img/second_state/new_qz.png" alt="" class="fl"><i class="addImg fr DwImg"></i><span class="ellipsis clear">圈组</span></li>
+			<li class="fl ml40 w95 center"><img src="${PUBLIC_PATH}/public/img/second_state/new_bw.png" alt="" class="fl"><i class="addImg fr DwImg"></i><span class="ellipsis clear">博文</span></li>
+			<li class="fl ml40 w95 center"><img src="${PUBLIC_PATH}/public/img/second_state/new_wd.png" alt="" class="fl"><i class="addImg fr DwImg"></i><span class="ellipsis clear">问答</span></li>
+			<li class="fl ml40 w95 center"><img src="${PUBLIC_PATH}/public/img/second_state/new_ht.png" alt="" class="fl"><i class="addImg fr DwImg"></i><span class="ellipsis clear">话题</span></li>
+			<li class="fl ml40 w95 center"><img src="${PUBLIC_PATH}/public/img/second_state/new_kb.png" alt="" class="fl"><i class="addImg fr DwImg"></i><span class="ellipsis clear">课本</span></li>
+			<li class="fl ml40 w95 center"><img src="${PUBLIC_PATH}/public/img/second_state/new_tk.png" alt="" class="fl"><i class="addImg fr DwImg"></i><span class="ellipsis clear">题库</span></li>
+			<li class="fl ml40 w95 center"><img src="${PUBLIC_PATH}/public/img/second_state/new_ykzy.png" alt="" class="fl"><i class="addImg fr DwImg"></i><span class="ellipsis clear">优课资源</span></li>
+			<li class="fl ml40 w95 center"><img src="${PUBLIC_PATH}/public/img/second_state/new_mk.png" alt="" class="fl"><i class="addImg fr DwImg"></i><span class="ellipsis clear">慕课</span></li>
+			<li class="fl ml40 w95 center"><img src="${PUBLIC_PATH}/public/img/second_state/new_qz.png" alt="" class="fl"><i class="addImg fr DwImg"></i><span class="ellipsis clear">圈组</span></li>
+			<li class="fl ml40 w95 center"><img src="${PUBLIC_PATH}/public/img/second_state/new_bw.png" alt="" class="fl"><i class="addImg fr DwImg"></i><span class="ellipsis clear">博文</span></li>
+		</ul>
+	</div>
+	<div class="bottomBtnWrap"><a href="javascript:void" class="btn btnBlue mr20">确定</a><a href="javascript:void" class="btn btnGray">取消</a></div>
+</textarea>
+<script>
+  $("#APP_add").click(function(){
+		window.loginWin = Win.open({
+			id : "APP_third",
+			title : "配置第三方应用",
+			width : 770,
+			height:750,
+			mask : true,
+			html : $id("APP_list").value
+		});
+	});
+  var projectMap ={
+			"onlineclass.id":"<%=SpringContext.getBean(HostConfig.class).getOnlineClass()%>",
+			"liveclass.id":"<%=SpringContext.getBean(HostConfig.class).getOnlineClass()%>",
+			"prepare.lession.id":"<%=SpringContext.getBean(HostConfig.class).getMeeting()%>",
+			"interact.lession.id":"<%=SpringContext.getBean(HostConfig.class).getMeeting()%>",
+			"evaluation.meeting.id":"<%=SpringContext.getBean(HostConfig.class).getEvaluation()%>",
+			"video.meeting.id":"<%=SpringContext.getBean(HostConfig.class).getMeeting()%>",
+			"information.id":"<%=SpringContext.getBean(HostConfig.class).getBase()%>",
+			"resource.id":"<%=SpringContext.getBean(HostConfig.class).getResource()%>",
+			"statistic.id":"<%=SpringContext.getBean(HostConfig.class).getOnlineClass()%>",
+			"basicInfo.id":"<%=SpringContext.getBean(HostConfig.class).getBase()%>",
+			"prepare.lesson.plan.id":"<%=SpringContext.getBean(HostConfig.class).getEvaluation()%>",
+			"onlineedit.id":"<%=SpringContext.getBean(HostConfig.class).getResource()%>",
+			"rethink.id":"<%=SpringContext.getBean(HostConfig.class).getEvaluation()%>",
+			"announcement.id":"<%=SpringContext.getBean(HostConfig.class).getBase()%>"
+	}
+	//个人第三方的应用
+	function getOtherApp(){
+		$.post(
+			'${root}/open/selectOpenApp.do',
+			function(data){
+				var html ="";
+				if(data && data.length > 0){
+					for(var i = 0;i< data.length; i++ ){
+						var openApp = data[i];
+						html += "<li class='clearfix'>";
+						html += "<a href='"+openApp.url+"'><img src='${PUBLIC_PATH}/public/images/"+openApp.iconLarge+"'><span>"+openApp.appName+"</span></a>";
+					}
+				}
+				$("#otherApp").html(html);
+			}
+		);
+	};
+	$(document).ready(function() {
+						//获取应用列表
+						var menuList = ${menuList};
+						var array = new Array(menuList);
+						var list = eval(array[0]);
+						if(list&&list.length>0){
+							list.forEach(function(value,index){
+								var html='<a href="'+projectMap[value.baseMenuId]+value.url+'">'
+					       				+'<img src="${root}/images/'+value.imagePath+'"></img>'
+					       	         	+' <span class="theme">'+value.menuName+'</span> '
+					       	        	+'</a>';
+					       	    $(".workFlate  li").eq(index).append(html);
+					       	    console.log(projectMap[value.baseMenuId]+value.url);
+							});
+						}
+						//获取第三方运用
+						getOtherApp();
+				});
+</script>

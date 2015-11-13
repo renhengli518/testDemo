@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.codyy.oc.homework.dao.WorkQuestionRKnowledgeMapper" >
+  <resultMap id="BaseResultMap" type="com.codyy.oc.homework.entity.WorkQuestionRKnowledge" >
+    <id column="WORK_QUESTION_R_KNOWLEDGE_ID" property="workQuestionRKnowledgeId" jdbcType="VARCHAR" />
+    <result column="WORK_QUESTION_ID" property="workQuestionId" jdbcType="VARCHAR" />
+    <result column="BASE_KNOWLEDGE_ID" property="baseKnowledgeId" jdbcType="VARCHAR" />
+    <result column="BASE_SUB_KNOWLEDGE1_ID" property="baseSubKnowledge1Id" jdbcType="VARCHAR" />
+    <result column="BASE_SUB_KNOWLEDGE2_ID" property="baseSubKnowledge2Id" jdbcType="VARCHAR" />
+    <result column="BASE_SUB_KNOWLEDGE3_ID" property="baseSubKnowledge3Id" jdbcType="VARCHAR" />
+    <result column="BASE_SUB_KNOWLEDGE4_ID" property="baseSubKnowledge4Id" jdbcType="VARCHAR" />
+    <result column="BASE_SUB_KNOWLEDGE5_ID" property="baseSubKnowledge5Id" jdbcType="VARCHAR" />
+    <result column="BASE_END_KNOWLEDGE_ID" property="baseEndKnowledgeId" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    WORK_QUESTION_R_KNOWLEDGE_ID, WORK_QUESTION_ID, BASE_KNOWLEDGE_ID, BASE_SUB_KNOWLEDGE1_ID, 
+    BASE_SUB_KNOWLEDGE2_ID, BASE_SUB_KNOWLEDGE3_ID, BASE_SUB_KNOWLEDGE4_ID, BASE_SUB_KNOWLEDGE5_ID, 
+    BASE_END_KNOWLEDGE_ID
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from WORK_QUESTION_R_KNOWLEDGE
+    where WORK_QUESTION_R_KNOWLEDGE_ID = #{workQuestionRKnowledgeId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from WORK_QUESTION_R_KNOWLEDGE
+    where WORK_QUESTION_R_KNOWLEDGE_ID = #{workQuestionRKnowledgeId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.codyy.oc.homework.entity.WorkQuestionRKnowledge" >
+    insert into WORK_QUESTION_R_KNOWLEDGE (WORK_QUESTION_R_KNOWLEDGE_ID, WORK_QUESTION_ID, 
+      BASE_KNOWLEDGE_ID, BASE_SUB_KNOWLEDGE1_ID, BASE_SUB_KNOWLEDGE2_ID, 
+      BASE_SUB_KNOWLEDGE3_ID, BASE_SUB_KNOWLEDGE4_ID, 
+      BASE_SUB_KNOWLEDGE5_ID, BASE_END_KNOWLEDGE_ID
+      )
+    values (#{workQuestionRKnowledgeId,jdbcType=VARCHAR}, #{workQuestionId,jdbcType=VARCHAR}, 
+      #{baseKnowledgeId,jdbcType=VARCHAR}, #{baseSubKnowledge1Id,jdbcType=VARCHAR}, #{baseSubKnowledge2Id,jdbcType=VARCHAR}, 
+      #{baseSubKnowledge3Id,jdbcType=VARCHAR}, #{baseSubKnowledge4Id,jdbcType=VARCHAR}, 
+      #{baseSubKnowledge5Id,jdbcType=VARCHAR}, #{baseEndKnowledgeId,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.codyy.oc.homework.entity.WorkQuestionRKnowledge" >
+    insert into WORK_QUESTION_R_KNOWLEDGE
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="workQuestionRKnowledgeId != null" >
+        WORK_QUESTION_R_KNOWLEDGE_ID,
+      </if>
+      <if test="workQuestionId != null" >
+        WORK_QUESTION_ID,
+      </if>
+      <if test="baseKnowledgeId != null" >
+        BASE_KNOWLEDGE_ID,
+      </if>
+      <if test="baseSubKnowledge1Id != null" >
+        BASE_SUB_KNOWLEDGE1_ID,
+      </if>
+      <if test="baseSubKnowledge2Id != null" >
+        BASE_SUB_KNOWLEDGE2_ID,
+      </if>
+      <if test="baseSubKnowledge3Id != null" >
+        BASE_SUB_KNOWLEDGE3_ID,
+      </if>
+      <if test="baseSubKnowledge4Id != null" >
+        BASE_SUB_KNOWLEDGE4_ID,
+      </if>
+      <if test="baseSubKnowledge5Id != null" >
+        BASE_SUB_KNOWLEDGE5_ID,
+      </if>
+      <if test="baseEndKnowledgeId != null" >
+        BASE_END_KNOWLEDGE_ID,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="workQuestionRKnowledgeId != null" >
+        #{workQuestionRKnowledgeId,jdbcType=VARCHAR},
+      </if>
+      <if test="workQuestionId != null" >
+        #{workQuestionId,jdbcType=VARCHAR},
+      </if>
+      <if test="baseKnowledgeId != null" >
+        #{baseKnowledgeId,jdbcType=VARCHAR},
+      </if>
+      <if test="baseSubKnowledge1Id != null" >
+        #{baseSubKnowledge1Id,jdbcType=VARCHAR},
+      </if>
+      <if test="baseSubKnowledge2Id != null" >
+        #{baseSubKnowledge2Id,jdbcType=VARCHAR},
+      </if>
+      <if test="baseSubKnowledge3Id != null" >
+        #{baseSubKnowledge3Id,jdbcType=VARCHAR},
+      </if>
+      <if test="baseSubKnowledge4Id != null" >
+        #{baseSubKnowledge4Id,jdbcType=VARCHAR},
+      </if>
+      <if test="baseSubKnowledge5Id != null" >
+        #{baseSubKnowledge5Id,jdbcType=VARCHAR},
+      </if>
+      <if test="baseEndKnowledgeId != null" >
+        #{baseEndKnowledgeId,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.codyy.oc.homework.entity.WorkQuestionRKnowledge" >
+    update WORK_QUESTION_R_KNOWLEDGE
+    <set >
+      <if test="workQuestionId != null" >
+        WORK_QUESTION_ID = #{workQuestionId,jdbcType=VARCHAR},
+      </if>
+      <if test="baseKnowledgeId != null" >
+        BASE_KNOWLEDGE_ID = #{baseKnowledgeId,jdbcType=VARCHAR},
+      </if>
+      <if test="baseSubKnowledge1Id != null" >
+        BASE_SUB_KNOWLEDGE1_ID = #{baseSubKnowledge1Id,jdbcType=VARCHAR},
+      </if>
+      <if test="baseSubKnowledge2Id != null" >
+        BASE_SUB_KNOWLEDGE2_ID = #{baseSubKnowledge2Id,jdbcType=VARCHAR},
+      </if>
+      <if test="baseSubKnowledge3Id != null" >
+        BASE_SUB_KNOWLEDGE3_ID = #{baseSubKnowledge3Id,jdbcType=VARCHAR},
+      </if>
+      <if test="baseSubKnowledge4Id != null" >
+        BASE_SUB_KNOWLEDGE4_ID = #{baseSubKnowledge4Id,jdbcType=VARCHAR},
+      </if>
+      <if test="baseSubKnowledge5Id != null" >
+        BASE_SUB_KNOWLEDGE5_ID = #{baseSubKnowledge5Id,jdbcType=VARCHAR},
+      </if>
+      <if test="baseEndKnowledgeId != null" >
+        BASE_END_KNOWLEDGE_ID = #{baseEndKnowledgeId,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where WORK_QUESTION_R_KNOWLEDGE_ID = #{workQuestionRKnowledgeId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.codyy.oc.homework.entity.WorkQuestionRKnowledge" >
+    update WORK_QUESTION_R_KNOWLEDGE
+    set WORK_QUESTION_ID = #{workQuestionId,jdbcType=VARCHAR},
+      BASE_KNOWLEDGE_ID = #{baseKnowledgeId,jdbcType=VARCHAR},
+      BASE_SUB_KNOWLEDGE1_ID = #{baseSubKnowledge1Id,jdbcType=VARCHAR},
+      BASE_SUB_KNOWLEDGE2_ID = #{baseSubKnowledge2Id,jdbcType=VARCHAR},
+      BASE_SUB_KNOWLEDGE3_ID = #{baseSubKnowledge3Id,jdbcType=VARCHAR},
+      BASE_SUB_KNOWLEDGE4_ID = #{baseSubKnowledge4Id,jdbcType=VARCHAR},
+      BASE_SUB_KNOWLEDGE5_ID = #{baseSubKnowledge5Id,jdbcType=VARCHAR},
+      BASE_END_KNOWLEDGE_ID = #{baseEndKnowledgeId,jdbcType=VARCHAR}
+    where WORK_QUESTION_R_KNOWLEDGE_ID = #{workQuestionRKnowledgeId,jdbcType=VARCHAR}
+  </update>
+</mapper>

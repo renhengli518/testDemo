@@ -1,0 +1,1145 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.codyy.oc.onlinetest.dao.QuestionMapper" >
+   
+    <!-- 
+                  巩固测试中 让题库中返回的属性 和测试中的 一致   故让 type类型为 测试-题库 中的类型 
+                  方便把 题库中的题    和   测试中的原题  整合在一起
+     -->
+  <resultMap id="ExamQueResultMap" type="com.codyy.oc.onlinetest.entity.ExamQuestionListResult" >
+    <id column="QUE_QUESTION_ID" property="examQuestionId" jdbcType="VARCHAR" />
+    <result column="BASE_SEMESTER_ID" property="baseSemesterId" jdbcType="VARCHAR" />
+    <result column="BASE_CLASSLEVEL_ID" property="baseClasslevelId" jdbcType="VARCHAR" />
+    <result column="BASE_SUBJECT_ID" property="baseSubjectId" jdbcType="VARCHAR" />
+    <result column="BASE_USER_ID" property="baseUserId" jdbcType="VARCHAR" />
+    <result column="CONTENT_VIDEO" property="contentVideo" jdbcType="VARCHAR" />
+    <result column="ANSWER" property="answer" jdbcType="VARCHAR" />
+    <result column="DIFFICULTY" property="difficulty" jdbcType="VARCHAR" />
+    <result column="TYPE" property="type" jdbcType="VARCHAR" />
+    <result column="RESOLVE_VIDEO" property="resolveVideo" jdbcType="VARCHAR" />
+    <result column="UPDATE_TIME" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="FILL_IN_ANSWER_TYPE" property="fillInAnswerType" jdbcType="VARCHAR" />
+    <result column="FILL_IN_SCORE_TYPE" property="fillInScoreType" jdbcType="VARCHAR" />
+    <result column="RELATIONAL_INDICATOR" property="relationalIndicator" jdbcType="VARCHAR" />
+    <result column="MOTHER_ID" property="motherId" jdbcType="VARCHAR" />
+    <result column="STORE_SERVER" property="storeServer" jdbcType="VARCHAR" />
+    <result column="CONTENT" property="content" jdbcType="CLOB" />
+    <result column="OPTIONS" property="options" jdbcType="CLOB" />
+    <result column="RESOLVE" property="resolve" jdbcType="CLOB" />
+    <result column="OPTIONS_TXT" property="optionsTxt" jdbcType="CLOB" />
+    <collection column="QUE_QUESTION_ID" property="rKnowledges" ofType="com.codyy.oc.onlinetest.entity.ExamQuestionRKnowledge"
+			select="selecKnowLedge" />
+	<collection column="QUE_QUESTION_ID" property="fillInAnswers" ofType="com.codyy.oc.onlinetest.entity.ExamQueFillInAnswer"
+			select="selecFinnAnswer" />
+  </resultMap>
+  
+	<!-- 知识点 -->
+	<resultMap id="knowLedgeMap" type="com.codyy.oc.onlinetest.entity.ExamQuestionRKnowledge">
+		<id column="QUE_QUESTION_R_KNOWLEDGE_ID" property="examQuestionRKnowledgeId" jdbcType="VARCHAR" />
+		<result column="QUE_QUESTION_ID" property="examQuestionId" jdbcType="VARCHAR" />
+		<result column="BASE_KNOWLEDGE_ID" property="baseKnowledgeId" jdbcType="VARCHAR" />
+		<result column="BASE_SUB_KNOWLEDGE1_ID" property="baseSubKnowledge1Id" jdbcType="VARCHAR" />
+		<result column="BASE_SUB_KNOWLEDGE2_ID" property="baseSubKnowledge2Id" jdbcType="VARCHAR" />
+		<result column="BASE_SUB_KNOWLEDGE3_ID" property="baseSubKnowledge3Id" jdbcType="VARCHAR" />
+		<result column="BASE_SUB_KNOWLEDGE4_ID" property="baseSubKnowledge4Id" jdbcType="VARCHAR" />
+		<result column="BASE_SUB_KNOWLEDGE5_ID" property="baseSubKnowledge5Id" jdbcType="VARCHAR" />
+		<result column="BASE_END_KNOWLEDGE_ID" property="baseEndKnowledgeId" jdbcType="VARCHAR" />
+	</resultMap>
+
+	<!-- 填空题 -->
+	<resultMap id="fillAnswerMap" type="com.codyy.oc.onlinetest.entity.ExamQueFillInAnswer">
+		<id column="QUE_FILL_IN_ANSWER_ID" property="examQueFillInAnswerId" jdbcType="VARCHAR" />
+		<result column="QUE_QUESTION_ID" property="examQuestionId" jdbcType="VARCHAR" />
+		<result column="ANSWER_GRP1" property="answerGrp1" jdbcType="CLOB" />
+		<result column="ANSWER_GRP2" property="answerGrp2" jdbcType="CLOB" />
+		<result column="ANSWER_GRP3" property="answerGrp3" jdbcType="CLOB" />
+		<result column="ANSWER_GRP4" property="answerGrp4" jdbcType="CLOB" />
+		<result column="ANSWER_GRP1_TXT" property="answerGrp1Txt" jdbcType="CLOB" />
+		<result column="ANSWER_GRP2_TXT" property="answerGrp2Txt" jdbcType="CLOB" />
+		<result column="ANSWER_GRP3_TXT" property="answerGrp3Txt" jdbcType="CLOB" />
+		<result column="ANSWER_GRP4_TXT" property="answerGrp4Txt" jdbcType="CLOB" />
+		<result column="SORT" property="sort" jdbcType="VARCHAR" />
+	</resultMap>
+	
+	
+	<resultMap id="QueResultMap" type="com.codyy.oc.questionlib.entity.QueQuestion" >
+    <id column="QUE_QUESTION_ID" property="queQuestionId" jdbcType="VARCHAR" />
+    <result column="BASE_SEMESTER_ID" property="baseSemesterId" jdbcType="VARCHAR" />
+    <result column="BASE_CLASSLEVEL_ID" property="baseClasslevelId" jdbcType="VARCHAR" />
+    <result column="BASE_SUBJECT_ID" property="baseSubjectId" jdbcType="VARCHAR" />
+    <result column="BASE_USER_ID" property="baseUserId" jdbcType="VARCHAR" />
+    <result column="CONTENT_VIDEO" property="contentVideo" jdbcType="VARCHAR" />
+    <result column="ANSWER" property="answer" jdbcType="VARCHAR" />
+    <result column="DIFFICULTY" property="difficulty" jdbcType="VARCHAR" />
+    <result column="TYPE" property="type" jdbcType="VARCHAR" />
+    <result column="RESOLVE_VIDEO" property="resolveVideo" jdbcType="VARCHAR" />
+    <result column="CREATE_TIME" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="UPDATE_TIME" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="FILL_IN_ANSWER_TYPE" property="fillInAnswerType" jdbcType="VARCHAR" />
+    <result column="FILL_IN_SCORE_TYPE" property="fillInScoreType" jdbcType="VARCHAR" />
+    <result column="USE_COUNT" property="useCount" jdbcType="DECIMAL" />
+    <result column="RELATIONAL_INDICATOR" property="relationalIndicator" jdbcType="VARCHAR" />
+    <result column="MOTHER_ID" property="motherId" jdbcType="VARCHAR" />
+    <result column="USABLE_TYPE" property="usableType" jdbcType="VARCHAR" />
+    <result column="SOURCE" property="source" jdbcType="VARCHAR" />
+    <result column="AUDIT_STATUS" property="auditStatus" jdbcType="VARCHAR" />
+    <result column="STORE_SERVER" property="storeServer" jdbcType="VARCHAR" />
+    <result column="CLS_SCHOOL_ID" property="clsSchoolId" jdbcType="VARCHAR" />
+    <result column="BASE_AREA_ID" property="baseAreaId" jdbcType="VARCHAR" />
+    <result column="CONTENT" property="content" jdbcType="CLOB" />
+    <result column="OPTIONS" property="options" jdbcType="CLOB" />
+    <result column="RESOLVE" property="resolve" jdbcType="CLOB" />
+    <result column="OPTIONS_TXT" property="optionsTxt" jdbcType="CLOB" />
+  </resultMap>
+	
+	
+	
+	<!-- 根据习题的id来获取关联的知识点 -->
+	<select id="selecKnowLedge" resultMap="knowLedgeMap">
+		select QUE_QUESTION_R_KNOWLEDGE_ID, QUE_QUESTION_ID, BASE_KNOWLEDGE_ID,
+		BASE_SUB_KNOWLEDGE1_ID,
+		BASE_SUB_KNOWLEDGE2_ID, BASE_SUB_KNOWLEDGE3_ID, BASE_SUB_KNOWLEDGE4_ID, BASE_SUB_KNOWLEDGE5_ID,
+		BASE_END_KNOWLEDGE_ID from QUE_QUESTION_R_KNOWLEDGE where QUE_QUESTION_ID=#{QUE_QUESTION_ID}
+	</select>
+
+	<!-- 根据习题的id来获取关联的填空题的集合 -->
+	<select id="selecFinnAnswer" resultMap="fillAnswerMap">
+		select QUE_FILL_IN_ANSWER_ID, QUE_QUESTION_ID,ANSWER_GRP1, ANSWER_GRP2,
+		ANSWER_GRP3, ANSWER_GRP4, ANSWER_GRP1_TXT,
+		ANSWER_GRP2_TXT,
+		ANSWER_GRP3_TXT, ANSWER_GRP4_TXT,SORT from
+		QUE_FILL_IN_ANSWER where QUE_QUESTION_ID=#{QUE_QUESTION_ID} order by SORT ASC
+	</select>
+	
+	
+	
+  <sql id="Base_Column_List" >
+    QUE_QUESTION_ID, BASE_SEMESTER_ID, BASE_CLASSLEVEL_ID, BASE_SUBJECT_ID, BASE_USER_ID, 
+    CONTENT_VIDEO, ANSWER, DIFFICULTY, TYPE, RESOLVE_VIDEO,UPDATE_TIME, 
+    FILL_IN_ANSWER_TYPE, FILL_IN_SCORE_TYPE, RELATIONAL_INDICATOR, MOTHER_ID, 
+    STORE_SERVER
+  </sql>
+  <sql id="Blob_Column_List" >
+    CONTENT, OPTIONS, RESOLVE, OPTIONS_TXT
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="QueResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from QUE_QUESTION
+    where QUE_QUESTION_ID = #{queQuestionId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from QUE_QUESTION
+    where QUE_QUESTION_ID = #{queQuestionId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.codyy.oc.onlinetest.entity.QueQuestion" >
+    insert into QUE_QUESTION (QUE_QUESTION_ID, BASE_SEMESTER_ID, BASE_CLASSLEVEL_ID, 
+      BASE_SUBJECT_ID, BASE_USER_ID, CONTENT_VIDEO, 
+      ANSWER, DIFFICULTY, TYPE, 
+      RESOLVE_VIDEO, CREATE_TIME, UPDATE_TIME, 
+      FILL_IN_ANSWER_TYPE, FILL_IN_SCORE_TYPE, USE_COUNT, 
+      RELATIONAL_INDICATOR, MOTHER_ID, USABLE_TYPE, 
+      SOURCE, AUDIT_STATUS, STORE_SERVER, 
+      CLS_SCHOOL_ID, BASE_AREA_ID, CONTENT, 
+      OPTIONS, RESOLVE, OPTIONS_TXT
+      )
+    values (#{queQuestionId,jdbcType=VARCHAR}, #{baseSemesterId,jdbcType=VARCHAR}, #{baseClasslevelId,jdbcType=VARCHAR}, 
+      #{baseSubjectId,jdbcType=VARCHAR}, #{baseUserId,jdbcType=VARCHAR}, #{contentVideo,jdbcType=VARCHAR}, 
+      #{answer,jdbcType=VARCHAR}, #{difficulty,jdbcType=VARCHAR}, #{type,jdbcType=VARCHAR}, 
+      #{resolveVideo,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
+      #{fillInAnswerType,jdbcType=VARCHAR}, #{fillInScoreType,jdbcType=VARCHAR}, #{useCount,jdbcType=DECIMAL}, 
+      #{relationalIndicator,jdbcType=VARCHAR}, #{motherId,jdbcType=VARCHAR}, #{usableType,jdbcType=VARCHAR}, 
+      #{source,jdbcType=VARCHAR}, #{auditStatus,jdbcType=VARCHAR}, #{storeServer,jdbcType=VARCHAR}, 
+      #{clsSchoolId,jdbcType=VARCHAR}, #{baseAreaId,jdbcType=VARCHAR}, #{content,jdbcType=CLOB}, 
+      #{options,jdbcType=CLOB}, #{resolve,jdbcType=CLOB}, #{optionsTxt,jdbcType=CLOB}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.codyy.oc.onlinetest.entity.QueQuestion" >
+    insert into QUE_QUESTION
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="queQuestionId != null" >
+        QUE_QUESTION_ID,
+      </if>
+      <if test="baseSemesterId != null" >
+        BASE_SEMESTER_ID,
+      </if>
+      <if test="baseClasslevelId != null" >
+        BASE_CLASSLEVEL_ID,
+      </if>
+      <if test="baseSubjectId != null" >
+        BASE_SUBJECT_ID,
+      </if>
+      <if test="baseUserId != null" >
+        BASE_USER_ID,
+      </if>
+      <if test="contentVideo != null" >
+        CONTENT_VIDEO,
+      </if>
+      <if test="answer != null" >
+        ANSWER,
+      </if>
+      <if test="difficulty != null" >
+        DIFFICULTY,
+      </if>
+      <if test="type != null" >
+        TYPE,
+      </if>
+      <if test="resolveVideo != null" >
+        RESOLVE_VIDEO,
+      </if>
+      <if test="createTime != null" >
+        CREATE_TIME,
+      </if>
+      <if test="updateTime != null" >
+        UPDATE_TIME,
+      </if>
+      <if test="fillInAnswerType != null" >
+        FILL_IN_ANSWER_TYPE,
+      </if>
+      <if test="fillInScoreType != null" >
+        FILL_IN_SCORE_TYPE,
+      </if>
+      <if test="useCount != null" >
+        USE_COUNT,
+      </if>
+      <if test="relationalIndicator != null" >
+        RELATIONAL_INDICATOR,
+      </if>
+      <if test="motherId != null" >
+        MOTHER_ID,
+      </if>
+      <if test="usableType != null" >
+        USABLE_TYPE,
+      </if>
+      <if test="source != null" >
+        SOURCE,
+      </if>
+      <if test="auditStatus != null" >
+        AUDIT_STATUS,
+      </if>
+      <if test="storeServer != null" >
+        STORE_SERVER,
+      </if>
+      <if test="clsSchoolId != null" >
+        CLS_SCHOOL_ID,
+      </if>
+      <if test="baseAreaId != null" >
+        BASE_AREA_ID,
+      </if>
+      <if test="content != null" >
+        CONTENT,
+      </if>
+      <if test="options != null" >
+        OPTIONS,
+      </if>
+      <if test="resolve != null" >
+        RESOLVE,
+      </if>
+      <if test="optionsTxt != null" >
+        OPTIONS_TXT,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="queQuestionId != null" >
+        #{queQuestionId,jdbcType=VARCHAR},
+      </if>
+      <if test="baseSemesterId != null" >
+        #{baseSemesterId,jdbcType=VARCHAR},
+      </if>
+      <if test="baseClasslevelId != null" >
+        #{baseClasslevelId,jdbcType=VARCHAR},
+      </if>
+      <if test="baseSubjectId != null" >
+        #{baseSubjectId,jdbcType=VARCHAR},
+      </if>
+      <if test="baseUserId != null" >
+        #{baseUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="contentVideo != null" >
+        #{contentVideo,jdbcType=VARCHAR},
+      </if>
+      <if test="answer != null" >
+        #{answer,jdbcType=VARCHAR},
+      </if>
+      <if test="difficulty != null" >
+        #{difficulty,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null" >
+        #{type,jdbcType=VARCHAR},
+      </if>
+      <if test="resolveVideo != null" >
+        #{resolveVideo,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="fillInAnswerType != null" >
+        #{fillInAnswerType,jdbcType=VARCHAR},
+      </if>
+      <if test="fillInScoreType != null" >
+        #{fillInScoreType,jdbcType=VARCHAR},
+      </if>
+      <if test="useCount != null" >
+        #{useCount,jdbcType=DECIMAL},
+      </if>
+      <if test="relationalIndicator != null" >
+        #{relationalIndicator,jdbcType=VARCHAR},
+      </if>
+      <if test="motherId != null" >
+        #{motherId,jdbcType=VARCHAR},
+      </if>
+      <if test="usableType != null" >
+        #{usableType,jdbcType=VARCHAR},
+      </if>
+      <if test="source != null" >
+        #{source,jdbcType=VARCHAR},
+      </if>
+      <if test="auditStatus != null" >
+        #{auditStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="storeServer != null" >
+        #{storeServer,jdbcType=VARCHAR},
+      </if>
+      <if test="clsSchoolId != null" >
+        #{clsSchoolId,jdbcType=VARCHAR},
+      </if>
+      <if test="baseAreaId != null" >
+        #{baseAreaId,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null" >
+        #{content,jdbcType=CLOB},
+      </if>
+      <if test="options != null" >
+        #{options,jdbcType=CLOB},
+      </if>
+      <if test="resolve != null" >
+        #{resolve,jdbcType=CLOB},
+      </if>
+      <if test="optionsTxt != null" >
+        #{optionsTxt,jdbcType=CLOB},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.codyy.oc.onlinetest.entity.QueQuestion" >
+    update QUE_QUESTION
+    <set >
+      <if test="baseSemesterId != null" >
+        BASE_SEMESTER_ID = #{baseSemesterId,jdbcType=VARCHAR},
+      </if>
+      <if test="baseClasslevelId != null" >
+        BASE_CLASSLEVEL_ID = #{baseClasslevelId,jdbcType=VARCHAR},
+      </if>
+      <if test="baseSubjectId != null" >
+        BASE_SUBJECT_ID = #{baseSubjectId,jdbcType=VARCHAR},
+      </if>
+      <if test="baseUserId != null" >
+        BASE_USER_ID = #{baseUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="contentVideo != null" >
+        CONTENT_VIDEO = #{contentVideo,jdbcType=VARCHAR},
+      </if>
+      <if test="answer != null" >
+        ANSWER = #{answer,jdbcType=VARCHAR},
+      </if>
+      <if test="difficulty != null" >
+        DIFFICULTY = #{difficulty,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null" >
+        TYPE = #{type,jdbcType=VARCHAR},
+      </if>
+      <if test="resolveVideo != null" >
+        RESOLVE_VIDEO = #{resolveVideo,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="fillInAnswerType != null" >
+        FILL_IN_ANSWER_TYPE = #{fillInAnswerType,jdbcType=VARCHAR},
+      </if>
+      <if test="fillInScoreType != null" >
+        FILL_IN_SCORE_TYPE = #{fillInScoreType,jdbcType=VARCHAR},
+      </if>
+      <if test="useCount != null" >
+        USE_COUNT = #{useCount,jdbcType=DECIMAL},
+      </if>
+      <if test="relationalIndicator != null" >
+        RELATIONAL_INDICATOR = #{relationalIndicator,jdbcType=VARCHAR},
+      </if>
+      <if test="motherId != null" >
+        MOTHER_ID = #{motherId,jdbcType=VARCHAR},
+      </if>
+      <if test="usableType != null" >
+        USABLE_TYPE = #{usableType,jdbcType=VARCHAR},
+      </if>
+      <if test="source != null" >
+        SOURCE = #{source,jdbcType=VARCHAR},
+      </if>
+      <if test="auditStatus != null" >
+        AUDIT_STATUS = #{auditStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="storeServer != null" >
+        STORE_SERVER = #{storeServer,jdbcType=VARCHAR},
+      </if>
+      <if test="clsSchoolId != null" >
+        CLS_SCHOOL_ID = #{clsSchoolId,jdbcType=VARCHAR},
+      </if>
+      <if test="baseAreaId != null" >
+        BASE_AREA_ID = #{baseAreaId,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null" >
+        CONTENT = #{content,jdbcType=CLOB},
+      </if>
+      <if test="options != null" >
+        OPTIONS = #{options,jdbcType=CLOB},
+      </if>
+      <if test="resolve != null" >
+        RESOLVE = #{resolve,jdbcType=CLOB},
+      </if>
+      <if test="optionsTxt != null" >
+        OPTIONS_TXT = #{optionsTxt,jdbcType=CLOB},
+      </if>
+    </set>
+    where QUE_QUESTION_ID = #{queQuestionId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.codyy.oc.onlinetest.entity.QueQuestion" >
+    update QUE_QUESTION
+    set BASE_SEMESTER_ID = #{baseSemesterId,jdbcType=VARCHAR},
+      BASE_CLASSLEVEL_ID = #{baseClasslevelId,jdbcType=VARCHAR},
+      BASE_SUBJECT_ID = #{baseSubjectId,jdbcType=VARCHAR},
+      BASE_USER_ID = #{baseUserId,jdbcType=VARCHAR},
+      CONTENT_VIDEO = #{contentVideo,jdbcType=VARCHAR},
+      ANSWER = #{answer,jdbcType=VARCHAR},
+      DIFFICULTY = #{difficulty,jdbcType=VARCHAR},
+      TYPE = #{type,jdbcType=VARCHAR},
+      RESOLVE_VIDEO = #{resolveVideo,jdbcType=VARCHAR},
+      CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
+      UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP},
+      FILL_IN_ANSWER_TYPE = #{fillInAnswerType,jdbcType=VARCHAR},
+      FILL_IN_SCORE_TYPE = #{fillInScoreType,jdbcType=VARCHAR},
+      USE_COUNT = #{useCount,jdbcType=DECIMAL},
+      RELATIONAL_INDICATOR = #{relationalIndicator,jdbcType=VARCHAR},
+      MOTHER_ID = #{motherId,jdbcType=VARCHAR},
+      USABLE_TYPE = #{usableType,jdbcType=VARCHAR},
+      SOURCE = #{source,jdbcType=VARCHAR},
+      AUDIT_STATUS = #{auditStatus,jdbcType=VARCHAR},
+      STORE_SERVER = #{storeServer,jdbcType=VARCHAR},
+      CLS_SCHOOL_ID = #{clsSchoolId,jdbcType=VARCHAR},
+      BASE_AREA_ID = #{baseAreaId,jdbcType=VARCHAR},
+      CONTENT = #{content,jdbcType=CLOB},
+      OPTIONS = #{options,jdbcType=CLOB},
+      RESOLVE = #{resolve,jdbcType=CLOB},
+      OPTIONS_TXT = #{optionsTxt,jdbcType=CLOB}
+    where QUE_QUESTION_ID = #{queQuestionId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.codyy.oc.onlinetest.entity.QueQuestion" >
+    update QUE_QUESTION
+    set BASE_SEMESTER_ID = #{baseSemesterId,jdbcType=VARCHAR},
+      BASE_CLASSLEVEL_ID = #{baseClasslevelId,jdbcType=VARCHAR},
+      BASE_SUBJECT_ID = #{baseSubjectId,jdbcType=VARCHAR},
+      BASE_USER_ID = #{baseUserId,jdbcType=VARCHAR},
+      CONTENT_VIDEO = #{contentVideo,jdbcType=VARCHAR},
+      ANSWER = #{answer,jdbcType=VARCHAR},
+      DIFFICULTY = #{difficulty,jdbcType=VARCHAR},
+      TYPE = #{type,jdbcType=VARCHAR},
+      RESOLVE_VIDEO = #{resolveVideo,jdbcType=VARCHAR},
+      CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
+      UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP},
+      FILL_IN_ANSWER_TYPE = #{fillInAnswerType,jdbcType=VARCHAR},
+      FILL_IN_SCORE_TYPE = #{fillInScoreType,jdbcType=VARCHAR},
+      USE_COUNT = #{useCount,jdbcType=DECIMAL},
+      RELATIONAL_INDICATOR = #{relationalIndicator,jdbcType=VARCHAR},
+      MOTHER_ID = #{motherId,jdbcType=VARCHAR},
+      USABLE_TYPE = #{usableType,jdbcType=VARCHAR},
+      SOURCE = #{source,jdbcType=VARCHAR},
+      AUDIT_STATUS = #{auditStatus,jdbcType=VARCHAR},
+      STORE_SERVER = #{storeServer,jdbcType=VARCHAR},
+      CLS_SCHOOL_ID = #{clsSchoolId,jdbcType=VARCHAR},
+      BASE_AREA_ID = #{baseAreaId,jdbcType=VARCHAR}
+    where QUE_QUESTION_ID = #{queQuestionId,jdbcType=VARCHAR}
+  </update>
+  
+  <!-- 学生空间 - 获取错误题目 在题库的对应的题 -->
+  <select id="getQuestionsByResultId" parameterType="java.lang.String" resultMap="QueResultMap">
+    with eq as (
+      select 
+       eq.que_question_id
+      from exam_question eq
+      where eq.exam_question_id in (
+        
+        select eqr.exam_question_id
+         from exam_question_result eqr
+         where eqr.exam_result_id = #{examResultId}
+                and eqr.result = '0')
+    )
+   
+   select  
+      <include refid="Base_Column_List" />
+       ,
+      <include refid="Blob_Column_List" />
+   from que_question q
+   
+   where q.que_question_id  in (select que_question_id from eq)
+   
+  
+  </select>
+  
+  <!-- 学生空间  - 获取错误题目对应题库中 题目的母题 -->
+  <select id="getPracticeMotherExam" parameterType="java.util.List" resultMap="QueResultMap">
+     with eq as
+ 	(
+      select 
+       q.que_question_id
+      from que_question q
+      where q.que_question_id in 
+       <foreach collection="list" item="item" open="(" close=")" separator="union all" >  
+            select  
+            
+            #{item.queQuestionId}
+            
+            from dual
+        </foreach>
+      
+
+    )
+    
+    select 
+      q.QUE_QUESTION_ID 
+    from que_question q 
+    where q.relational_indicator='MOTHER'
+    start with q.que_question_id in (select que_question_id from eq)
+    connect by prior q.mother_id = q.que_question_id
+  </select>
+  
+  <!-- 学生空间  获取错题在题库中 对应的 母体  衍生题  孪生题 -->
+  <select id="getPracticeExamByRelation" parameterType="java.util.List" resultType="com.codyy.oc.onlinetest.view.QuestionKnowledgeView">
+      with eq as
+ 	 (
+       select 
+        q.que_question_id
+       from que_question q
+      where q.que_question_id in
+       <foreach collection="list" item="item" open="(" close=")" separator="union all" >  
+            select  
+            
+            #{item.queQuestionId}
+            
+            from dual
+        </foreach>
+      
+
+    ) 
+
+    select 
+     
+      t2.que_question_id           as  queQuestionId,
+      t2.relational_indicator      as  relationalIndicator,
+      t2.mother_id                 as  motherId
+   
+    from (
+        
+        select  
+                t1.que_question_id,
+                t1.relational_indicator,
+                t1.mother_id,
+                row_number() over(partition by t1.mother_id order by t1.mother_id) rnum
+        
+          from (
+                 
+                 select
+                 
+                   q.que_question_id,
+                   q.relational_indicator,
+                   q.mother_id
+                 
+                   from que_question  q
+                 
+                  where q.relational_indicator != 'MOTHER'
+                 
+                  start with q.que_question_id in
+                             (select que_question_id from eq)
+                 
+                 connect by prior q.que_question_id = q.mother_id
+                 
+                  order by dbms_random.value()) t1) t2
+ 	  where t2.rnum &lt;= 2
+   			and t2.que_question_id not in  (select que_question_id from eq)
+
+	  union all
+	  
+	  
+	  
+      select 
+         
+         t4.que_question_id           as  queQuestionId,
+         t4.relational_indicator      as  relationalIndicator,
+         t4.mother_id                 as  motherId
+      
+      from (
+        
+        select  
+             t3.que_question_id,
+             t3.relational_indicator,
+             t3.mother_id,
+             row_number() over(partition by t3.mother_id order by t3.mother_id) rnum
+        
+          from (select 
+                  QUE_QUESTION_ID,
+                  RELATIONAL_INDICATOR, 
+                  NVL(MOTHER_ID, QUE_QUESTION_ID) as mother_id
+                  
+                
+                   
+                   from que_question qq
+                   
+                   where qq.que_question_id not in  (select que_question_id from eq)
+                 
+                  start with qq.que_question_id in
+                             (
+                              
+                              select
+                              
+                              distinct q.que_question_id
+                              
+                                from que_question q
+                              
+                               where q.relational_indicator = 'MOTHER'  and q.que_question_id not in  
+                                           (select que_question_id from eq)
+                              
+                               start with q.que_question_id in
+                                         
+                                           (select que_question_id from eq)
+                              
+                              connect by prior q.mother_id = q.que_question_id)
+                 connect by prior qq.que_question_id = qq.mother_id
+                  order by dbms_random.value()) t3
+         where t3.que_question_id not in
+               (select que_question_id from eq)
+        
+        ) t4
+   where t4.rnum &lt;= 2
+  </select>
+  
+  
+  <!-- 学生空间 - 获取差一题在题库中对应的题目 -->
+  <select id="getQuestionIntersection" resultType="com.codyy.oc.onlinetest.view.QuestionKnowledgeView">
+    with q as (
+      
+        <foreach collection="examQuestionIdList1" item="item" open="(" close=")" separator="union all" >  
+            select  
+            
+            #{item} as que_question_id
+            
+            from dual
+        </foreach>
+    ), qq as (
+        
+         <foreach collection="queQuestions" item="item" open="(" close=")" separator="union all" >  
+            select  
+            
+            #{item.queQuestionId} as que_question_id
+            
+            from dual
+        </foreach>
+    
+    )
+    
+    
+    select 
+      	q.que_question_id as queQuestionId
+    
+    from que_question q
+    start with q.que_question_id  in 
+    
+    (select que_question_id from q) 
+    
+    connect by prior q.que_question_id=q.mother_id
+    
+    INTERSECT 
+
+    select 
+  	  	q.que_question_id as queQuestionId
+  
+	from que_question q
+ 
+	where q.que_question_id in (
+      select que_question_id from qq
+    )
+
+  </select>
+  
+  <!-- 学生空间 - 根据知识点随机选一题 -->
+  <select id="getPracticeExamByKnowledge" resultType="com.codyy.oc.onlinetest.view.QuestionKnowledgeView">
+	with knowledge as
+    (
+  
+      select
+  
+       distinct eqk.base_end_knowledge_id
+  
+       from exam_question_r_knowledge eqk
+  
+      where eqk.exam_question_id in 
+      
+            <foreach collection="originResults1" item="item" open="(" close=")" separator="union all" >  
+               select  
+            
+                #{item.examQuestionId} 
+            
+               from dual
+            </foreach>
+      
+         
+  
+     ), q as (
+        
+         <foreach collection="examQuestionResults" item="item" open="(" close=")" separator="union all" >  
+            select  
+            
+            #{item.queQuestionId} as que_question_id
+            
+            from dual
+        </foreach>
+     ), tq as (
+         <foreach collection="queQuestions" item="item" open="(" close=")" separator="union all" >  
+            select  
+            
+            #{item.queQuestionId} as que_question_id
+            
+            from dual
+        </foreach>
+     
+     ), qId as (
+     
+        <foreach collection="originResults1" item="item" open="(" close=")" separator="union all" >  
+            select  
+            
+            #{item.examQuestionId} as exam_question_id
+            
+            from dual
+        </foreach>
+     
+     ), ques as (
+ 
+            select
+                        
+                q.que_question_id
+                        
+            from que_question q
+                        
+            left join base_area ba
+                        
+              on q.base_area_id = ba.base_area_id
+                        
+            where (ba.area_id_path like CONCAT('${areaIdPath}','%') 
+                 and q.usable_type = 'AREA')
+                 or q.usable_type = 'PUBLIC'
+                 or (q.cls_school_id =#{schoolId} and q.usable_type = 'SCHOOL')
+                        
+    )
+
+
+
+    select 
+    
+      que_question_id        as queQuestionId,
+      base_end_knowledge_id  as baseEndKnowledgeId,
+      exam_question_id       as examQuestionId
+    
+
+     from (
+        
+        select
+        
+          t1.que_question_id,
+          t1.base_end_knowledge_id,
+          t1.exam_question_id,
+          t1.know_id,
+          row_number() over(partition by t1.know_id order by t1.know_id) as rnum
+        
+          from (
+                 
+                 select  qrk.que_question_id,
+                         qrk.base_end_knowledge_id,
+                         t.base_end_knowledge_id   as know_id,
+                         t.exam_question_id        as exam_question_id
+                 
+                   from que_question_r_knowledge qrk
+                 
+                   left join (
+                               select eqrk.base_end_knowledge_id,
+                                     eqrk.exam_question_id
+                              
+                                from exam_question_r_knowledge eqrk
+                              
+                                where eqrk.exam_question_id in
+                                     (
+                                      
+                                      select exam_question_id from qId
+                                       
+                                     )
+                       ) t
+                
+                 
+                     on t.base_end_knowledge_id = qrk.base_end_knowledge_id
+                     
+                  right join que_question q
+                      on (q.que_question_id = qrk.que_question_id
+                      and q.que_question_id in
+                         (
+                           select que_question_id from ques
+                         ))
+                 
+                  where qrk.base_end_knowledge_id in
+                        (
+                         
+                         select base_end_knowledge_id from knowledge
+                         
+                         )
+                  order by dbms_random.value()
+                 
+                 ) t1
+        
+         where t1.que_question_id not in
+               (
+                select  que_question_id   from  q
+               )
+           and t1.que_question_id not in
+               (
+                select  que_question_id   from  tq
+               )
+        ) t2
+ 	where t2.rnum &lt;=1
+	
+  
+  </select>
+  
+  <!-- 学生空间 - 获取随机得到的题库中的题 -->
+  <select id="getQuestionList" resultType="com.codyy.oc.onlinetest.view.QuestionKnowledgeView">
+    select 
+       
+       q.que_question_id  as queQuestionId
+     
+     from que_question q
+     
+     where q.que_question_id in 
+       
+         <foreach collection="examQuestionResults" item="item" open="(" close=")" separator="union all" >  
+            select  
+            
+            #{item.queQuestionId} as que_question_id
+            
+            from dual
+        </foreach>
+        
+     INTERSECT 
+
+    select 
+
+      q.que_question_id  as queQuestionId
+
+    from que_question q
+   
+   left join base_area ba
+   
+     on q.base_area_id=ba.base_area_id
+     
+   where 
+     (ba.area_id_path like CONCAT('${areaIdPath}','%')
+      and q.usable_type='AREA') 
+      or q.usable_type ='PUBLIC' 
+      or (q.cls_school_id = #{schoolId} and q.usable_type ='SCHOOL') 
+    
+  </select>
+  
+  <!-- 学生空间 - 根据知识点随机获取 两题 -->
+  <select id="getPracticeByKnowledge" parameterType="java.util.Map" resultType="com.codyy.oc.onlinetest.view.QuestionKnowledgeView">
+	with knowledge as
+    (
+  
+      select
+  
+       distinct eqk.base_end_knowledge_id
+  
+       from exam_question_r_knowledge eqk
+  
+      where eqk.exam_question_id in 
+      
+            <foreach collection="originResults2" item="item" open="(" close=")" separator="union all" >  
+               select  
+            
+                #{item.examQuestionId} 
+            
+               from dual
+            </foreach>
+      
+       
+  
+     ), q as (
+        
+         <foreach collection="examQuestionResults" item="item" open="(" close=")" separator="union all" >  
+            select  
+            
+            #{item.queQuestionId} as que_question_id
+            
+            from dual
+        </foreach>
+     ), tq as (
+         <foreach collection="queQuestions" item="item" open="(" close=")" separator="union all" >  
+            select  
+            
+            #{item.queQuestionId} as que_question_id
+            
+            from dual
+        </foreach>
+     
+     ), qId as (
+     
+        <foreach collection="originResults2" item="item" open="(" close=")" separator="union all" >  
+            select  
+            
+              #{item.examQuestionId} as exam_question_id
+            
+            from dual
+        </foreach>
+     
+     ), ques as (
+ 
+            select
+                        
+                q.que_question_id
+                        
+            from que_question q
+                        
+            left join base_area ba
+                        
+            on q.base_area_id = ba.base_area_id
+                        
+            where (ba.area_id_path like CONCAT('${areaIdPath}','%') 
+                 and q.usable_type = 'AREA')
+                 or q.usable_type = 'PUBLIC'
+                 or (q.cls_school_id =#{schoolId} and q.usable_type = 'SCHOOL')
+                        
+    )
+
+
+
+    select 
+      
+       que_question_id        as queQuestionId,
+       base_end_knowledge_id  as baseEndKnowledgeId,
+       exam_question_id       as examQuestionId
+
+     from (
+        
+        select
+        
+          t1.que_question_id,
+          t1.base_end_knowledge_id,
+          t1.exam_question_id,
+          t1.know_id,
+          row_number() over(partition by t1.know_id order by t1.know_id) as rnum
+        
+          from (
+                 
+                 select qrk.que_question_id,
+                         qrk.base_end_knowledge_id,
+                         t.base_end_knowledge_id   as know_id,
+                         t.exam_question_id        as exam_question_id
+                 
+                   from que_question_r_knowledge qrk
+                 
+                   left join (select eqrk.base_end_knowledge_id,
+                                     eqrk.exam_question_id
+                              
+                                from exam_question_r_knowledge eqrk
+                              
+                               where eqrk.exam_question_id in
+                                     (
+                                      
+                                      select exam_question_id from qId
+                                      
+                                      )
+                              
+                              ) t
+                
+                 
+                     on t.base_end_knowledge_id = qrk.base_end_knowledge_id
+                     
+                  right join que_question q
+                      on (q.que_question_id = qrk.que_question_id
+                      and q.que_question_id in
+                         (
+                           select que_question_id from ques
+                         ))
+                 
+                  where qrk.base_end_knowledge_id in
+                        (
+                         
+                         select base_end_knowledge_id from knowledge
+                         
+                         )
+                  order by dbms_random.value()
+                 
+                 ) t1
+        
+         where t1.que_question_id not in
+               (
+                select  que_question_id   from  q
+               )
+           and t1.que_question_id not in
+               (
+                select  que_question_id   from  tq
+               )
+        ) t2
+ 	where t2.rnum &lt;=2
+  
+  </select>
+  
+  <!-- 学生空间 - 知识点随机选题 -->
+  <select id="getQuestionsRandom" parameterType="java.util.List" resultType="com.codyy.oc.onlinetest.view.QuestionKnowledgeView">
+	with knowledge as
+    (
+  
+  		select
+  
+  		distinct eqk.base_end_knowledge_id
+  
+    	from exam_question_r_knowledge eqk
+  
+   		where eq.exam_question_id in 
+   	
+   	      <foreach collection="list" item="item" open="(" close=")" separator="union all" >  
+            select  
+            
+            #{item}
+            
+            from dual
+        </foreach>
+   	
+   	       
+  
+  	),ques as (
+ 
+            select
+                        
+                q.que_question_id
+                        
+            from que_question q
+                        
+            left join base_area ba
+                        
+            on q.base_area_id = ba.base_area_id
+                        
+            where (ba.area_id_path like CONCAT('${areaIdPath}','%') 
+                 and q.usable_type = 'AREA')
+                 or q.usable_type = 'PUBLIC'
+                 or (q.cls_school_id =#{schoolId} and q.usable_type = 'SCHOOL')
+                        
+    )
+  	
+  
+  
+  
+  	select 
+  	   
+  	    que_question_id        as queQuestionId,
+        base_end_knowledge_id  as baseEndKnowledgeId,
+        exam_question_id       as examQuestionId
+  
+ 	 from (
+  
+  
+  	select 
+  
+          t1.que_question_id,
+          t1.base_end_knowledge_id,
+          t1.know_id,
+          t1.exam_question_id,
+          row_number() over(partition by t1.know_id order by t1.know_id) as rnum
+  
+  
+  
+  
+  	from (
+
+  	select
+  
+    	qrk.que_question_id,
+    	qrk.base_end_knowledge_id,
+    	t.base_end_knowledge_id   as know_id,
+    	t.exam_question_id        as exam_question_id
+  
+  
+  	from que_question_r_knowledge  qrk
+  
+  
+  
+  	left join (
+  
+    
+    	select 
+      	eqrk.base_end_knowledge_id,
+      	eqrk.exam_question_id
+                              
+   		 from exam_question_r_knowledge eqrk
+                              
+    	 where eqrk.base_end_knowledge_id in
+     	(
+     
+     
+      		select base_end_knowledge_id from knowledge
+     
+     	)
+  
+  
+        )t 
+  
+  		on t.base_end_knowledge_id=qrk.base_end_knowledge_id
+  		
+    right join que_question q
+              on (q.que_question_id = qrk.que_question_id
+                  and q.que_question_id in
+                         (
+                           select que_question_id from ques
+                         )
+                         
+          )
+  
+  
+  		where qrk.base_end_knowledge_id  in ( select base_end_knowledge_id from knowledge )
+  
+   			order by dbms_random.value()  ) t1   
+    ) t2 where t2.rnum &lt;=2
+  </select>
+  
+  <!-- 获取题目 -->
+  <select id="getQuestionByIds" parameterType="java.util.List" resultMap="ExamQueResultMap">
+	select
+	  <include refid="Base_Column_List" />
+      ,
+      <include refid="Blob_Column_List" />
+	   
+	from que_question q 
+	where q.que_question_id in
+	   
+	   <foreach collection="list" item="item" open="(" close=")" separator="union all" >  
+            select  
+            
+            #{item.queQuestionId}
+            
+            from dual
+        </foreach>
+	
+  </select>
+  
+  
+  
+</mapper>

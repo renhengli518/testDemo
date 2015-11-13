@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.codyy.oc.homework.dao.ParentHomeWorkMapper">
+<resultMap type="com.codyy.oc.homework.entity.HomeWorkQuestionInfo" id="parentWorkQueInfoMap">
+        <id column="WORK_HOMEWORK_ID" property="homeWorkId" jdbcType="VARCHAR" />
+		<result column="WORK_TITLE" property="workTitle" jdbcType="VARCHAR" />
+		<result column="TEXT_QUE_CONTENT" property="textQueContent" jdbcType="CLOB" />
+</resultMap>
+
+<resultMap type="com.codyy.oc.homework.entity.QuestionInfo" id="parentQueInfoMap">
+
+	<result column="WORK_QUESTION_ID" property="workQuestionId" jdbcType="VARCHAR" />
+    <result column="CONTENT" property="content" jdbcType="CLOB" />
+    <result column="CONTENT_VIDEO" property="contentVideo" jdbcType="VARCHAR" />
+    <result column="OPTIONS" property="options" jdbcType="CLOB" />
+    <result column="TYPE" property="type" jdbcType="VARCHAR" />
+    <result column="FILL_IN_ANSWER_TYPE" property="fillInAnswerType" jdbcType="VARCHAR" />
+    <result column="MY_ANSWER" property="myAnswer" jdbcType="CLOB" />
+	<result column="STATUS" property="stuWorkStatus" jdbcType="VARCHAR" />
+</resultMap>
+
+<resultMap type="com.codyy.oc.homework.entity.HomeWork" id="parentHomeWorkMap">
+<id column="WORK_HOMEWORK_ID" property="homeWorkId" jdbcType="VARCHAR" />
+		<result column="WORK_TITLE" property="workTitle" jdbcType="VARCHAR" />
+		<result column="ASSIGN_TIME" property="assignTime" jdbcType="TIMESTAMP" />
+		<result column="FINISH_TIME" property="finishTime" jdbcType="TIMESTAMP" />
+		<result column="STATUS" property="status" jdbcType="VARCHAR" />
+		<result column="READ_OVER_TYPE" property="readOverType" jdbcType="VARCHAR" />
+		<result column="BASE_SUBJECT_ID" property="baseSubjectId" jdbcType="VARCHAR" />
+		<result column="STUDENT_USER_ID" property="studentUserId" jdbcType="VARCHAR" />
+		<result column="SUBJECT_NAME" property="subjectName" jdbcType="VARCHAR" />
+		<result column="QUESTION_COUNT" property="queCount" jdbcType="DECIMAL" />
+		<result column="ANSWER_COUNT" property="answerCount" jdbcType="DECIMAL" />
+		<result column="SUBMIT_TIME" property="submitTime" jdbcType="TIMESTAMP" />
+	    <result column="SUMMARY" property="summary" jdbcType="CLOB" />
+</resultMap>
+<resultMap type="com.codyy.oc.homework.entity.QuestionInfo" id="parentQueProgressInfoMap">
+
+	<result column="WORK_QUESTION_ID" property="workQuestionId" jdbcType="VARCHAR" />
+    <result column="CONTENT" property="content" jdbcType="CLOB" />
+    <result column="CONTENT_VIDEO" property="contentVideo" jdbcType="VARCHAR" />
+    <result column="OPTIONS" property="options" jdbcType="CLOB" />
+    
+</resultMap>
+
+<resultMap type="com.codyy.oc.homework.entity.QuestionKnowLedge" id="questionKnowLedgeMap">
+    <result column="WORK_HOMEWORK_ID" property="homeWorkId" jdbcType="VARCHAR" />
+	<result column="WORK_QUESTION_ID" property="workQuestionId" jdbcType="VARCHAR" />
+    <result column="QUE_QUESTION_R_KNOWLEDGE_ID" property="workQueRelKnowLedgeId" jdbcType="VARCHAR" />
+    <result column="BASE_END_KNOWLEDGE_ID" property="baseEndKnowLedgeId" jdbcType="VARCHAR" />
+	<result column="KNOWLEDGE_NAME" property="knowLedgeName" jdbcType="VARCHAR" />
+</resultMap>
+
+<resultMap type="com.codyy.oc.homework.entity.FillInQuesAnswer" id="fillInQuesAnswerMap">
+    <id column="WORK_QUE_FILL_IN_ANSWER_ID" property="workQueFillInAnswerId" jdbcType="VARCHAR" />
+    <result column="ANSWER_GRP1" property="answerGrp1" jdbcType="VARCHAR" />
+    <result column="ANSWER_GRP2" property="answerGrp2" jdbcType="VARCHAR" />
+    <result column="ANSWER_GRP3" property="answerGrp3" jdbcType="VARCHAR" />
+    <result column="ANSWER_GRP4" property="answerGrp4" jdbcType="VARCHAR" />
+
+</resultMap>
+
+<!-- 查询出家长角色对应的作业列表 -->
+<select id="findParentHomeworkByConditionsPageList" parameterType="com.codyy.commons.page.Page" resultMap="parentHomeWorkMap">
+
+select wh.work_homework_id,
+       wh.work_title,
+       wh.assign_time,
+       wh.finish_time,
+       wh.question_count,
+       wh.read_over_type,
+       wrs.status,
+       wrs.answer_count,
+       wrs.submit_time,
+       wrs.summary,
+       bs.subject_name
+
+  from work_homework wh
+  join work_receive_stu wrs
+    on wh.work_homework_id = wrs.work_homework_id
+  left join base_subject bs
+    on wh.base_subject_id = bs.base_subject_id
+ where 1 = 1 and wh.status != 'INIT'
+   and wrs.base_user_id = #{map.userId}
+
+       <if test="map.assignStartTime != null and map.assignStartTime != ''">
+		 	and to_char(wh.assign_time,'yyyy-MM-dd HH24:mi') &gt;= #{map.assignStartTime}
+		 </if>
+		
+		 <if test="map.assignEndTime != null and map.assignEndTime != ''">
+		    and to_char(wh.assign_time,'yyyy-MM-dd HH24:mi') &lt;= #{map.assignEndTime}
+		 </if>
+		  <if test="map.status != null and map.status != ''">
+		   and wrs.status = #{map.status}
+		 </if>
+		  <if test="map.subjectId != null and map.subjectId != ''">
+		   and wh.base_subject_id = #{map.subjectId}
+		 </if>
+        <if test="map.homeWorkName != null and map.homeWorkName != ''">
+		    and wh.work_title  like '%'||#{map.homeWorkName}||'%' escape '/'
+		 </if>
+order by  wh.assign_time desc
+</select>
+
+<!-- 家长空间	查看作业 -->
+<select id="findParentHomeWorkQuestionInfo" parameterType="string" resultMap="parentWorkQueInfoMap">
+select whw.work_homework_id,
+       whw.work_title,
+       whw.text_que_content
+ from work_homework whw 
+        where whw.work_homework_id = #{workId}
+
+</select>
+
+<!-- 学生空间  查看作业（未提交不显示自己的答案） -->
+<select id="getParentQueProgressInfo" parameterType="string" resultMap="parentQueProgressInfoMap">
+select
+       wq.work_question_id,
+       wq.content,
+       wq.content_video,
+       wq.options
+
+  from 
+  work_question wq  
+ 
+    where wq.work_homework_id=''
+  order by CASE wq.type
+            WHEN 'SINGLE_CHOICE' THEN
+             '1'
+            WHEN 'MULTI_CHOICE' THEN
+             '2'
+            WHEN 'JUDEMENT' THEN
+             '3'
+            WHEN 'FILL_IN_BLANK' THEN
+             '4'
+            WHEN 'ASK_ANSWER' THEN
+             '5'
+            WHEN 'COMPUTING' THEN
+             '6'
+            ELSE
+             '7'
+          END,
+          wq.sort 
+
+</select>
+<!-- 家长	查询出某个作业中的习题（查看作业） -->
+<select id="getParentQueInfo" parameterType="java.util.Map" resultMap="parentQueInfoMap">
+select
+       wq.work_question_id,
+       wq.content,
+       wq.content_video,
+       wq.options,
+       wq.type,
+       wq.fill_in_answer_type,
+       b.my_answer,
+       b.status
+  from 
+  work_question wq  
+ 
+  left join (select wrsqa.my_answer,a.status,wrsqa.work_question_id from work_rec_stu_que_answer wrsqa join   
+    (select  wrs.work_receive_stu_id ,wrs.status
+    from work_receive_stu wrs 
+    where wrs.base_user_id=(select bsrp.student_user_id
+          from base_student_r_parent bsrp
+         where bsrp.parent_user_id = #{userId} )
+    and wrs.work_homework_id=#{workId}) a on wrsqa.work_receive_stu_id=a.work_receive_stu_id) b
+  on wq.work_question_id=b.work_question_id where wq.work_homework_id=#{workId}
+  order by CASE wq.type
+            WHEN 'SINGLE_CHOICE' THEN
+             '1'
+            WHEN 'MULTI_CHOICE' THEN
+             '2'
+            WHEN 'JUDEMENT' THEN
+             '3'
+            WHEN 'FILL_IN_BLANK' THEN
+             '4'
+            WHEN 'ASK_ANSWER' THEN
+             '5'
+            WHEN 'COMPUTING' THEN
+             '6'
+            ELSE
+             '7'
+          END,
+          wq.sort 
+</select>
+
+<select id="getQuestionKnowLedge" parameterType="java.lang.String" resultMap="questionKnowLedgeMap">
+select wq.work_homework_id,
+       wq.work_question_id,
+       wqrk.work_question_r_knowledge_id,
+       wqrk.base_end_knowledge_id,
+       bk.knowledge_name
+  from work_question wq
+  left join work_question_r_knowledge wqrk
+    on wq.work_question_id = wqrk.work_question_id
+  left join base_knowledge bk
+    on wqrk.base_end_knowledge_id = bk.base_knowledge_id
+ where wq.work_question_id = #{work_question_id}
+
+</select>
+
+<select id="getFillInQuesAnswer" parameterType="java.lang.String" resultMap="fillInQuesAnswerMap">
+        select wqfia.work_que_fill_in_answer_id,
+               wqfia.answer_grp1,
+               wqfia.answer_grp2,
+               wqfia.answer_grp3,
+               wqfia.answer_grp4 from work_question wq join  
+               work_que_fill_in_answer wqfia  on wq.work_question_id = wqfia.work_question_id 
+         where wq.type = 'FILL_IN_BLANK' and wqfia.work_question_id = #{work_question_id}
+</select>
+</mapper>

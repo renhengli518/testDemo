@@ -1,0 +1,187 @@
+<%@page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@include file="spaceHeader.jsp"%>
+<script type="text/javascript">
+var userType = '';
+$.ajax({
+	url : '<%=SpringContext.getBean(HostConfig.class).getHome()%>/myHome/getBaseUserInfoById.do',
+	data : {
+		baseUserId : '${baseUserId}'
+	},
+	success : function(data) {
+		console.log(data)
+		userType = data.userType;
+	},
+	type : 'post',
+	dataType : 'json',
+	cache : false,
+	async : false
+});
+</script>
+<div class="header_down_wrap header_dw2">
+    <div class="header_down_inner_wrap">
+        <div class="_header">
+            <div class="title_wrap_p">
+                
+            </div>
+			<div class="my_use" id="my_use" >
+				<p class="myuse_p">我的应用</p>
+				<ul id="yylb" class="myuse_ul">
+				
+					<li id="gd_li" class="myuse_li01 use_li_last">
+						<a href='${sessionScope.SESSION_USER.homeHost}/myHome/toMyApplicationConfig.html'><img src="${PUBLIC_PATH}/public/img/workplace/myuse_11.png" alt=""><span>更多</span></a>
+					</li>
+				</ul>
+			</div>
+        </div>
+    </div>
+</div>
+<div id="navbar" class="w1200 clearfix marginauto mt70 mb20">
+	<ul class="weibo_nav mb30 clearfix">
+		<li><a id="mainPage" href="<%=SpringContext.getBean(HostConfig.class).getUserCenter()%>/toUserIndex/${baseUserId}.html" class="visited">个人主页</a></li>
+		<li><a id="miblog" href="<%=SpringContext.getBean(HostConfig.class).getHome()%>/home/dynamic/toHomeDynamicIndex.html?baseUserId=${baseUserId}" >微博</a></li>
+		<li><a id="blog" href="<%=SpringContext.getBean(HostConfig.class).getHome()%>/blog/toFirstBlog.html?visitedUserId=${baseUserId}" >博文</a></li>
+		<li><a id="photo" href="#" >相册</a></li>
+		<li><a href="topic" >话题</a></li>
+		<li><a id="prepareLesson" href="<%=SpringContext.getBean(HostConfig.class).getHome()%>/prepare/lessonPlan/tea/browser/${baseUserId}.html">个人备课</a></li>
+		<li><a id="resource" href="#">优课资源</a></li>
+	</ul>
+</div>
+<script type="text/javascript">
+
+var projectMap = {
+		"onlineclass.id":"<%=SpringContext.getBean(HostConfig.class).getOnlineClass()%>",
+        "liveclass.id":"<%=SpringContext.getBean(HostConfig.class).getOnlineClass()%>",
+        "prepare.lession.id":"<%=SpringContext.getBean(HostConfig.class).getMeeting()%>",
+        "interact.lession.id":"<%=SpringContext.getBean(HostConfig.class).getMeeting()%>",
+        "evaluation.meeting.id":"<%=SpringContext.getBean(HostConfig.class).getEvaluation()%>",
+        "video.meeting.id":"<%=SpringContext.getBean(HostConfig.class).getMeeting()%>",
+        "information.id":	"<%=SpringContext.getBean(HostConfig.class).getBase()%>",
+        "resource.id":"<%=SpringContext.getBean(HostConfig.class).getResource()%>",
+        "statistic.id":"<%=SpringContext.getBean(HostConfig.class).getOnlineClass()%>",
+        "basicInfo.id":"<%=SpringContext.getBean(HostConfig.class).getBase()%>",
+        "prepare.lesson.plan.id":"<%=SpringContext.getBean(HostConfig.class).getEvaluation()%>",
+        "onlineedit.id":"<%=SpringContext.getBean(HostConfig.class).getResource()%>"
+}
+
+$(document).ready(function() {
+	baseUserId = "${baseUserId}";
+	$(".weibo_nav li").on("click", "a", function() {
+		if (!$(this).hasClass("visited")) {
+			$(this).addClass("visited").parent(".weibo_nav li").siblings().find("a").removeClass("visited");
+		}
+	});
+	
+	console.log(userType == 'TEACHER')
+	// 根据baseUserId 获取个人资料信息
+	if(userType == 'TEACHER') {
+		$("#navbar>ul").toggleClass('coffee_nav')
+		//获取教师信息
+		getTeacherInfo(baseUserId);
+	} else if (userType == 'STUDENT'){
+		//获取学生信息
+		getStudentInfo(baseUserId)
+	}
+	
+	//获取应用列表
+	selectSchoolMenuListByUserId(baseUserId);
+	 
+});
+
+function getTeacherInfo(baseUserId) {
+	$.post("<%=SpringContext.getBean(HostConfig.class).getHome()%>/myHome/getTeacherInfoForHomePage.do", {
+		"baseUserId" : baseUserId
+	}, function(data) {
+		if (!data) {
+			return;
+		}
+		selfInfo = data[0];
+		var currentUser = "${SESSION_USER.userId}";
+		var html = '<div class="logo_s"><img src="${root}/images/' + selfInfo.HEADPIC + '" width="120" height="120"></div>' + '<div  class="title_s"><span>' + selfInfo.REALNAME;
+		if (currentUser == baseUserId) {
+			html += '<a href="<%=SpringContext.getBean(HostConfig.class).getBase()%>/personalInfo/index.html"><img src="${PUBLIC_PATH}/public/img/workplace/bj_title.png"></a>';
+		}
+		html += '</span><i>';
+		if (selfInfo.SCHOOLNAME) {
+			if (selfInfo.SCHOOLNAME.length >= 10) {
+				html += "<i title='" + selfInfo.SCHOOLNAME + "'>" + selfInfo.SCHOOLNAME.substring(0, 9) + "</i>";
+			} else {
+				html += "<i title='" + selfInfo.SCHOOLNAME + "'>" + selfInfo.SCHOOLNAME + "</i>";
+			}
+		}
+		html += '</i>';
+		html += '<div style="font-size: 16px;font-style: normal;margin-top:20px;">';
+		
+		for(var i = 0; i < data.length; i++) {
+			selfInfo = data[i];
+			html += '<i href="" style="margin-right:10px;cursor:pointer;">'+selfInfo.BASECLASSNAME+'</i>';
+		}
+		html += '<div></div>';
+		$(".title_wrap_p").append(html);
+
+	});
+}
+
+function getStudentInfo(baseUserId){
+	$.post("<%=SpringContext.getBean(HostConfig.class).getHome()%>/myHome/getStudentSelfInfo.do", {
+		"baseUserId" : baseUserId
+	}, function(data) {
+		if (data) {
+			selfInfo = data;
+			baseClassId = selfInfo.baseClassId;
+			var currentUser = "${SESSION_USER.userId}";
+			var html = '';
+			html += '<div class="logo_s"><img src="${root}/images/' + selfInfo.headPic + '" width="120" height="120"></div>' + '<div  class="title_s title_stu"><span>' + selfInfo.realname;
+			if (currentUser == baseUserId) {
+				html += '<a href="<%=SpringContext.getBean(HostConfig.class).getBase()%>/personalInfo/index.html"><img src="${PUBLIC_PATH}/public/img/workplace/bj_title.png"></a>';
+				// 获取应用列表
+			}
+			html += '</span>';
+			if (selfInfo.schoolName) {
+				html += "<i>" + selfInfo.schoolName + "</i><br />";
+			}
+			if (selfInfo.baseClassName) {
+				html += '<i>' + selfInfo.baseClassName + "</i>";
+			}
+			html += '</div>';
+
+			$(".title_wrap_p").append(html);
+		} else {
+			// not get self info
+		}
+
+	});
+}
+//获取应用列表
+function selectSchoolMenuListByUserId(baseUserId) {
+	var currentUser = "${SESSION_USER.userId}";
+	if (currentUser == baseUserId) {
+		$("#my_use").show();
+		$.get("<%=SpringContext.getBean(HostConfig.class).getHome()%>/myHome/selectDefaultMenuListByUserId.do", {
+			"baseUserId" : baseUserId
+		}, function(data) {
+			var html1 = '';
+			if (data && data.length > 0) {
+				data.forEach(function(value, index) {
+					// 学生展示默认应用
+					if (value.baseMenuId == "onlineclass.id") {
+						value.url = "/monitor/broadcast/browser.html?broadcastType=LIVE";
+					}
+
+					if (index == data.length - 1) {
+						html1 += '<li class="myuse_li01 use_li_last"><a  href="' + projectMap[value.baseMenuId] + value.url + '"><img src="${root}/images/' + value.imagePath + '" alt=""><span >' + value.menuName + '</span></a></li>';
+					} else {
+						html1 += '<li class="myuse_li01 "><a  href="' + projectMap[value.baseMenuId] + value.url + '"><img src="${root}/images/' + value.imagePath + '" alt=""><span >' + value.menuName + '</span></a></li>';
+					}
+					$(".more_block").show();
+				});
+				$("#yylb").prepend(html1);
+			} else {
+				//noApp
+			}
+		});
+	} else {
+		$("#my_use").hide();
+	}
+}
+</script>
+	

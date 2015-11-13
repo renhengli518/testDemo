@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.codyy.oc.homework.dao.WorkQueFillInAnswerMapper" >
+  <resultMap id="BaseResultMap" type="com.codyy.oc.homework.entity.WorkQueFillInAnswer" >
+    <id column="WORK_QUE_FILL_IN_ANSWER_ID" property="workQueFillInAnswerId" jdbcType="VARCHAR" />
+    <result column="WORK_QUESTION_ID" property="workQuestionId" jdbcType="VARCHAR" />
+    <result column="SORT" property="sort" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="com.codyy.oc.homework.entity.WorkQueFillInAnswer" extends="BaseResultMap" >
+    <result column="ANSWER_GRP1" property="answerGrp1" jdbcType="CLOB" />
+    <result column="ANSWER_GRP2" property="answerGrp2" jdbcType="CLOB" />
+    <result column="ANSWER_GRP3" property="answerGrp3" jdbcType="CLOB" />
+    <result column="ANSWER_GRP4" property="answerGrp4" jdbcType="CLOB" />
+    <result column="ANSWER_GRP1_TXT" property="answerGrp1Txt" jdbcType="CLOB" />
+    <result column="ANSWER_GRP2_TXT" property="answerGrp2Txt" jdbcType="CLOB" />
+    <result column="ANSWER_GRP3_TXT" property="answerGrp3Txt" jdbcType="CLOB" />
+    <result column="ANSWER_GRP4_TXT" property="answerGrp4Txt" jdbcType="CLOB" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    WORK_QUE_FILL_IN_ANSWER_ID, WORK_QUESTION_ID, SORT
+  </sql>
+  <sql id="Blob_Column_List" >
+    ANSWER_GRP1, ANSWER_GRP2, ANSWER_GRP3, ANSWER_GRP4, ANSWER_GRP1_TXT, ANSWER_GRP2_TXT, 
+    ANSWER_GRP3_TXT, ANSWER_GRP4_TXT
+  </sql>
+  
+  <select id="selectByWorkQuestion" resultMap="ResultMapWithBLOBs" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from WORK_QUE_FILL_IN_ANSWER
+    where WORK_QUESTION_ID = #{workQuestionId,jdbcType=VARCHAR}
+  </select>
+  
+  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from WORK_QUE_FILL_IN_ANSWER
+    where WORK_QUE_FILL_IN_ANSWER_ID = #{workQueFillInAnswerId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from WORK_QUE_FILL_IN_ANSWER
+    where WORK_QUE_FILL_IN_ANSWER_ID = #{workQueFillInAnswerId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.codyy.oc.homework.entity.WorkQueFillInAnswer" >
+    insert into WORK_QUE_FILL_IN_ANSWER (WORK_QUE_FILL_IN_ANSWER_ID, WORK_QUESTION_ID, 
+      SORT, ANSWER_GRP1, ANSWER_GRP2, 
+      ANSWER_GRP3, ANSWER_GRP4, ANSWER_GRP1_TXT, 
+      ANSWER_GRP2_TXT, ANSWER_GRP3_TXT, ANSWER_GRP4_TXT
+      )
+    values (#{workQueFillInAnswerId,jdbcType=VARCHAR}, #{workQuestionId,jdbcType=VARCHAR}, 
+      #{sort,jdbcType=VARCHAR}, #{answerGrp1,jdbcType=CLOB}, #{answerGrp2,jdbcType=CLOB}, 
+      #{answerGrp3,jdbcType=CLOB}, #{answerGrp4,jdbcType=CLOB}, #{answerGrp1Txt,jdbcType=CLOB}, 
+      #{answerGrp2Txt,jdbcType=CLOB}, #{answerGrp3Txt,jdbcType=CLOB}, #{answerGrp4Txt,jdbcType=CLOB}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.codyy.oc.homework.entity.WorkQueFillInAnswer" >
+    insert into WORK_QUE_FILL_IN_ANSWER
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="workQueFillInAnswerId != null" >
+        WORK_QUE_FILL_IN_ANSWER_ID,
+      </if>
+      <if test="workQuestionId != null" >
+        WORK_QUESTION_ID,
+      </if>
+      <if test="sort != null" >
+        SORT,
+      </if>
+      <if test="answerGrp1 != null" >
+        ANSWER_GRP1,
+      </if>
+      <if test="answerGrp2 != null" >
+        ANSWER_GRP2,
+      </if>
+      <if test="answerGrp3 != null" >
+        ANSWER_GRP3,
+      </if>
+      <if test="answerGrp4 != null" >
+        ANSWER_GRP4,
+      </if>
+      <if test="answerGrp1Txt != null" >
+        ANSWER_GRP1_TXT,
+      </if>
+      <if test="answerGrp2Txt != null" >
+        ANSWER_GRP2_TXT,
+      </if>
+      <if test="answerGrp3Txt != null" >
+        ANSWER_GRP3_TXT,
+      </if>
+      <if test="answerGrp4Txt != null" >
+        ANSWER_GRP4_TXT,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="workQueFillInAnswerId != null" >
+        #{workQueFillInAnswerId,jdbcType=VARCHAR},
+      </if>
+      <if test="workQuestionId != null" >
+        #{workQuestionId,jdbcType=VARCHAR},
+      </if>
+      <if test="sort != null" >
+        #{sort,jdbcType=VARCHAR},
+      </if>
+      <if test="answerGrp1 != null" >
+        #{answerGrp1,jdbcType=CLOB},
+      </if>
+      <if test="answerGrp2 != null" >
+        #{answerGrp2,jdbcType=CLOB},
+      </if>
+      <if test="answerGrp3 != null" >
+        #{answerGrp3,jdbcType=CLOB},
+      </if>
+      <if test="answerGrp4 != null" >
+        #{answerGrp4,jdbcType=CLOB},
+      </if>
+      <if test="answerGrp1Txt != null" >
+        #{answerGrp1Txt,jdbcType=CLOB},
+      </if>
+      <if test="answerGrp2Txt != null" >
+        #{answerGrp2Txt,jdbcType=CLOB},
+      </if>
+      <if test="answerGrp3Txt != null" >
+        #{answerGrp3Txt,jdbcType=CLOB},
+      </if>
+      <if test="answerGrp4Txt != null" >
+        #{answerGrp4Txt,jdbcType=CLOB},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.codyy.oc.homework.entity.WorkQueFillInAnswer" >
+    update WORK_QUE_FILL_IN_ANSWER
+    <set >
+      <if test="workQuestionId != null" >
+        WORK_QUESTION_ID = #{workQuestionId,jdbcType=VARCHAR},
+      </if>
+      <if test="sort != null" >
+        SORT = #{sort,jdbcType=VARCHAR},
+      </if>
+      <if test="answerGrp1 != null" >
+        ANSWER_GRP1 = #{answerGrp1,jdbcType=CLOB},
+      </if>
+      <if test="answerGrp2 != null" >
+        ANSWER_GRP2 = #{answerGrp2,jdbcType=CLOB},
+      </if>
+      <if test="answerGrp3 != null" >
+        ANSWER_GRP3 = #{answerGrp3,jdbcType=CLOB},
+      </if>
+      <if test="answerGrp4 != null" >
+        ANSWER_GRP4 = #{answerGrp4,jdbcType=CLOB},
+      </if>
+      <if test="answerGrp1Txt != null" >
+        ANSWER_GRP1_TXT = #{answerGrp1Txt,jdbcType=CLOB},
+      </if>
+      <if test="answerGrp2Txt != null" >
+        ANSWER_GRP2_TXT = #{answerGrp2Txt,jdbcType=CLOB},
+      </if>
+      <if test="answerGrp3Txt != null" >
+        ANSWER_GRP3_TXT = #{answerGrp3Txt,jdbcType=CLOB},
+      </if>
+      <if test="answerGrp4Txt != null" >
+        ANSWER_GRP4_TXT = #{answerGrp4Txt,jdbcType=CLOB},
+      </if>
+    </set>
+    where WORK_QUE_FILL_IN_ANSWER_ID = #{workQueFillInAnswerId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.codyy.oc.homework.entity.WorkQueFillInAnswer" >
+    update WORK_QUE_FILL_IN_ANSWER
+    set WORK_QUESTION_ID = #{workQuestionId,jdbcType=VARCHAR},
+      SORT = #{sort,jdbcType=VARCHAR},
+      ANSWER_GRP1 = #{answerGrp1,jdbcType=CLOB},
+      ANSWER_GRP2 = #{answerGrp2,jdbcType=CLOB},
+      ANSWER_GRP3 = #{answerGrp3,jdbcType=CLOB},
+      ANSWER_GRP4 = #{answerGrp4,jdbcType=CLOB},
+      ANSWER_GRP1_TXT = #{answerGrp1Txt,jdbcType=CLOB},
+      ANSWER_GRP2_TXT = #{answerGrp2Txt,jdbcType=CLOB},
+      ANSWER_GRP3_TXT = #{answerGrp3Txt,jdbcType=CLOB},
+      ANSWER_GRP4_TXT = #{answerGrp4Txt,jdbcType=CLOB}
+    where WORK_QUE_FILL_IN_ANSWER_ID = #{workQueFillInAnswerId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.codyy.oc.homework.entity.WorkQueFillInAnswer" >
+    update WORK_QUE_FILL_IN_ANSWER
+    set WORK_QUESTION_ID = #{workQuestionId,jdbcType=VARCHAR},
+      SORT = #{sort,jdbcType=VARCHAR}
+    where WORK_QUE_FILL_IN_ANSWER_ID = #{workQueFillInAnswerId,jdbcType=VARCHAR}
+  </update>
+</mapper>

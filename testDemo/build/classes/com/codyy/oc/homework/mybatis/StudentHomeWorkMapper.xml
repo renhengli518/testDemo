@@ -1,0 +1,316 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.codyy.oc.homework.dao.StudentHomeWorkMapper">
+<resultMap type="com.codyy.oc.homework.entity.HomeWorkQuestionInfo" id="stuWorkQueInfoMap">
+        <id column="WORK_HOMEWORK_ID" property="homeWorkId" jdbcType="VARCHAR" />
+		<result column="WORK_TITLE" property="workTitle" jdbcType="VARCHAR" />
+		<result column="TEXT_QUE_CONTENT" property="textQueContent" jdbcType="CLOB" />
+</resultMap>
+
+<resultMap type="com.codyy.oc.homework.entity.QuestionInfo" id="stuQueInfoMap">
+
+	<result column="WORK_QUESTION_ID" property="workQuestionId" jdbcType="VARCHAR" />
+    <result column="CONTENT" property="content" jdbcType="CLOB" />
+    <result column="CONTENT_VIDEO" property="contentVideo" jdbcType="VARCHAR" />
+    <result column="OPTIONS" property="options" jdbcType="CLOB" />
+    <result column="TYPE" property="type" jdbcType="VARCHAR" />
+</resultMap>
+
+<resultMap type="com.codyy.oc.homework.entity.QuestionInfo" id="stuSubmitQueInfoMap">
+
+	<result column="WORK_QUESTION_ID" property="workQuestionId" jdbcType="VARCHAR" />
+    <result column="CONTENT" property="content" jdbcType="CLOB" />
+    <result column="CONTENT_VIDEO" property="contentVideo" jdbcType="VARCHAR" />
+    <result column="OPTIONS" property="options" jdbcType="CLOB" />
+    <result column="TYPE" property="type" jdbcType="VARCHAR" />
+    <result column="FILL_IN_ANSWER_TYPE" property="fillInAnswerType" jdbcType="VARCHAR" />
+    <result column="MY_ANSWER" property="myAnswer" jdbcType="CLOB" />
+     <result column="ANSWER_VIDEO" property="answerVideo" jdbcType="VARCHAR" />
+    <result column="TEXT_QUE_ANSWER" property="textQueAnswer" jdbcType="CLOB" />
+	<result column="STATUS" property="stuWorkStatus" jdbcType="VARCHAR" />
+	<collection column="WORK_QUESTION_ID" property="fillInQuesAnswer" select="getFillInQuesAnswer" ofType="string"></collection>
+</resultMap>
+
+<resultMap type="com.codyy.oc.homework.entity.HomeWork" id="stuHomeWorkMap">
+<id column="WORK_HOMEWORK_ID" property="homeWorkId" jdbcType="VARCHAR" />
+		<result column="WORK_TITLE" property="workTitle" jdbcType="VARCHAR" />
+		<result column="ASSIGN_TIME" property="assignTime" jdbcType="TIMESTAMP" />
+		<result column="FINISH_TIME" property="finishTime" jdbcType="TIMESTAMP" />
+		<result column="STATUS" property="status" jdbcType="VARCHAR" />
+		<result column="READ_OVER_TYPE" property="readOverType" jdbcType="VARCHAR" />
+		<result column="SUBJECT_NAME" property="subjectName" jdbcType="VARCHAR" />
+		<result column="QUESTION_COUNT" property="queCount" jdbcType="DECIMAL" />
+		<result column="ANSWER_COUNT" property="answerCount" jdbcType="DECIMAL" />
+		<result column="SUBMIT_TIME" property="submitTime" jdbcType="TIMESTAMP" />
+	    <result column="SUMMARY" property="summary" jdbcType="CLOB" />
+</resultMap>
+
+<resultMap type="com.codyy.oc.homework.entity.ReceiveStu" id="receiveStuMap">
+		<result column="SUBMIT_TIME" property="submitTime" jdbcType="TIMESTAMP" />
+		<result column="FINISH_TIME" property="finishTime" jdbcType="TIMESTAMP" />
+		<result column="ANSWER_COUNT" property="answerCount" jdbcType="DECIMAL" />
+		<result column="WORK_RECEIVE_STU_ID" property="workReceiveStuId" jdbcType="VARCHAR" />
+		<result column="BASE_USER_ID" property="baseUserId" jdbcType="VARCHAR" />
+		<result column="REALNAME" property="realName" jdbcType="VARCHAR" />
+</resultMap>
+
+<resultMap type="com.codyy.oc.homework.entity.FillInQuesAnswer" id="fillInQuesAnswerMap">
+    <id column="WORK_QUE_FILL_IN_ANSWER_ID" property="workQueFillInAnswerId" jdbcType="VARCHAR" />
+    <result column="ANSWER_GRP1" property="answerGrp1" jdbcType="VARCHAR" />
+    <result column="ANSWER_GRP2" property="answerGrp2" jdbcType="VARCHAR" />
+    <result column="ANSWER_GRP3" property="answerGrp3" jdbcType="VARCHAR" />
+    <result column="ANSWER_GRP4" property="answerGrp4" jdbcType="VARCHAR" />
+
+</resultMap>
+<resultMap type="com.codyy.oc.homework.entity.HomeWork" id="ReadOverstuHomeWorkMap">
+<id column="WORK_HOMEWORK_ID" property="homeWorkId" jdbcType="VARCHAR" />
+		<result column="WORK_TITLE" property="workTitle" jdbcType="VARCHAR" />
+		<result column="ASSIGN_TIME" property="assignTime" jdbcType="TIMESTAMP" />
+		<result column="FINISH_TIME" property="finishTime" jdbcType="TIMESTAMP" />
+		<result column="STATUS" property="status" jdbcType="VARCHAR" />
+		<result column="SUBJECT_NAME" property="subjectName" jdbcType="VARCHAR" />
+		<result column="countAll" property="countAll" jdbcType="DECIMAL" />
+		<result column="countSubmit" property="countSubmit" jdbcType="DECIMAL" />
+		<result column="countReadOver" property="countReadOver" jdbcType="DECIMAL" />
+		<result column="SUBMIT_TIME" property="submitTime" jdbcType="TIMESTAMP" />
+	     
+</resultMap>
+
+<!-- 学生空间	查看作业 -->
+<select id="findStudentHomeWorkQuestionInfo" parameterType="string" resultMap="stuWorkQueInfoMap">
+select whw.work_homework_id,
+       whw.work_title,
+       whw.text_que_content
+ from work_homework whw 
+        where whw.work_homework_id = #{workId}
+
+</select>
+<!-- 学生空间	查询出某个作业中的习题（查看作业） -->
+<select id="getStuQueInfo" parameterType="java.util.Map" resultMap="stuQueInfoMap">
+select
+       wq.work_question_id,
+       wq.content,
+       wq.content_video,
+       wq.options,
+       wq.type
+  from 
+  work_question wq where wq.work_homework_id=#{workId}
+  order by CASE wq.type
+            WHEN 'SINGLE_CHOICE' THEN
+             '1'
+            WHEN 'MULTI_CHOICE' THEN
+             '2'
+            WHEN 'JUDEMENT' THEN
+             '3'
+            WHEN 'FILL_IN_BLANK' THEN
+             '4'
+            WHEN 'ASK_ANSWER' THEN
+             '5'
+            WHEN 'COMPUTING' THEN
+             '6'
+            ELSE
+             '7'
+          END,
+          wq.sort 
+
+</select>
+
+<!-- 学生空间	查询出某个作业中的习题（查看已经提交的作业） -->
+<select id="getStuSubmitQueInfo" parameterType="java.util.Map" resultMap="stuSubmitQueInfoMap">
+select 
+       wq.work_question_id,
+       wq.content,
+       wq.content_video,
+       wq.options,
+       wq.type,
+       wq.fill_in_answer_type,
+       b.my_answer,
+       b.answer_video
+      
+  from 
+  work_question wq  
+ 
+  left join (select wrsqa.work_question_id,wrsqa.my_answer, wrsqa.answer_video from work_rec_stu_que_answer wrsqa join   
+    (select  wrs.work_receive_stu_id 
+    from work_receive_stu wrs 
+    where wrs.base_user_id=#{userId} 
+    and wrs.work_homework_id=#{workId}) a on wrsqa.work_receive_stu_id=a.work_receive_stu_id) b
+  on wq.work_question_id=b.work_question_id where wq.work_homework_id=#{workId}
+  order by CASE wq.type
+            WHEN 'SINGLE_CHOICE' THEN
+             '1'
+            WHEN 'MULTI_CHOICE' THEN
+             '2'
+            WHEN 'JUDEMENT' THEN
+             '3'
+            WHEN 'FILL_IN_BLANK' THEN
+             '4'
+            WHEN 'ASK_ANSWER' THEN
+             '5'
+            WHEN 'COMPUTING' THEN
+             '6'
+            ELSE
+             '7'
+          END,
+          wq.sort 
+</select>
+<!-- 查询填空题答案 -->
+<select id="getFillInQuesAnswer" parameterType="java.lang.String" resultMap="fillInQuesAnswerMap">
+        select wqfia.work_que_fill_in_answer_id,
+               wqfia.answer_grp1,
+               wqfia.answer_grp2,
+               wqfia.answer_grp3,
+               wqfia.answer_grp4 from work_question wq join  
+               work_que_fill_in_answer wqfia  on wq.work_question_id = wqfia.work_question_id 
+         where wq.type = 'FILL_IN_BLANK' and wqfia.work_question_id = #{work_question_id}
+</select>
+<select id="getWorkReceiveStuTextAnswer" parameterType="java.util.Map" resultType="string">
+  select wrs.text_que_answer
+    from work_receive_stu wrs
+   where wrs.work_homework_id = #{workId}
+     and wrs.base_user_id = #{userId}
+
+
+</select>
+
+<!-- 查询出学生空间	我的作业		作业列表 -->
+<select id="findStuHomeworkByConditionsPageList" parameterType="com.codyy.commons.page.Page" resultMap="stuHomeWorkMap">
+select wh.work_homework_id,
+       wh.work_title,
+       wh.assign_time,
+       wh.finish_time,
+       wh.question_count,
+       wh.read_over_type,
+       wrs.status,
+       wrs.answer_count,
+       wrs.submit_time,
+       wrs.summary,
+       bs.subject_name
+
+  from work_homework wh
+  join work_receive_stu wrs
+    on wh.work_homework_id = wrs.work_homework_id
+  left join base_subject bs
+    on wh.base_subject_id = bs.base_subject_id
+ where 1 = 1 and wh.status != 'INIT'
+   and wrs.base_user_id = #{map.userId}
+
+       <if test="map.assignStartTime != null and map.assignStartTime != ''">
+		 	and to_char(wh.assign_time,'yyyy-MM-dd HH24:mi') &gt;= #{map.assignStartTime}
+		 </if>
+		
+		 <if test="map.assignEndTime != null and map.assignEndTime != ''">
+		    and to_char(wh.assign_time,'yyyy-MM-dd HH24:mi') &lt;= #{map.assignEndTime}
+		 </if>
+		  <if test="map.status != null and map.status != ''">
+		   and wrs.status = #{map.status}
+		 </if>
+		  <if test="map.subjectId != null and map.subjectId != ''">
+		   and wh.base_subject_id = #{map.subjectId}
+		 </if>
+        <if test="map.homeWorkName != null and map.homeWorkName != ''">
+		    and wh.work_title  like '%'||#{map.homeWorkName}||'%' escape '/'
+		 </if>
+order by  wh.assign_time desc
+</select>
+<!-- 查询出学生空间		我的批阅		作业列表 -->
+<select id="findReadOverHomeworkByConditionsPageList" parameterType="com.codyy.commons.page.Page" resultMap="ReadOverstuHomeWorkMap">
+ select base.*,
+               nvl(countResult.countAll, 0) as countAll,
+               nvl(submitStuCount.countSubmit, 0) as countSubmit,
+               nvl(ReadOverStuCount.countReadOver, 0) as countReadOver
+          from (select wh.work_homework_id,
+                       wh.work_title,
+                       wh.assign_time,
+                       wh.finish_time,
+                       wh.base_subject_id,
+                       wh.status,
+                       bs.subject_name
+                 from
+                   (select distinct(wrs.work_homework_id)
+                         from work_receive_stu  wrs
+                        where wrs.read_over_stu_id = #{map.userId}) a
+                        join work_homework wh
+                    on wh.work_homework_id = a.work_homework_id
+                  left join base_subject bs
+                    on wh.base_subject_id = bs.base_subject_id) base
+          left join (select wrs.work_homework_id,count(*) as countAll
+                      from work_receive_stu wrs                                       
+                     where wrs.read_over_stu_id = #{map.userId}
+                     group by wrs.work_homework_id) countResult
+            on base.work_homework_id = countResult.work_homework_id
+          left join (select wrs.work_homework_id, count(*) as countSubmit
+                      from work_receive_stu wrs
+                     where wrs.read_over_stu_id = #{map.userId}
+                       and wrs.status != 'PROGRESS'
+                     group by wrs.work_homework_id) submitStuCount
+            on base.work_homework_id = submitStuCount.work_homework_id
+          left join (select count(*) as countReadOver, wrs.work_homework_id
+                      from work_receive_stu wrs
+                     where wrs.read_over_stu_id = #{map.userId}
+                       and wrs.status = 'CHECKED'
+                     group by wrs.work_homework_id) ReadOverStuCount
+            on base.work_homework_id = ReadOverStuCount.work_homework_id
+         where 1 = 1 and base.status !='INIT'
+       <if test="map.assignStartTime != null and map.assignStartTime != ''">
+		 	and base.assign_time &gt;= to_date(#{map.assignStartTime},'yyyy-MM-dd HH24:mi')
+		 </if>
+		
+		 <if test="map.assignEndTime != null and map.assignEndTime != ''">
+		    and base.assign_time &lt;= to_date(#{map.assignEndTime},'yyyy-MM-dd HH24:mi')
+		 </if>
+		  <if test="map.status == 'CHECKED'">
+		   and  nvl(countResult.countAll,0) = nvl(ReadOverStuCount.countReadOver,0)
+		 </if>
+		 <if test="map.status == 'END'">
+		   and nvl(countResult.countAll,0) &gt; nvl(ReadOverStuCount.countReadOver,0)
+		 </if>
+		  <if test="map.subjectId != null and map.subjectId != ''">
+		   and base.base_subject_id = #{map.subjectId}
+		 </if>
+        <if test="map.homeWorkName != null and map.homeWorkName != ''">
+		    and base.work_title  like '%'||#{map.homeWorkName}||'%' escape '/'
+		 </if>
+order by  base.assign_time desc
+</select>
+<!-- 查看批阅	批阅列表 -->
+<select id="getQueryReadOverListPageList" parameterType="com.codyy.commons.page.Page" resultMap="receiveStuMap">
+  select bs.realname, a.*,wh.finish_time
+  from base_user bs
+  join (select wrs.work_receive_stu_id,wrs.base_user_id, wrs.answer_count, wrs.submit_time,wrs.work_homework_id
+          from work_receive_stu wrs
+         where wrs.work_homework_id = #{map.workId}
+           and wrs.read_over_stu_id = #{map.userId}
+           and wrs.status = 'CHECKED') a
+    on bs.base_user_id = a.base_user_id
+join work_homework wh on wh.work_homework_id = a.work_homework_id
+ <if test="map.type== 'desc'">
+order by a.submit_time desc
+</if>
+<if test="map.type=='asc'">
+order by a.submit_time asc
+</if>
+ <if test="map.type!='desc' and map.type!='asc'">
+ order by a.submit_time desc
+ </if>
+</select>
+<!-- 批阅 	批阅列表-->
+<select id="getReadOverListPageList" parameterType="com.codyy.commons.page.Page" resultMap="receiveStuMap">
+  select bs.realname, a.work_receive_stu_id,a.answer_count,a.submit_time,a.work_homework_id,
+  wh.finish_time
+  from base_user bs
+  join (select wrs.work_receive_stu_id, wrs.base_user_id,wrs.answer_count, wrs.submit_time,wrs.work_homework_id
+          from work_receive_stu wrs
+         where wrs.work_homework_id = #{map.workId}
+           and wrs.read_over_stu_id = #{map.userId}
+           and wrs.status = 'END') a
+    on bs.base_user_id = a.base_user_id
+join work_homework wh on wh.work_homework_id = a.work_homework_id
+ <if test="map.type == 'desc'">
+ order by a.submit_time desc
+</if>
+ <if test="map.type == 'asc'">
+ order by a.submit_time asc
+ </if>
+</select>
+</mapper>

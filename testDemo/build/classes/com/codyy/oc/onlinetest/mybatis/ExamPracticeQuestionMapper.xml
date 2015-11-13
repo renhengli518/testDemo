@@ -1,0 +1,287 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.codyy.oc.onlinetest.dao.ExamPracticeQuestionMapper" >
+  <resultMap id="BaseResultMap" type="com.codyy.oc.onlinetest.entity.ExamPracticeQuestion" >
+    <id column="EXAM_PRACTICE_QUESTION_ID" property="examPracticeQuestionId" jdbcType="VARCHAR" />
+    <result column="EXAM_PRACTICE_ID" property="examPracticeId" jdbcType="VARCHAR" />
+    <result column="ANSWER" property="answer" jdbcType="VARCHAR" />
+    <result column="DIFFICULTY" property="difficulty" jdbcType="VARCHAR" />
+    <result column="TYPE" property="type" jdbcType="VARCHAR" />
+    <result column="RESULT" property="result" jdbcType="DECIMAL" />
+    <result column="RESOLVE_VIDEO" property="resolveVideo" jdbcType="VARCHAR" />
+    <result column="ANSWER_VIDEO" property="answerVideo" jdbcType="VARCHAR" />
+    <result column="CONTENT_VIDEO" property="contentVideo" jdbcType="VARCHAR" />
+    <result column="FILL_IN_ANSWER_TYPE" property="fillInAnswerType" jdbcType="VARCHAR" />
+    <result column="FILL_IN_SCORE_TYPE" property="fillInScoreType" jdbcType="VARCHAR" />
+    <collection property="fillInAnswers" column="EXAM_PRACTICE_QUESTION_ID" ofType="com.codyy.oc.onlinetest.entity.ExamQueFillInAnswer" select="selectFillInAnswer"/>
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="com.codyy.oc.onlinetest.entity.ExamPracticeQuestion" extends="BaseResultMap" >
+    <result column="CONTENT" property="content" jdbcType="CLOB" />
+    <result column="OPTIONS" property="options" jdbcType="CLOB" />
+    <result column="RESOLVE" property="resolve" jdbcType="CLOB" />
+    <result column="MY_ANSWER" property="myAnswer" jdbcType="CLOB" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    EXAM_PRACTICE_QUESTION_ID, EXAM_PRACTICE_ID, ANSWER, DIFFICULTY, TYPE, RESULT, RESOLVE_VIDEO,ANSWER_VIDEO,
+    FILL_IN_ANSWER_TYPE,FILL_IN_SCORE_TYPE,CONTENT_VIDEO
+  </sql>
+  <sql id="Blob_Column_List" >
+    CONTENT, OPTIONS, RESOLVE, MY_ANSWER
+  </sql>
+  
+  <!-- 填空题答案 -->
+   <resultMap id="FillInAnswerResultMap" type="com.codyy.oc.onlinetest.entity.ExamQueFillInAnswer">
+    <id column="EXAM_QUE_FILL_IN_ANSWER_ID" property="examQueFillInAnswerId" jdbcType="VARCHAR" />
+    <result column="EXAM_PRACTICE_QUESTION_ID" property="examPracticeQuestionId" jdbcType="VARCHAR" />
+    <result column="EXAM_QUESTION_ID" property="examQuestionId" jdbcType="VARCHAR" />
+    <result column="SORT" property="sort" jdbcType="VARCHAR" />
+    <result column="ANSWER_GRP1" property="answerGrp1" jdbcType="CLOB" />
+    <result column="ANSWER_GRP2" property="answerGrp2" jdbcType="CLOB" />
+    <result column="ANSWER_GRP3" property="answerGrp3" jdbcType="CLOB" />
+    <result column="ANSWER_GRP4" property="answerGrp4" jdbcType="CLOB" />
+    <result column="ANSWER_GRP1_TXT" property="answerGrp1Txt" jdbcType="CLOB" />
+    <result column="ANSWER_GRP2_TXT" property="answerGrp2Txt" jdbcType="CLOB" />
+    <result column="ANSWER_GRP3_TXT" property="answerGrp3Txt" jdbcType="CLOB" />
+    <result column="ANSWER_GRP4_TXT" property="answerGrp4Txt" jdbcType="CLOB" />
+  </resultMap>
+  
+   <!-- 获取关联的填空题答案 -->
+  <select id="selectFillInAnswer" parameterType="String" resultMap="FillInAnswerResultMap"> 
+     select 
+       EXAM_QUE_FILL_IN_ANSWER_ID, EXAM_PRACTICE_QUESTION_ID, SORT,
+       ANSWER_GRP1, ANSWER_GRP2, ANSWER_GRP3, ANSWER_GRP4, ANSWER_GRP1_TXT, ANSWER_GRP2_TXT, 
+       ANSWER_GRP3_TXT, ANSWER_GRP4_TXT,EXAM_QUESTION_ID
+    from  EXAM_QUE_FILL_IN_ANSWER
+    where EXAM_PRACTICE_QUESTION_ID = #{EXAM_PRACTICE_QUESTION_ID}  
+  </select>
+  
+  
+  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from EXAM_PRACTICE_QUESTION
+    where EXAM_PRACTICE_QUESTION_ID = #{examPracticeQuestionId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from EXAM_PRACTICE_QUESTION
+    where EXAM_PRACTICE_QUESTION_ID = #{examPracticeQuestionId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.codyy.oc.onlinetest.entity.ExamPracticeQuestion" >
+    insert into EXAM_PRACTICE_QUESTION (EXAM_PRACTICE_QUESTION_ID, EXAM_PRACTICE_ID, 
+      ANSWER, DIFFICULTY, TYPE, 
+      RESULT, RESOLVE_VIDEO, CONTENT, 
+      OPTIONS, RESOLVE, MY_ANSWER,ANSWER_VIDEO)
+    values (#{examPracticeQuestionId,jdbcType=VARCHAR}, #{examPracticeId,jdbcType=VARCHAR}, 
+      #{answer,jdbcType=VARCHAR}, #{difficulty,jdbcType=VARCHAR}, #{type,jdbcType=VARCHAR}, 
+      #{result,jdbcType=DECIMAL}, #{resolveVideo,jdbcType=VARCHAR}, #{content,jdbcType=CLOB}, 
+      #{options,jdbcType=CLOB}, #{resolve,jdbcType=CLOB}, #{myAnswer,jdbcType=CLOB}, 
+      #{answerVideo,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.codyy.oc.onlinetest.entity.ExamPracticeQuestion" >
+    insert into EXAM_PRACTICE_QUESTION
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="examPracticeQuestionId != null" >
+        EXAM_PRACTICE_QUESTION_ID,
+      </if>
+      <if test="examPracticeId != null" >
+        EXAM_PRACTICE_ID,
+      </if>
+      <if test="answer != null" >
+        ANSWER,
+      </if>
+      <if test="difficulty != null" >
+        DIFFICULTY,
+      </if>
+      <if test="type != null" >
+        TYPE,
+      </if>
+      <if test="result != null" >
+        RESULT,
+      </if>
+      <if test="resolveVideo != null" >
+        RESOLVE_VIDEO,
+      </if>
+      <if test="content != null" >
+        CONTENT,
+      </if>
+      <if test="options != null" >
+        OPTIONS,
+      </if>
+      <if test="resolve != null" >
+        RESOLVE,
+      </if>
+      <if test="myAnswer != null" >
+        MY_ANSWER,
+      </if>
+       <if test="answerVideo != null" >
+        ANSWER_VIDEO
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="examPracticeQuestionId != null" >
+        #{examPracticeQuestionId,jdbcType=VARCHAR},
+      </if>
+      <if test="examPracticeId != null" >
+        #{examPracticeId,jdbcType=VARCHAR},
+      </if>
+      <if test="answer != null" >
+        #{answer,jdbcType=VARCHAR},
+      </if>
+      <if test="difficulty != null" >
+        #{difficulty,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null" >
+        #{type,jdbcType=VARCHAR},
+      </if>
+      <if test="result != null" >
+        #{result,jdbcType=DECIMAL},
+      </if>
+      <if test="resolveVideo != null" >
+        #{resolveVideo,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null" >
+        #{content,jdbcType=CLOB},
+      </if>
+      <if test="options != null" >
+        #{options,jdbcType=CLOB},
+      </if>
+      <if test="resolve != null" >
+        #{resolve,jdbcType=CLOB},
+      </if>
+      <if test="myAnswer != null" >
+        #{myAnswer,jdbcType=CLOB},
+      </if>
+       <if test="answerVideo != null" >
+        #{answerVideo,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.codyy.oc.onlinetest.entity.ExamPracticeQuestion" >
+    update EXAM_PRACTICE_QUESTION
+    <set >
+      <if test="examPracticeId != null" >
+        EXAM_PRACTICE_ID = #{examPracticeId,jdbcType=VARCHAR},
+      </if>
+      <if test="answer != null" >
+        ANSWER = #{answer,jdbcType=VARCHAR},
+      </if>
+      <if test="difficulty != null" >
+        DIFFICULTY = #{difficulty,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null" >
+        TYPE = #{type,jdbcType=VARCHAR},
+      </if>
+      <if test="result != null" >
+        RESULT = #{result,jdbcType=DECIMAL},
+      </if>
+      <if test="resolveVideo != null" >
+        RESOLVE_VIDEO = #{resolveVideo,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null" >
+        CONTENT = #{content,jdbcType=CLOB},
+      </if>
+      <if test="options != null" >
+        OPTIONS = #{options,jdbcType=CLOB},
+      </if>
+      <if test="resolve != null" >
+        RESOLVE = #{resolve,jdbcType=CLOB},
+      </if>
+      <if test="myAnswer != null" >
+        MY_ANSWER = #{myAnswer,jdbcType=CLOB},
+      </if>
+      <if test="answerVideo != null" >
+        ANSWER_VIDEO = #{answerVideo,jdbcType=VARCHAR}
+      </if>
+    </set>
+    where EXAM_PRACTICE_QUESTION_ID = #{examPracticeQuestionId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.codyy.oc.onlinetest.entity.ExamPracticeQuestion" >
+    update EXAM_PRACTICE_QUESTION
+    set EXAM_PRACTICE_ID = #{examPracticeId,jdbcType=VARCHAR},
+      ANSWER = #{answer,jdbcType=VARCHAR},
+      DIFFICULTY = #{difficulty,jdbcType=VARCHAR},
+      TYPE = #{type,jdbcType=VARCHAR},
+      RESULT = #{result,jdbcType=DECIMAL},
+      RESOLVE_VIDEO = #{resolveVideo,jdbcType=VARCHAR},
+      CONTENT = #{content,jdbcType=CLOB},
+      OPTIONS = #{options,jdbcType=CLOB},
+      RESOLVE = #{resolve,jdbcType=CLOB},
+      MY_ANSWER = #{myAnswer,jdbcType=CLOB},
+      ANSWER_VIDEO = #{answerVideo,jdbcType=VARCHAR}
+    where EXAM_PRACTICE_QUESTION_ID = #{examPracticeQuestionId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.codyy.oc.onlinetest.entity.ExamPracticeQuestion" >
+    update EXAM_PRACTICE_QUESTION
+    set EXAM_PRACTICE_ID = #{examPracticeId,jdbcType=VARCHAR},
+      ANSWER = #{answer,jdbcType=VARCHAR},
+      DIFFICULTY = #{difficulty,jdbcType=VARCHAR},
+      TYPE = #{type,jdbcType=VARCHAR},
+      RESULT = #{result,jdbcType=DECIMAL},
+      RESOLVE_VIDEO = #{resolveVideo,jdbcType=VARCHAR},
+      ANSWER_VIDEO = #{answerVideo,jdbcType=VARCHAR}
+    where EXAM_PRACTICE_QUESTION_ID = #{examPracticeQuestionId,jdbcType=VARCHAR}
+  </update>
+  
+  
+  <insert id="insertBatch" parameterType="java.util.List">
+	 insert into EXAM_PRACTICE_QUESTION (
+	  EXAM_PRACTICE_QUESTION_ID, EXAM_PRACTICE_ID, 
+      ANSWER, DIFFICULTY, TYPE, RESOLVE_VIDEO, CONTENT, 
+      OPTIONS, RESOLVE, FILL_IN_ANSWER_TYPE, FILL_IN_SCORE_TYPE,CONTENT_VIDEO)
+      <foreach collection="list" item="item" open="(" close=")" separator="union all" >  
+         select 
+           #{item.examPracticeQuestionId},
+           #{item.examPracticeId},
+           #{item.answer},
+           #{item.difficulty},
+           #{item.type},
+           #{item.resolveVideo},
+           #{item.content},
+           #{item.options},
+           #{item.resolve},
+           #{item.fillInAnswerType},
+           #{item.fillInScoreType},
+           #{item.contentVideo}
+         from dual
+      </foreach>   
+  </insert>
+  
+  <!-- 获取巩固测试试题 -->
+  <select id="getExamPracticeQuestion" parameterType="java.util.List" resultMap="ResultMapWithBLOBs">
+	  select 
+      <include refid="Base_Column_List" />
+      ,
+      <include refid="Blob_Column_List" />
+    from EXAM_PRACTICE_QUESTION
+    where EXAM_PRACTICE_ID = #{examPracticeId} 
+    order by type DESC
+ </select>
+ 
+  <!-- 插入巩固测试学生回答 -->
+  <update id="updateExamPracticeAnswer" parameterType="java.util.List">
+	 <foreach collection="list" item="item" index="index" open="begin" close="end;" separator="" > 
+            update EXAM_PRACTICE_QUESTION
+            <set>       
+                RESULT = #{item.result},
+                MY_ANSWER=#{item.myAnswer},
+                ANSWER_VIDEO = #{item.answerVideo}
+                
+            </set>
+            where EXAM_PRACTICE_QUESTION_ID = #{item.examPracticeQuestionId};
+        </foreach>
+  </update>
+  
+  <!-- 获取巩固测试 题目顺序 -->
+  <select id="getQuestionTypeByPracticeId" parameterType="java.lang.String" resultType="com.codyy.oc.onlinetest.entity.ExamPracticeQuestion">
+	select 
+      distinct  q.type    as  type
+    from EXAM_PRACTICE_QUESTION  q
+    where EXAM_PRACTICE_ID = #{examPracticeId} 
+    order by q.type DESC
+  
+  </select>
+  
+  
+</mapper>

@@ -1,0 +1,1177 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.codyy.oc.onlinetest.dao.ExamTaskMapper" >
+  <resultMap id="BaseResultMap" type="com.codyy.oc.onlinetest.entity.ExamTask" >
+    <id column="EXAM_TASK_ID" property="examTaskId" jdbcType="VARCHAR" />
+    <result column="EXAM_ID" property="examId" jdbcType="VARCHAR" />
+    <result column="BASE_USER_ID" property="baseUserId" jdbcType="VARCHAR" />
+    <result column="TASK_TYPE" property="taskType" jdbcType="VARCHAR" />
+    <result column="START_TIME" property="startTime" jdbcType="TIMESTAMP" />
+    <result column="FINISHED_TIME" property="finishedTime" jdbcType="TIMESTAMP" />
+    <result column="CREATE_TIME" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="FINISHED_COUNT" property="finishedCount" jdbcType="DECIMAL" />
+    <result column="ASSIGNED_COUNT" property="assignedCount" jdbcType="DECIMAL" />
+    <result column="READ_OVER_COUNT" property="readOverCount" jdbcType="DECIMAL" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    EXAM_TASK_ID, EXAM_ID, BASE_USER_ID, TASK_TYPE, START_TIME, FINISHED_TIME, CREATE_TIME, 
+    FINISHED_COUNT, ASSIGNED_COUNT, READ_OVER_COUNT
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from EXAM_TASK
+    where EXAM_TASK_ID = #{examTaskId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from EXAM_TASK
+    where EXAM_TASK_ID = #{examTaskId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.codyy.oc.onlinetest.entity.ExamTask" >
+    insert into EXAM_TASK (EXAM_TASK_ID, EXAM_ID, BASE_USER_ID, 
+      TASK_TYPE, START_TIME, FINISHED_TIME, 
+      CREATE_TIME, FINISHED_COUNT, ASSIGNED_COUNT, READ_OVER_COUNT,SCORE,EXAM_TYPE_ID,TITLE,ANSWER_TIME
+      )
+     (select #{examTaskId,jdbcType=VARCHAR}, #{examId,jdbcType=VARCHAR}, #{baseUserId,jdbcType=VARCHAR}, 
+      #{taskType,jdbcType=VARCHAR}, #{startTime,jdbcType=TIMESTAMP}, #{finishedTime,jdbcType=TIMESTAMP}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{finishedCount,jdbcType=DECIMAL}, #{assignedCount,jdbcType=DECIMAL},
+      #{readOverCount,jdbcType=DECIMAL},ee.score,ee.exam_type_id,ee.title,ee.answer_time 
+      from exam_exam ee where ee.exam_id = #{examId,jdbcType=VARCHAR} 
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.codyy.oc.onlinetest.entity.ExamTask" >
+    insert into EXAM_TASK
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="examTaskId != null" >
+        EXAM_TASK_ID,
+      </if>
+      <if test="examId != null" >
+        EXAM_ID,
+      </if>
+      <if test="baseUserId != null" >
+        BASE_USER_ID,
+      </if>
+      <if test="taskType != null" >
+        TASK_TYPE,
+      </if>
+      <if test="startTime != null" >
+        START_TIME,
+      </if>
+      <if test="finishedTime != null" >
+        FINISHED_TIME,
+      </if>
+      <if test="createTime != null" >
+        CREATE_TIME,
+      </if>
+      <if test="finishedCount != null" >
+        FINISHED_COUNT,
+      </if>
+      <if test="assignedCount != null" >
+        ASSIGNED_COUNT,
+      </if>
+      <if test="readOverCount != null" >
+        READ_OVER_COUNT,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="examTaskId != null" >
+        #{examTaskId,jdbcType=VARCHAR},
+      </if>
+      <if test="examId != null" >
+        #{examId,jdbcType=VARCHAR},
+      </if>
+      <if test="baseUserId != null" >
+        #{baseUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="taskType != null" >
+        #{taskType,jdbcType=VARCHAR},
+      </if>
+      <if test="startTime != null" >
+        #{startTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="finishedTime != null" >
+        #{finishedTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="finishedCount != null" >
+        #{finishedCount,jdbcType=DECIMAL},
+      </if>
+      <if test="assignedCount != null" >
+        #{assignedCount,jdbcType=DECIMAL},
+      </if>
+      <if test="readOverCount != null" >
+        #{readOverCount,jdbcType=DECIMAL},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.codyy.oc.onlinetest.entity.ExamTask" >
+    update EXAM_TASK
+    <set >
+      <if test="examId != null" >
+        EXAM_ID = #{examId,jdbcType=VARCHAR},
+      </if>
+      <if test="baseUserId != null" >
+        BASE_USER_ID = #{baseUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="taskType != null" >
+        TASK_TYPE = #{taskType,jdbcType=VARCHAR},
+      </if>
+      <if test="startTime != null" >
+        START_TIME = #{startTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="finishedTime != null" >
+        FINISHED_TIME = #{finishedTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createTime != null" >
+        CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="finishedCount != null" >
+        FINISHED_COUNT = #{finishedCount,jdbcType=DECIMAL},
+      </if>
+      <if test="assignedCount != null" >
+        ASSIGNED_COUNT = #{assignedCount,jdbcType=DECIMAL},
+      </if>
+      <if test="readOverCount != null" >
+         READ_OVER_COUNT = #{readOverCount,jdbcType=DECIMAL}
+      </if>
+    </set>
+    where EXAM_TASK_ID = #{examTaskId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.codyy.oc.onlinetest.entity.ExamTask" >
+    update EXAM_TASK
+    set EXAM_ID = #{examId,jdbcType=VARCHAR},
+      BASE_USER_ID = #{baseUserId,jdbcType=VARCHAR},
+      TASK_TYPE = #{taskType,jdbcType=VARCHAR},
+      START_TIME = #{startTime,jdbcType=TIMESTAMP},
+      FINISHED_TIME = #{finishedTime,jdbcType=TIMESTAMP},
+      CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
+      FINISHED_COUNT = #{finishedCount,jdbcType=DECIMAL},
+      ASSIGNED_COUNT = #{assignedCount,jdbcType=DECIMAL},
+      READ_OVER_COUNT = #{readOverCount,jdbcType=DECIMAL}
+    where EXAM_TASK_ID = #{examTaskId,jdbcType=VARCHAR}
+  </update>
+  
+  
+  <!-- 学校空间 - 班级测试列表 -->
+  <select id="getClassExamPageList" parameterType="com.codyy.commons.page.Page" resultType="com.codyy.oc.onlinetest.view.ExamTaskView">
+       
+    select 
+         t2.exam_task_id          as    examTaskId,
+         t2.start_time            as    startTime,
+         t2.finished_time         as    finishedTime,
+         t2.finished_count        as    finishedCount,
+         t2.assigned_count        as    assignedCount,
+         t2.exam_id               as    examId,
+         t2.exam_category_type    as    examCategoryType,
+         t2.title                 as    title,
+         t2.score                 as    score,
+         t2.answer_time           as    answerTime,
+         t2.subject_name          as    subjectName,
+         t2.classlevel_id         as    classlevelId,
+         t2.classlevel_name       as    classlevelName,
+         t2.name                  as    examTypeName,
+         t2.status                as    status
+    
+    from      
+    (   
+       
+       
+     select       
+         e.exam_task_id, 
+         e.start_time,            
+         e.finished_time, 
+         e.finished_count,      
+         e.assigned_count, 
+         ex.exam_id,       
+         ex.exam_category_type, 
+         e.title,               
+         e.score,  
+         e.answer_time,          
+         bs.subject_name, 
+         t1.classlevel_id,         
+         t1.classlevel_name, 
+         t1.class_id,
+         t1.class_name,       
+         et.name,                 
+         (case 
+           when  sysdate &lt; e.start_time then 'INIT'
+           when  sysdate &gt;= e.start_time and sysdate &lt;= (e.finished_time+ ex.ANSWER_TIME/60/24) then 'PROGRESS'
+           when  sysdate &gt; (e.finished_time + ex.ANSWER_TIME/60/24) then 'END'
+         end)  as status
+         
+     from exam_task   e
+     
+     left join  exam_exam ex
+       on  e.exam_id = ex.exam_id
+       
+     left join  exam_type  et 
+       on  e.exam_type_id = et.exam_type_id
+       
+     left join  base_subject  bs
+       on  ex.base_subject_id = bs.base_subject_id
+     
+     left join (
+     
+         select 
+           er.exam_task_id,
+           wm_concat(distinct er.base_classlevel_id) classlevel_id,
+           wm_concat(distinct er.classlevel_name) classlevel_name,
+           wm_concat(distinct er.base_class_id)   class_id,
+           wm_concat(distinct er.class_name)  class_name
+         from exam_result er 
+         group by er.exam_task_id
+     ) t1 
+      on t1.exam_task_id = e.exam_task_id          
+       
+     where 1=1 
+           and e.task_type='ASSIGN'
+           and ex.IS_DELETE ='N'
+           and e.base_user_id in (
+                   select u.base_user_id 
+                   from base_user u 
+                   where u.school_id = #{map.schoolId}
+                   and u.user_type not in ('STUDENT','PARENT') 
+                 )
+     
+     <if test="map.beginTime != null and map.beginTime !=''">
+        and e.create_time &gt;= #{map.beginTime}
+     </if>
+     <if test="map.endTime != null and map.endTime !=''">
+        and e.create_time &lt;= #{map.endTime}
+     </if>
+     <if test="map.subjectId != null and map.subjectId !=''">
+        and (bs.base_subject_id = #{map.subjectId} or #{map.subjectId} = '0')
+     </if>
+   
+     
+      <choose>
+         <when test="map.status == 'INIT'">
+            and  sysdate &lt;e.start_time
+         </when>
+         <when test="map.status == 'PROGRESS'">
+            and  sysdate &gt;= e.start_time and sysdate &lt;= (e.finished_time+ ex.ANSWER_TIME/60/24)
+         </when>
+         <when test="map.status == 'END'">
+            and sysdate &gt; (e.finished_time + ex.ANSWER_TIME/60/24)
+         </when>
+         <otherwise>
+            and #{map.status} = '0'
+         </otherwise>
+      </choose>
+     
+     <if test="map.examTypeId != null and map.examTypeId !=''">
+        and (et.exam_type_id = #{map.examTypeId} or #{map.examTypeId} = '0')
+     </if>
+      <if test="map.examName != null and map.examName !=''">
+        and e.title like '%' || #{map.examName} || '%' ESCAPE '/'
+     </if>
+     order by e.create_time desc ) t2
+      <where>
+       <if test="map.classlevelId != null and map.classlevelId !=''">
+          t2.classlevel_id like '%' || #{map.classlevelId} || '%' ESCAPE '/'
+       </if>
+       <if test="map.classId != null and map.classId !=''">
+         and  t2.class_id like  '%' || #{map.classId} || '%' ESCAPE '/'
+       </if>
+       
+      </where>
+  </select>
+  
+  
+  <!-- 班级空间 - 测试列表 -->
+  <select id="getClsClassExamPageList" parameterType="com.codyy.commons.page.Page" resultType="com.codyy.oc.onlinetest.view.ExamTaskView">
+	select
+	 
+	     e.exam_task_id           as    examTaskId,
+         e.start_time             as    startTime,
+         e.finished_time          as    finishedTime,
+         e.finished_count         as    finishedCount,
+         e.assigned_count         as    assignedCount,
+         ex.exam_id               as    examId,
+         ex.exam_category_type    as    examCategoryType,
+         e.title                  as    title,
+         e.score                  as    score,
+         e.answer_time            as    answerTime,
+         bs.subject_name          as    subjectName,
+         et.name                  as    examTypeName,
+         (case 
+           when  sysdate &lt; e.start_time then 'INIT'
+           when  sysdate &gt;= e.start_time and sysdate &lt;= (e.finished_time+ ex.ANSWER_TIME/60/24) then 'PROGRESS'
+           when  sysdate &gt; (e.finished_time + ex.ANSWER_TIME/60/24) then 'END'
+         end)  as status
+
+    from exam_task e
+
+  	left join exam_exam ex
+       on e.exam_id = ex.exam_id
+
+  	left join exam_type et
+       on e.exam_type_id = et.exam_type_id
+
+  	left join base_subject bs
+       on ex.base_subject_id = bs.base_subject_id
+
+    right join (
+             
+             select
+               distinct er.exam_task_id      
+             from exam_result er
+             
+              where er.base_classlevel_id = #{map.classlevelId}
+                    
+                  and er.base_class_id = #{map.classId}
+         ) t
+
+       on t.exam_task_id = e.exam_task_id
+
+     where e.task_type = 'ASSIGN'
+     
+      <if test="map.beginTime != null and map.beginTime !=''">
+        and e.create_time &gt;= #{map.beginTime}
+     </if>
+     <if test="map.endTime != null and map.endTime !=''">
+        and e.create_time &lt;= #{map.endTime}
+     </if>
+     <if test="map.subjectId != null and map.subjectId !=''">
+        and (bs.base_subject_id = #{map.subjectId} or #{map.subjectId} = '0')
+     </if>
+   
+     
+      <choose>
+         <when test="map.status == 'INIT'">
+            and  sysdate &lt;e.start_time
+         </when>
+         <when test="map.status == 'PROGRESS'">
+            and  sysdate &gt;= e.start_time and sysdate &lt;= (e.finished_time+ ex.ANSWER_TIME/60/24)
+         </when>
+         <when test="map.status == 'END'">
+            and sysdate &gt; (e.finished_time + ex.ANSWER_TIME/60/24)
+         </when>
+         <otherwise>
+            and #{map.status} = '0'
+         </otherwise>
+      </choose>
+     
+     <if test="map.examTypeId != null and map.examTypeId !=''">
+        and (et.exam_type_id = #{map.examTypeId} or #{map.examTypeId} = '0')
+     </if>
+      <if test="map.examName != null and map.examName !=''">
+        and e.title like '%' || #{map.examName} || '%' ESCAPE '/'
+     </if>
+     order by e.create_time desc 
+    
+  </select>
+  
+  <!-- 班级空间 - 通过id查看测试 -->
+  <select id="getClsClassExamTaskById" parameterType="java.lang.String" resultType="com.codyy.oc.onlinetest.view.ExamTaskView">
+	 select 
+       e.exam_task_id       as examTaskId,
+       e.start_time         as startTime,
+       e.finished_time      as finishedTime,
+       e.finished_count     as finishedCount,
+       e.assigned_count     as assignedCount,
+       e.title              as title,
+       e.score              as score,
+       e.answer_time        as answerTime,
+       bs.subject_name      as subjectName,
+       et.name              as examTypeName
+
+    from exam_task e
+
+    left join exam_type et
+      on et.exam_type_id = e.exam_type_id
+    
+    left join  exam_exam ex
+       on  e.exam_id = ex.exam_id
+
+    left join base_subject bs
+      on ex.base_subject_id = bs.base_subject_id
+    
+    where e.exam_task_id = #{examTaskId}
+  
+  </select>
+  
+  <!-- 班级空间 - 查看测试 -->
+  <select id="getClsClassExamTask" parameterType="java.util.Map" resultType="com.codyy.oc.onlinetest.view.ExamTaskView">
+	 select 
+       e.exam_task_id       as examTaskId,
+       e.start_time         as startTime,
+       e.finished_time      as finishedTime,
+       e.finished_count     as finishedCount,
+       e.assigned_count     as assignedCount,
+       e.title              as title,
+       e.score              as score,
+       e.answer_time        as answerTime,
+       bs.subject_name      as subjectName,
+       et.name              as examTypeName,
+       t.base_classlevel_id as classlevelId,
+       t.classlevel_name    as classlevelName,
+       t.base_class_id      as classId,
+       t.class_name         as className
+
+    from exam_task e
+
+    left join exam_type et
+      on et.exam_type_id = e.exam_type_id
+    
+    left join  exam_exam ex
+       on  e.exam_id = ex.exam_id
+
+    left join base_subject bs
+      on ex.base_subject_id = bs.base_subject_id
+    
+    left join (
+    
+         select 
+         
+            distinct eet.exam_task_id,
+            er.base_classlevel_id,
+            er.classlevel_name,
+            er.base_class_id,
+            er.class_name
+         
+         from exam_task eet
+         
+         left join exam_result er 
+         
+           on er.exam_task_id =eet.exam_task_id
+          
+         where eet.exam_task_id = #{examTaskId}
+                and  er.base_classlevel_id = #{classlevelId}
+                and er.base_class_id = #{classId}
+    
+    ) t
+    on t.exam_task_id=e.exam_task_id
+  
+    where e.exam_task_id = #{examTaskId}
+  </select>
+  
+  
+  <!-- 获取所有的试卷类型 -->
+  <select id="getAllExamTypes" resultType="com.codyy.oc.base.view.SelectModel">
+      select 
+         exam_type_id  as  id,
+         name          as  name
+      from exam_type t
+      where 1=1
+      order by t.sort
+  </select>
+  
+  <!-- 查看试卷信息 -->
+  <select id="getClassExamById" parameterType="java.lang.String" resultType="com.codyy.oc.onlinetest.view.ExamTaskView">
+     select 
+       e.exam_task_id       as examTaskId,
+       e.start_time         as startTime,
+       e.finished_time      as finishedTime,
+       e.finished_count     as finishedCount,
+       e.assigned_count     as assignedCount,
+       e.title              as title,
+       e.score              as score,
+       e.answer_time        as answerTime,
+       bs.subject_name      as subjectName,
+       t.classlevel_name    as classlevelName,
+       et.name              as examTypeName
+
+    from exam_task e
+
+    left join exam_type et
+      on et.exam_type_id = e.exam_type_id
+    
+    left join  exam_exam ex
+       on  e.exam_id = ex.exam_id
+
+    left join base_subject bs
+      on ex.base_subject_id = bs.base_subject_id
+
+    left join (
+    
+       select 
+           er.exam_task_id,
+           wm_concat(distinct er.base_classlevel_id) classlevel_id,
+           wm_concat(distinct er.classlevel_name) classlevel_name
+       from exam_result er 
+       where er.exam_task_id = #{examTaskId}
+       group by er.exam_task_id
+    ) t
+    on t.exam_task_id=e.exam_task_id
+ 
+    where e.exam_task_id = #{examTaskId}
+
+     
+  </select>
+  
+  <!-- 班级统计  每个班级的数据-->
+  <select id="getExamStaticsByClass" parameterType="java.lang.String" resultType="com.codyy.oc.onlinetest.entity.ExamTaskStatistics">
+	select
+       er.base_classlevel_id       as   classlevelId,
+       er.classlevel_name          as   classlevelName, 
+       er.base_class_id            as   classId,
+       er.class_name               as   className,
+       count(er.exam_result_id)    as   commitCnt,
+       nvl(max(er.score),0)        as   highestScore,
+       nvl(min(er.score),0)        as   lowestScore,
+       nvl(trunc(avg(er.score),2),0)  as  avgScore,
+  
+        trunc(
+  
+         (sum(
+            case 
+             when er.score > et.score*0.6
+             then 1 else 0  
+             end
+          ) / count(er.exam_result_id))*100,2  
+        
+        ) as   passRate
+        
+    from EXAM_RESULT er
+
+    left join exam_task et
+      on et.exam_task_id = er.exam_task_id
+    where er.exam_task_id = #{examTaskId}
+        and er.status='checked'
+     
+    group by er.base_classlevel_id,er.classlevel_name,er.base_class_id,er.class_name
+    
+    order by er.classlevel_name,er.class_name
+   
+  </select>
+  
+  <!-- 所有班级统计结果之和 -->
+  <select id="getExamAllStatics" parameterType="java.lang.String" resultType="com.codyy.oc.onlinetest.entity.ExamTaskStatistics">
+	 select 
+         er.exam_task_id             as   examTaskId,
+         count(er.exam_result_id)    as   commitCnt,
+         nvl(max(er.score),0)        as   highestScore,
+         nvl(min(er.score),0)        as   lowestScore,
+        (nvl(trunc(avg(er.score),2),0))  as  avgScore,
+  
+        trunc(
+  
+         (sum(
+            case 
+             when er.score > et.score*0.6
+             then 1 else 0  
+             end
+          ) / count(er.exam_result_id))*100,2  
+        
+        ) as   passRate
+  
+  
+	from exam_result er
+
+	left  join exam_task et
+ 	   on et.exam_task_id = er.exam_task_id
+
+	where er.exam_task_id = #{examTaskId}
+    
+		and er.status='checked'
+
+    group by er.exam_task_id
+		
+   </select>
+  
+  <!--学校空间 - 正确率统计 -->
+  <select id="getExamRightStatisByClass" parameterType="java.util.Map" resultType="com.codyy.oc.onlinetest.entity.ExamQuestionStatistics">
+	select 
+      t.sort   as  sort,
+ 	  (case
+         when rightCnt is null then  0 
+         else   trunc ( (rightCnt/totalCnt)*100, 2)  
+       end)  rightRate
+    from ( 
+      select 
+       distinct etrq.sort,
+       eqr.result,
+       count(eqr.exam_question_id) over (partition by eqr.exam_question_id) as totalCnt,
+      
+      (case 
+      
+         when eqr.result='1' then 
+          count(eqr.exam_question_id) over (partition by eqr.exam_question_id)
+      
+      end)  as rightCnt
+      
+    
+
+       from exam_question_result  eqr
+    
+       left join  exam_result   er 
+          on er.exam_result_id=eqr.exam_result_id
+      
+       left join exam_task_r_exam_question  etrq
+          on etrq.exam_question_id=eqr.exam_question_id
+      
+       where er.exam_task_id = #{examTaskId}
+    
+          and er.base_classlevel_id = #{classlevelId}
+          and er.base_class_id = #{classId}
+          and er.status='CHECKED'
+    
+    order by etrq.sort) t
+     
+     <if test="flag ==  0">
+	   order by t.sort asc
+	 </if>
+	 <if test="flag ==  1">
+	   order by t.passRate desc
+	 </if>
+  </select>
+  
+  <!-- 学校空间 - 学生统计 -->
+  <select id="getStudentStatisList" parameterType="java.util.Map" resultType="com.codyy.oc.onlinetest.entity.ExamStudentStatistic">
+	with eq as
+    (
+  
+      select
+  
+      t.base_user_id,
+    
+      trunc((t.rightCnt / t.total) * 100, 2) as rightRate
+  
+      from (
+           
+           select
+           
+             distinct er.base_user_id,
+             count(eqr.exam_question_id) over(partition by er.base_user_id) as total,
+             sum(eqr.result) over(partition by er.base_user_id) as rightCnt
+           
+            from exam_question_result eqr
+           
+            left join exam_question eq
+               on eq.exam_question_id = eqr.exam_question_id
+           
+            left join exam_result er
+               on er.exam_result_id = eqr.exam_result_id
+           
+            where er.exam_task_id = #{examTaskId}
+                 
+              and er.base_classlevel_id = #{classlevelId}
+              and er.base_class_id = #{classId}
+                 and er.status='CHECKED'
+              and eq.type not in ('ASK_ANSWER', 'COMPUTING')
+           
+            group by er.base_user_id, eqr.exam_question_id, eqr.result
+            order by er.base_user_id) t
+  
+    )
+
+	select er.exam_result_id      as examResultId,
+        er.base_user_id           as baseUserId,
+        bu.realname               as baseUserName,
+        nvl(er.score, 0)          as score,
+        nvl(er.answer_count, 0)   as answerCount,
+        er.question_count         as totalCount,
+        nvl(eq.rightRate, 0)      as rightRate
+
+  	from exam_result er
+
+  	left join base_user bu
+
+    	on bu.base_user_id = er.base_user_id
+
+  	left join eq
+
+    	on eq.base_user_id = er.base_user_id
+
+ 	where er.exam_task_id = #{examTaskId}
+      
+         and er.base_classlevel_id = #{classlevelId}
+         and er.base_class_id = #{classId}
+         and er.status='CHECKED'
+        
+      <if test="nameSort == 1 and nameSort != ''">
+          order by baseUserName desc
+      </if>     
+      <if test="nameSort == 0 and nameSort != ''">
+          order by baseUserName asc 
+      </if>
+      
+      <if test="scoreSort == 1 and scoreSort != ''">
+         order by score desc
+      </if>
+      
+      <if test="scoreSort == 0 and scoreSort != ''">
+         order by score asc
+      </if>
+      
+      <if test="numSort == 1 and numSort != ''">
+         order by answerCount desc, baseUserName desc
+      </if>
+      <if test="numSort == 0 and numSort != ''">
+         order by answerCount asc, baseUserName asc
+      </if>
+      
+      <if test="rightSort == 1 and rightSort != ''">
+         order by rightRate desc
+      </if>
+      <if test="rightSort == 0 and rightSort != ''">
+         order by rightRate asc
+      </if>
+  </select>
+  
+  <!-- 测试结果 -->
+  <select id="getExamResultByUserId"  resultType="com.codyy.oc.onlinetest.entity.ExamResult">
+       select 
+          er.exam_result_id as examResultId,
+          er.base_user_id   as baseUserId,
+          er.score          as score,
+          bu.username       as baseUserName
+       from exam_result er
+       left join base_user bu
+          on er.base_user_id = bu.base_user_id
+       where  er.base_user_id = #{baseUserId}
+            and er.exam_task_id = #{examTaskId}
+  </select>
+  
+  
+  
+  <!-- 家长空间 - 教师布置 -->
+  <select id="getTeacherAssignPageList" parameterType="com.codyy.commons.page.Page" resultType="com.codyy.oc.onlinetest.view.ExamTaskView" >
+      select       
+         e.exam_task_id          as    examTaskId,
+         e.start_time            as    startTime,
+         e.finished_time         as    finishedTime,
+         e.finished_count        as    finishedCount,
+         e.assigned_count        as    assignedCount,
+         ex.exam_id              as    examId,
+         ex.exam_category_type   as    examCategoryType,
+         e.title                 as    title,
+         e.score                 as    score,
+         e.answer_time           as    answerTime,
+         bs.subject_name         as    subjectName,
+         t.base_classlevel_id    as    classlevelId,
+         t.classlevel_name       as    classlevelName,
+         et.name                 as    examTypeName,
+         t.status                as    status,
+         t.score                 as    myScore
+         
+     from exam_task   e
+     
+     left join  exam_exam ex
+       on  e.exam_id = ex.exam_id
+       
+     left join  exam_type  et 
+       on  ex.exam_type_id = et.exam_type_id
+       
+     right join (
+           select 
+             er.exam_task_id,
+             er.status,
+             er.base_classlevel_id,
+             er.classlevel_name,
+             er.score
+           from exam_result er
+           where er.base_user_id = #{map.userId}
+           
+       ) t
+       on e.exam_task_id=t.exam_task_id
+       
+     left join  base_subject  bs
+       on  ex.base_subject_id = bs.base_subject_id
+                                                                                                                                                                                                                                                                                                                                                                                                                                
+     
+     where 1=1 and e.task_type='ASSIGN'
+     
+     <if test="map.beginTime != null and map.beginTime !=''">
+        and e.create_time &gt;= #{map.beginTime}
+     </if>
+     <if test="map.endTime != null and map.endTime !=''">
+        and e.create_time &lt;= #{map.endTime}
+     </if>
+     <if test="map.subjectId != null and map.subjectId !=''">
+        and (bs.base_subject_id = #{map.subjectId} or  #{map.subjectId} = '0')
+     </if>
+     <if test="map.classlevelId != null and map.classlevelId !=''">
+        and (t.base_classlevel_id = #{map.classlevelId} or #{map.classlevelId} = '0')
+     </if>
+      <if test="map.examTypeId != null and map.examTypeId !=''">
+        and (et.exam_type_id = #{map.examTypeId} or #{map.examTypeId} = '0')
+     </if>
+     <if test="map.examName != null and map.examName !=''">
+        and e.title like '%' || #{map.examName} || '%' ESCAPE '/'
+     </if>
+      <if test="map.status != null and map.status !=''">
+        and (t.status = #{map.status} or #{map.status} = '0')
+     </if>
+       
+     order by e.create_time desc
+  </select>
+   
+  <!-- 教师空间 - 测试任务列表 -->
+  <select id="getClassExamTaskPageList" parameterType="com.codyy.commons.page.Page" resultType="com.codyy.oc.onlinetest.view.ExamTaskView">
+	select 
+         t2.exam_task_id          as    examTaskId,
+         t2.create_time         as    createTime,
+         t2.start_time            as    startTime,
+         t2.finished_time         as    finishedTime,
+         t2.finished_count        as    finishedCount,
+         t2.assigned_count        as    assignedCount,
+         t2.exam_id               as    examId,
+         t2.exam_category_type    as    examCategoryType,
+         t2.title                 as    title,
+         t2.score                 as    score,
+         t2.answer_time           as    answerTime,
+         t2.subject_name          as    subjectName,
+         t2.classlevel_id         as    classlevelId,
+         t2.classlevel_name       as    classlevelName,
+         t2.name                  as    examTypeName,
+         t2.status                as    status,
+         t2.delFlag               as    delFlag
+    
+    from      
+    (   
+       
+       
+     select       
+         e.exam_task_id,
+         e.create_time, 
+         e.start_time,            
+         e.finished_time, 
+         e.finished_count,      
+         e.assigned_count, 
+         ex.exam_id,       
+         ex.exam_category_type, 
+         e.title,               
+         e.score,  
+         e.answer_time,          
+         bs.subject_name, 
+         t1.classlevel_id,         
+         t1.classlevel_name,       
+         et.name,                 
+             (
+              case 
+                     
+                  when nvl(e.finished_count, 0) > nvl(e.read_over_count, 0) then 1
+                  else  0
+                  end 
+                ) status,
+                
+                 (
+                  case
+                    when  sysdate &lt; e.start_time  then  1 
+                    else 0
+                  end
+                ) delFlag
+                
+         
+     from exam_task   e
+     
+     left join  exam_exam ex
+       on  e.exam_id = ex.exam_id
+       
+     left join  exam_type  et 
+       on  e.exam_type_id = et.exam_type_id
+       
+     left join  base_subject  bs
+       on  ex.base_subject_id = bs.base_subject_id
+     
+     left join (
+     
+         select 
+           er.exam_task_id,
+           wm_concat(distinct er.base_classlevel_id) classlevel_id,
+           wm_concat(distinct er.classlevel_name) classlevel_name
+         from exam_result er 
+         group by er.exam_task_id
+     ) t1 
+      on t1.exam_task_id = e.exam_task_id          
+       
+     where 1=1 
+           and e.task_type='ASSIGN'
+           and e.base_user_id = #{map.userId}
+
+     <if test="map.beginTime != null and map.beginTime !=''">
+        and e.create_time &gt;= #{map.beginTime}
+     </if>
+     <if test="map.endTime != null and map.endTime !=''">
+        and e.create_time &lt;= #{map.endTime}
+     </if>
+     <if test="map.subjectId != null and map.subjectId !=''">
+        and (bs.base_subject_id = #{map.subjectId} or  #{map.subjectId} = '0')
+     </if>
+      <if test="map.examTypeId != null and map.examTypeId !=''">
+        and (et.exam_type_id = #{map.examTypeId} or #{map.examTypeId} = '0')
+     </if>
+     <if test="map.examName != null and map.examName !='' ">
+        and e.title like '%' || #{map.examName} || '%' ESCAPE '/'
+     </if>
+     order by e.create_time desc) t2
+      
+      <where>
+       <if test="map.classlevelId != null and map.classlevelId !=''">
+          t2.classlevel_id like '%' || #{map.classlevelId} || '%' ESCAPE '/'
+       </if>
+      </where>
+    
+  </select>
+  
+  
+  
+  <insert id="copyTaskQuestion">
+  	insert into EXAM_TASK_R_EXAM_QUESTION (exam_question_id,exam_task_id,sort,score) select EXAM_QUESTION_ID,#{examTaskId},sort,score from EXAM_QUESTION
+  	 where EXAM_ID = #{examId}
+  </insert>
+  
+  
+  <!-- 学生空间 - 测试任务列表 -->
+  <select id="getStudentTaskPageList" parameterType="com.codyy.commons.page.Page" resultType="com.codyy.oc.onlinetest.view.ExamTaskView">
+    select 
+       e.exam_task_id        as examTaskId,
+       e.create_time         as createTime,
+       e.start_time          as startTime,
+       e.finished_time       as finishedTime,
+       e.finished_count      as finishedCount,
+       e.assigned_count      as assignedCount,
+       ex.exam_id            as examId,
+       ex.exam_category_type as examCategoryType,
+       e.title               as title,
+       e.score               as score,
+       e.answer_time         as answerTime,
+       bs.subject_name       as subjectName,
+       et.name               as examTypeName,
+       er.base_classlevel_id as classlevelId,
+       er.classlevel_name    as classlevelName,
+       er.status             as status,
+       ep.status             as practiceStatus,
+       ep.exam_practice_id   as examPracticeId
+  	from exam_task e
+  	left join exam_exam ex
+       on e.exam_id = ex.exam_id
+  	left join exam_type et
+       on ex.exam_type_id = et.exam_type_id
+  	left join base_subject bs
+       on ex.base_subject_id = bs.base_subject_id
+  	left join exam_result er
+        on er.exam_task_id = e.exam_task_id
+    left join exam_practice ep
+        on er.exam_result_id=ep.exam_result_id
+ 	where 1 = 1
+      and ex.IS_DELETE = 'N'
+      and er.base_user_id = #{map.userId}
+      <if test="map.isSelf != true">
+	      and e.task_type = 'ASSIGN'
+      </if>
+      <if test="map.isSelf == true">
+	      and e.task_type = 'SELF'
+      </if>
+     <if test="map.beginTime != null and map.beginTime !=''">
+        and e.create_time &gt;= #{map.beginTime}
+     </if>
+     <if test="map.endTime != null and map.endTime !=''">
+        and e.create_time &lt;= #{map.endTime}
+     </if>
+     <if test="map.subjectId != null and map.subjectId !=''">
+        and (bs.base_subject_id = #{map.subjectId} or  #{map.subjectId} = '0')
+     </if>
+     <if test="map.classlevelId != null and map.classlevelId !=''">
+       and (er.base_classlevel_id = #{map.classlevelId} or #{map.classlevelId} = '0')
+     </if>
+      <if test="map.examTypeId != null and map.examTypeId !=''">
+        and (et.exam_type_id = #{map.examTypeId} or #{map.examTypeId} = '0')
+     </if>
+     <if test="map.examName != null and map.examName !='' ">
+        and e.title like '%' || #{map.examName} || '%' ESCAPE '/'
+     </if>
+     <if test="map.status != null and map.status !='' ">
+        and (er.status = #{map.status} or #{map.status} = '0')
+     </if>
+     order by e.create_time desc
+  
+  </select> 
+   
+  <select id="getExamTypeIdByName" parameterType="String" resultType="String">
+  	select EXAM_TYPE_ID from exam_type where NAME = #{name,jdbcType=VARCHAR}
+  </select>
+  
+  
+  
+  <!-- 学生空间 - 获取测试信息 -->
+  <select id="getStudentTaskView" parameterType="java.util.Map" resultType="com.codyy.oc.onlinetest.view.ExamTaskView">
+	select 
+	   e.exam_task_id        as examTaskId,
+	   er.exam_result_id     as examResultId,
+       e.start_time          as startTime,
+       e.finished_time       as finishedTime,
+       e.finished_count      as finishedCount,
+       e.assigned_count      as assignedCount,
+       ex.exam_id            as examId,
+       e.title               as title,
+       e.score               as score,
+       e.answer_time         as answerTime,
+       bs.subject_name       as subjectName,
+       er.classlevel_name    as classlevelName,
+       er.base_classlevel_id as classlevelId,
+       er.base_class_id      as classId,
+       et.name               as examTypeName,
+       e.create_time         as createTime,
+       ex.exam_category_type as examCategoryType
+
+  	from exam_task e
+
+  	left join exam_exam ex
+		on e.exam_id = ex.exam_id
+
+  	left join exam_type et
+    	on et.exam_type_id = ex.exam_type_id
+
+  	left join base_subject bs
+    	on ex.base_subject_id = bs.base_subject_id
+
+  	left join exam_result er
+    	on er.exam_task_id = e.exam_task_id
+
+ 	where e.exam_task_id = #{examTaskId}
+   		and er.base_user_id = #{userId}
+  </select>
+  
+  
+  
+  <!-- 学生空间 - 统计班级试卷 -->
+  <select id="getClassExamStaticsByStudent" parameterType="java.util.Map" resultType="com.codyy.oc.onlinetest.entity.ExamTaskStatistics">
+	with t_statis as (
+     select
+       distinct t.exam_task_id,
+       (case
+        when t.right is null then t.wrong
+        when t.wrong is null then t.total - t.right
+    
+       end) mistakeCnt,
+    
+      (case
+        when t.right is null then 
+          trunc(((t.total - t.wrong) / t.total) * 100, 2)
+        when t.wrong is null then
+          trunc((t.right / t.total) * 100, 2)
+    
+      end) rightRate
+  
+     from (
+           
+         select
+           
+           distinct er.exam_task_id,
+           eqr.result,
+           nvl(count(er.exam_task_id) 
+                 over(partition by er.exam_task_id),
+                         0) as total,
+                     
+           (case
+               when eqr.result = '1' then
+                   count(1) over(partition by eqr.result)
+                     
+            end) right,
+                     
+           (case
+               when eqr.result = '0' then
+                    count(1) over(partition by eqr.result)
+                     
+            end) wrong
+           
+         from exam_question_result eqr
+           
+         left join exam_result er
+               on er.exam_result_id = eqr.exam_result_id
+           
+         left join exam_question eq
+           
+               on eqr.exam_question_id = eq.exam_question_id
+           
+         where eq.type not in ('ASK_ANSWER','COMPUTING')
+              and er.exam_task_id = #{examTaskId}
+              and er.base_classlevel_id = #{classlevelId}
+              and er.base_user_id = #{userId}
+              and er.base_class_id = #{classId}
+              and er.status ='CHECKED'  
+         ) t
+  
+      )
+
+
+      select
+        er.exam_task_id,
+        count(1) as commitCnt,
+        nvl(max(er.score), 0) as highestScore,
+        nvl(min(er.score), 0) as lowestScore,
+        nvl(trunc(avg(er.score), 2), 0) as avgScore,
+        nvl(sum(t1.myscore), 0) as myScore,
+        nvl(avg(t2.mistakeCnt), 0) as mistakeCnt,
+        nvl(avg(t2.rightRate), 0)  as rightRate
+
+     from exam_result er
+
+     left join (select er.exam_result_id, er.score as myscore
+                 from exam_result er
+                where er.base_user_id = #{userId}
+                 and er.exam_task_id = #{examTaskId}) t1
+        on t1.exam_result_id = er.exam_result_id
+
+    left join t_statis t2
+         on t2.exam_task_id = er.exam_task_id
+
+    where er.exam_task_id = #{examTaskId}
+      
+        and er.base_classlevel_id = #{classlevelId}
+      
+        and er.base_class_id = #{classId}
+        
+        and er.status='CHECKED' 
+
+    group by er.exam_task_id
+  
+  </select>
+  
+  <!-- 学生空间 获取测试结果 -->
+  <select id="getStudentExamResult" parameterType="java.util.Map" resultType="com.codyy.oc.onlinetest.entity.ExamResult">
+	select 
+	    EXAM_RESULT_ID  as examResultId, 
+	    EXAM_TASK_ID    as examTaskId,
+	    BASE_USER_ID    as baseUserId,
+	    STATUS          as status,
+	    SCORE           as score
+	from EXAM_RESULT er
+	where er.exam_task_id = #{examTaskId}
+	     and er.base_user_id = #{userId}
+	     and er.status='CHECKED'
+  </select>
+  
+  
+  <!-- 学生空间 检查学生答题是否全对 -->
+  <select id="checkPracticeExam" parameterType="java.util.Map" resultType="com.codyy.oc.onlinetest.entity.ExamResult">
+	
+    select
+
+	 distinct t.EXAM_RESULT_ID as examResutId,
+	 count(t.result) as rightCount,
+	 max(t.total)   as  total
+
+    from (
+        
+        select er. EXAM_RESULT_ID,
+                eqr.result,
+                count(1) over(partition by er.exam_result_id) as total
+        
+          from EXAM_RESULT er
+        
+          left join exam_question_result eqr
+            on eqr.exam_result_id = er.exam_result_id
+         where er.exam_task_id = #{examTaskId}
+           and er.base_user_id = #{userId}
+           and er.status = 'CHECKED') t
+	where t.result = '1'
+ 	group by t.EXAM_RESULT_ID
+  
+  </select>
+  
+  <!-- 更新提交人数 -->
+  <update id="updateExamTaskCount" parameterType="com.codyy.oc.onlinetest.entity.ExamTask">
+    update EXAM_TASK
+    set FINISHED_COUNT = #{finishedCount},
+      READ_OVER_COUNT = #{readOverCount}
+    where EXAM_TASK_ID = #{examTaskId}
+    
+  
+  </update>
+</mapper>

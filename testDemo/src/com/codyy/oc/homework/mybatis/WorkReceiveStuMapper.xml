@@ -1,0 +1,372 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.codyy.oc.homework.dao.WorkReceiveStuMapper" >
+  <resultMap id="BaseResultMap" type="com.codyy.oc.homework.entity.WorkReceiveStu" >
+    <id column="WORK_RECEIVE_STU_ID" property="workReceiveStuId" jdbcType="VARCHAR" />
+    <result column="BASE_USER_ID" property="baseUserId" jdbcType="VARCHAR" />
+    <result column="WORK_HOMEWORK_ID" property="workHomeworkId" jdbcType="VARCHAR" />
+    <result column="SORT" property="sort" jdbcType="DECIMAL" />
+    <result column="STATUS" property="status" jdbcType="VARCHAR" />
+    <result column="ANSWER_COUNT" property="answerCount" jdbcType="DECIMAL" />
+    <result column="SUBMIT_TIME" property="submitTime" jdbcType="TIMESTAMP" />
+    <result column="READ_OVER_STU_ID" property="readOverStuId" jdbcType="VARCHAR" />
+    <result column="BASE_CLASS_ID" property="baseClassId" jdbcType="VARCHAR" />
+    <result column="TEXT_QUE_READ_OVER_FLAG" property="textQueReadOverFlag" jdbcType="CHAR" />
+    <result column="DOC_QUE_READ_OVER_FLAG" property="docQueReadOverFlag" jdbcType="CHAR" />
+    <result column="BASE_CLASS_NAME" property="baseClassName" jdbcType="VARCHAR" />
+    <result column="BASE_CLASSLEVEL_ID" property="baseClasslevelId" jdbcType="VARCHAR" />
+    <result column="CLASSLEVEL_NAME" property="classlevelName" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="com.codyy.oc.homework.entity.WorkReceiveStu" extends="BaseResultMap" >
+    <result column="TEXT_QUE_ANSWER" property="textQueAnswer" jdbcType="CLOB" />
+    <result column="TEXT_QUE_COMMENT" property="textQueComment" jdbcType="CLOB" />
+    <result column="DOC_QUE_COMMENT" property="docQueComment" jdbcType="CLOB" />
+    <result column="SUMMARY" property="summary" jdbcType="CLOB" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    WORK_RECEIVE_STU_ID, BASE_USER_ID, WORK_HOMEWORK_ID, SORT, STATUS, ANSWER_COUNT, 
+    SUBMIT_TIME, READ_OVER_STU_ID, BASE_CLASS_ID, TEXT_QUE_READ_OVER_FLAG, DOC_QUE_READ_OVER_FLAG, 
+    BASE_CLASS_NAME, BASE_CLASSLEVEL_ID, CLASSLEVEL_NAME
+  </sql>
+  <sql id="Blob_Column_List" >
+    TEXT_QUE_ANSWER, TEXT_QUE_COMMENT, DOC_QUE_COMMENT, SUMMARY
+  </sql>
+  
+  <select id="selectReadOverClassStudentPageList" parameterType="com.codyy.commons.page.Page" resultType="com.codyy.oc.homework.view.ReadOverClassStudentView">
+  	SELECT BU.REALNAME name,BU.BASE_USER_ID userId,WRS.WORK_RECEIVE_STU_ID receiveStuId,
+  	WRS.SUBMIT_TIME submitTime,WRS.ANSWER_COUNT answerCount,WH.FINISH_TIME finishTime,WH.QUESTION_COUNT questionCount
+	FROM WORK_RECEIVE_STU wrs 
+	join WORK_HOMEWORK wh ON WRS.WORK_HOMEWORK_ID =  WH.WORK_HOMEWORK_ID
+	LEFT JOIN BASE_USER bu ON BU.BASE_USER_ID = WRS.BASE_USER_ID
+	WHERE
+	WH.WORK_HOMEWORK_ID = #{map.workHomeworkId}
+	AND WRS.WORK_HOMEWORK_ID = WH.WORK_HOMEWORK_ID
+	AND wrs.BASE_CLASS_ID = #{map.baseClassId}
+	AND WRS.STATUS = 'END'
+	<if test="map.sort == 'desc'">
+		ORDER BY SUBMIT_TIME DESC
+	</if>
+	<if test="map.sort == 'asc'">
+		ORDER BY SUBMIT_TIME
+	</if>
+  </select>
+  <select id="selectUserByHomework" resultType="com.codyy.oc.base.view.StudentClassView" parameterType="java.lang.String">
+  	select 
+  	bu.BASE_USER_ID userId,bu.realname name,bu.BASE_CLASS_ID classId 
+  	from WORK_RECEIVE_STU wrs,BASE_USER bu 
+  	where wrs.WORK_HOMEWORK_ID = #{workHomeworkId}
+  	and wrs.BASE_USER_ID = bu.BASE_USER_ID
+  	order by wrs.sort
+  </select>
+  <delete id="deleteByHomework" parameterType="java.lang.String" >
+    delete from WORK_RECEIVE_STU
+    where WORK_HOMEWORK_ID = #{workHomeworkId,jdbcType=VARCHAR}
+  </delete>
+  <select id="selectByUserAndHomework" resultMap="BaseResultMap" parameterType="map" >
+    select 
+    <include refid="Base_Column_List" />
+    from WORK_RECEIVE_STU
+    where BASE_USER_ID = #{baseUserId,jdbcType=VARCHAR}
+    and WORK_HOMEWORK_ID = #{workHomeworkId,jdbcType=VARCHAR}
+  </select>
+  <select id="selectTextAndFileUncheckedNum" resultType="int" parameterType="map">
+  	SELECT count(1) FROM WORK_RECEIVE_STU wrs
+	WHERE WRS.BASE_CLASS_ID=#{classId}
+	AND WRS.WORK_HOMEWORK_ID=#{homeworkId}
+	and WRS.STATUS = 'END'
+  	<if test="type == 'text'">
+		AND WRS.TEXT_QUE_READ_OVER_FLAG='N'
+  	</if>
+  	<if test="type == 'file'">
+		AND WRS.DOC_QUE_READ_OVER_FLAG='N'
+  	</if>
+  </select>
+  <select id="selectReadByquestionStudent" parameterType="map" resultType="com.codyy.oc.homework.view.ReadByQueStuView">
+	SELECT WRS.WORK_RECEIVE_STU_ID workReceiveStuId,BU.BASE_USER_ID baseUserId,
+	bu.REALNAME realname,BU.HEAD_PIC headPic
+	FROM WORK_RECEIVE_STU wrs 
+	join BASE_USER bu ON WRS.BASE_USER_ID = BU.BASE_USER_ID
+	WHERE WRS.WORK_HOMEWORK_ID = #{homeworkId}
+	AND WRS.BASE_CLASS_ID = #{classId}
+	and WRS.STATUS = 'END'
+	order by WRS.SUBMIT_TIME desc
+  </select>
+  <select id="selectAnswerCountStudent" parameterType="map" resultType="int">
+	SELECT count(1)
+	FROM WORK_RECEIVE_STU wrs 
+	WHERE WRS.WORK_HOMEWORK_ID = #{homeworkId}
+	AND WRS.BASE_CLASS_ID = #{classId}
+	and WRS.STATUS = 'END'
+  </select>
+  <select id="selectReadByStuInfo" resultType="com.codyy.oc.homework.view.ReadByStuResultView" parameterType="java.lang.String">
+  	SELECT WRS.WORK_HOMEWORK_ID homeworkId,WRS.WORK_RECEIVE_STU_ID workReceiveStuId,WRS.TEXT_QUE_ANSWER textQueAnswer,
+	WRS.TEXT_QUE_READ_OVER_FLAG textQueReadOverFlag,WRS.DOC_QUE_READ_OVER_FLAG docQueReadOverFlag,BU.REALNAME answerUser
+	FROM WORK_RECEIVE_STU wrs 
+	LEFT JOIN BASE_USER bu ON wrs.BASE_USER_ID = BU.BASE_USER_ID
+	where wrs.WORK_RECEIVE_STU_ID = #{workReceiveStuId,jdbcType=VARCHAR}
+  </select>
+  
+  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from WORK_RECEIVE_STU
+    where WORK_RECEIVE_STU_ID = #{workReceiveStuId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from WORK_RECEIVE_STU
+    where WORK_RECEIVE_STU_ID = #{workReceiveStuId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.codyy.oc.homework.entity.WorkReceiveStu" >
+    insert into WORK_RECEIVE_STU (WORK_RECEIVE_STU_ID, BASE_USER_ID, WORK_HOMEWORK_ID, 
+      SORT, STATUS, ANSWER_COUNT, 
+      SUBMIT_TIME, READ_OVER_STU_ID, BASE_CLASS_ID, 
+      TEXT_QUE_READ_OVER_FLAG, DOC_QUE_READ_OVER_FLAG, BASE_CLASS_NAME, 
+      BASE_CLASSLEVEL_ID, CLASSLEVEL_NAME, TEXT_QUE_ANSWER, 
+      TEXT_QUE_COMMENT, DOC_QUE_COMMENT, SUMMARY
+      )
+    values (#{workReceiveStuId,jdbcType=VARCHAR}, #{baseUserId,jdbcType=VARCHAR}, #{workHomeworkId,jdbcType=VARCHAR}, 
+      #{sort,jdbcType=DECIMAL}, #{status,jdbcType=VARCHAR}, #{answerCount,jdbcType=DECIMAL}, 
+      #{submitTime,jdbcType=TIMESTAMP}, #{readOverStuId,jdbcType=VARCHAR}, #{baseClassId,jdbcType=VARCHAR}, 
+      #{textQueReadOverFlag,jdbcType=CHAR}, #{docQueReadOverFlag,jdbcType=CHAR}, #{baseClassName,jdbcType=VARCHAR}, 
+      #{baseClasslevelId,jdbcType=VARCHAR}, #{classlevelName,jdbcType=VARCHAR}, #{textQueAnswer,jdbcType=CLOB}, 
+      #{textQueComment,jdbcType=CLOB}, #{docQueComment,jdbcType=CLOB}, #{summary,jdbcType=CLOB}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.codyy.oc.homework.entity.WorkReceiveStu" >
+    insert into WORK_RECEIVE_STU
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="workReceiveStuId != null" >
+        WORK_RECEIVE_STU_ID,
+      </if>
+      <if test="baseUserId != null" >
+        BASE_USER_ID,
+      </if>
+      <if test="workHomeworkId != null" >
+        WORK_HOMEWORK_ID,
+      </if>
+      <if test="sort != null" >
+        SORT,
+      </if>
+      <if test="status != null" >
+        STATUS,
+      </if>
+      <if test="answerCount != null" >
+        ANSWER_COUNT,
+      </if>
+      <if test="submitTime != null" >
+        SUBMIT_TIME,
+      </if>
+      <if test="readOverStuId != null" >
+        READ_OVER_STU_ID,
+      </if>
+      <if test="baseClassId != null" >
+        BASE_CLASS_ID,
+      </if>
+      <if test="textQueReadOverFlag != null" >
+        TEXT_QUE_READ_OVER_FLAG,
+      </if>
+      <if test="docQueReadOverFlag != null" >
+        DOC_QUE_READ_OVER_FLAG,
+      </if>
+      <if test="baseClassName != null" >
+        BASE_CLASS_NAME,
+      </if>
+      <if test="baseClasslevelId != null" >
+        BASE_CLASSLEVEL_ID,
+      </if>
+      <if test="classlevelName != null" >
+        CLASSLEVEL_NAME,
+      </if>
+      <if test="textQueAnswer != null" >
+        TEXT_QUE_ANSWER,
+      </if>
+      <if test="textQueComment != null" >
+        TEXT_QUE_COMMENT,
+      </if>
+      <if test="docQueComment != null" >
+        DOC_QUE_COMMENT,
+      </if>
+      <if test="summary != null" >
+        SUMMARY,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="workReceiveStuId != null" >
+        #{workReceiveStuId,jdbcType=VARCHAR},
+      </if>
+      <if test="baseUserId != null" >
+        #{baseUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="workHomeworkId != null" >
+        #{workHomeworkId,jdbcType=VARCHAR},
+      </if>
+      <if test="sort != null" >
+        #{sort,jdbcType=DECIMAL},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="answerCount != null" >
+        #{answerCount,jdbcType=DECIMAL},
+      </if>
+      <if test="submitTime != null" >
+        #{submitTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="readOverStuId != null" >
+        #{readOverStuId,jdbcType=VARCHAR},
+      </if>
+      <if test="baseClassId != null" >
+        #{baseClassId,jdbcType=VARCHAR},
+      </if>
+      <if test="textQueReadOverFlag != null" >
+        #{textQueReadOverFlag,jdbcType=CHAR},
+      </if>
+      <if test="docQueReadOverFlag != null" >
+        #{docQueReadOverFlag,jdbcType=CHAR},
+      </if>
+      <if test="baseClassName != null" >
+        #{baseClassName,jdbcType=VARCHAR},
+      </if>
+      <if test="baseClasslevelId != null" >
+        #{baseClasslevelId,jdbcType=VARCHAR},
+      </if>
+      <if test="classlevelName != null" >
+        #{classlevelName,jdbcType=VARCHAR},
+      </if>
+      <if test="textQueAnswer != null" >
+        #{textQueAnswer,jdbcType=CLOB},
+      </if>
+      <if test="textQueComment != null" >
+        #{textQueComment,jdbcType=CLOB},
+      </if>
+      <if test="docQueComment != null" >
+        #{docQueComment,jdbcType=CLOB},
+      </if>
+      <if test="summary != null" >
+        #{summary,jdbcType=CLOB},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.codyy.oc.homework.entity.WorkReceiveStu" >
+    update WORK_RECEIVE_STU
+    <set >
+      <if test="baseUserId != null" >
+        BASE_USER_ID = #{baseUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="workHomeworkId != null" >
+        WORK_HOMEWORK_ID = #{workHomeworkId,jdbcType=VARCHAR},
+      </if>
+      <if test="sort != null" >
+        SORT = #{sort,jdbcType=DECIMAL},
+      </if>
+      <if test="status != null" >
+        STATUS = #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="answerCount != null" >
+        ANSWER_COUNT = #{answerCount,jdbcType=DECIMAL},
+      </if>
+      <if test="submitTime != null" >
+        SUBMIT_TIME = #{submitTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="readOverStuId != null" >
+        READ_OVER_STU_ID = #{readOverStuId,jdbcType=VARCHAR},
+      </if>
+      <if test="baseClassId != null" >
+        BASE_CLASS_ID = #{baseClassId,jdbcType=VARCHAR},
+      </if>
+      <if test="textQueReadOverFlag != null" >
+        TEXT_QUE_READ_OVER_FLAG = #{textQueReadOverFlag,jdbcType=CHAR},
+      </if>
+      <if test="docQueReadOverFlag != null" >
+        DOC_QUE_READ_OVER_FLAG = #{docQueReadOverFlag,jdbcType=CHAR},
+      </if>
+      <if test="baseClassName != null" >
+        BASE_CLASS_NAME = #{baseClassName,jdbcType=VARCHAR},
+      </if>
+      <if test="baseClasslevelId != null" >
+        BASE_CLASSLEVEL_ID = #{baseClasslevelId,jdbcType=VARCHAR},
+      </if>
+      <if test="classlevelName != null" >
+        CLASSLEVEL_NAME = #{classlevelName,jdbcType=VARCHAR},
+      </if>
+      <if test="textQueAnswer != null" >
+        TEXT_QUE_ANSWER = #{textQueAnswer,jdbcType=CLOB},
+      </if>
+      <if test="textQueComment != null" >
+        TEXT_QUE_COMMENT = #{textQueComment,jdbcType=CLOB},
+      </if>
+      <if test="docQueComment != null" >
+        DOC_QUE_COMMENT = #{docQueComment,jdbcType=CLOB},
+      </if>
+      <if test="summary != null" >
+        SUMMARY = #{summary,jdbcType=CLOB},
+      </if>
+    </set>
+    where WORK_RECEIVE_STU_ID = #{workReceiveStuId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.codyy.oc.homework.entity.WorkReceiveStu" >
+    update WORK_RECEIVE_STU
+    set BASE_USER_ID = #{baseUserId,jdbcType=VARCHAR},
+      WORK_HOMEWORK_ID = #{workHomeworkId,jdbcType=VARCHAR},
+      SORT = #{sort,jdbcType=DECIMAL},
+      STATUS = #{status,jdbcType=VARCHAR},
+      ANSWER_COUNT = #{answerCount,jdbcType=DECIMAL},
+      SUBMIT_TIME = #{submitTime,jdbcType=TIMESTAMP},
+      READ_OVER_STU_ID = #{readOverStuId,jdbcType=VARCHAR},
+      BASE_CLASS_ID = #{baseClassId,jdbcType=VARCHAR},
+      TEXT_QUE_READ_OVER_FLAG = #{textQueReadOverFlag,jdbcType=CHAR},
+      DOC_QUE_READ_OVER_FLAG = #{docQueReadOverFlag,jdbcType=CHAR},
+      BASE_CLASS_NAME = #{baseClassName,jdbcType=VARCHAR},
+      BASE_CLASSLEVEL_ID = #{baseClasslevelId,jdbcType=VARCHAR},
+      CLASSLEVEL_NAME = #{classlevelName,jdbcType=VARCHAR},
+      TEXT_QUE_ANSWER = #{textQueAnswer,jdbcType=CLOB},
+      TEXT_QUE_COMMENT = #{textQueComment,jdbcType=CLOB},
+      DOC_QUE_COMMENT = #{docQueComment,jdbcType=CLOB},
+      SUMMARY = #{summary,jdbcType=CLOB}
+    where WORK_RECEIVE_STU_ID = #{workReceiveStuId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.codyy.oc.homework.entity.WorkReceiveStu" >
+    update WORK_RECEIVE_STU
+    set BASE_USER_ID = #{baseUserId,jdbcType=VARCHAR},
+      WORK_HOMEWORK_ID = #{workHomeworkId,jdbcType=VARCHAR},
+      SORT = #{sort,jdbcType=DECIMAL},
+      STATUS = #{status,jdbcType=VARCHAR},
+      ANSWER_COUNT = #{answerCount,jdbcType=DECIMAL},
+      SUBMIT_TIME = #{submitTime,jdbcType=TIMESTAMP},
+      READ_OVER_STU_ID = #{readOverStuId,jdbcType=VARCHAR},
+      TEXT_QUE_ANSWER = #{textQueAnswer,jdbcType=CLOB},
+      BASE_CLASS_ID = #{baseClassId,jdbcType=VARCHAR},
+      TEXT_QUE_READ_OVER_FLAG = #{textQueReadOverFlag,jdbcType=CHAR},
+      DOC_QUE_READ_OVER_FLAG = #{docQueReadOverFlag,jdbcType=CHAR},
+      BASE_CLASS_NAME = #{baseClassName,jdbcType=VARCHAR},
+      BASE_CLASSLEVEL_ID = #{baseClasslevelId,jdbcType=VARCHAR},
+      CLASSLEVEL_NAME = #{classlevelName,jdbcType=VARCHAR}
+    where WORK_RECEIVE_STU_ID = #{workReceiveStuId,jdbcType=VARCHAR}
+  </update>
+  
+  <update id="updateWorkReceiveStuByPrimaryKey" parameterType="java.util.Map">
+  
+  update work_receive_stu wrs
+   set wrs.status = 'CHECKED', wrs.text_que_comment = #{textComment},
+                    wrs.doc_que_comment = #{docComment} ,
+                    wrs.summary= #{summary} ,
+                    wrs.text_que_read_over_flag = 'Y' ,
+                    wrs.doc_que_read_over_flag = 'Y'
+ where wrs.work_receive_stu_id = #{receiveStuId}
+  </update>
+  <select id="selectCheckedCount" parameterType="string" resultType="int">
+
+  select count(*) as subWorkStuCount
+               from work_receive_stu wrs
+              where wrs.status = 'CHECKED'
+            and wrs.work_homework_id = #{workId}
+  </select>
+  <select id="selectStuReadCount" parameterType="string" resultType="int">
+                 select count(*) as stuCount
+                 from work_receive_stu wrs
+                where wrs.work_homework_id = #{workId}
+  
+  </select>
+</mapper>

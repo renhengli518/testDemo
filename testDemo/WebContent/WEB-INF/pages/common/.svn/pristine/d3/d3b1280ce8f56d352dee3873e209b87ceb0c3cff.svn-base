@@ -1,0 +1,149 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+			<div class="quesTitle">
+				<p class="fl"><span class=" fz20">${questionNo}、</span>  
+				<c:if test="${ques.type != 'ASK_ANSWER' && ques.type !='COMPUTING'}">
+					<c:choose>
+						<c:when test="${ques.correctFlag eq 'N'}">
+							<span class="red">[答错]</span>
+						</c:when>
+						<c:otherwise>
+							<span class="green">[答对]</span>
+						</c:otherwise>
+					</c:choose>
+					</c:if>
+				</p>	
+					${ques.content}
+					<c:if test="${!empty ques.contentVideo}">
+						<p class="uploadMediaWrap mt20 mb20">
+							<a href="javaScript:;" class="btn btnUpLoad uploadBox"  onclick="showContentVideo('${ques.contentVideo}','${ques.workQuestionId}');">点击播放音视频</a>
+							<span id="showVideo${ques.workQuestionId}"></span>
+						</p>
+					</c:if>
+				</div>
+					<c:set value="${questionNo + 1}" var="questionNo"></c:set>
+					<c:forTokens items="${ques.options}" delims="∷" var="name">
+						选项${name}<p>
+					</c:forTokens>     
+					<c:if test="${ques.type == 'FILL_IN_BLANK'}">
+						<ul class="commonUL">
+							<li>
+								<label class="text fontBold left"> 正确答案：</label>
+									<span class="font">
+										<table class="anyTable">
+											<thead>
+												<tr>
+													<th>
+														<div class="specialTH">
+															<span class="rightTop">答案容错</span>
+															<span class="leftBottom">填空</span>
+														</div> 
+													</th>
+											<c:if test="${ques.fillInAnswerType eq 'INDEPENDENT'}">
+												<th>答案1</th>
+												<th>答案2</th>
+												<th>答案3</th>
+												<th>答案4</th>
+											</c:if>
+											<c:if test="${ques.fillInAnswerType eq 'COMBINATION'}">
+												<th>第一组</th>
+												<th>第二组</th>
+												<th>第三组</th>
+												<th>第四组</th>
+											</c:if>
+										</tr>
+									</thead>
+									<tbody>
+										<c:forEach var="fillInAnswer" items="${ques.fillInQuesAnswer}" varStatus="fs">
+											<tr>
+												<td>第${fs.index +1}空</td>
+												<td class="edit-pop-btn"><div class="answerCon">${fillInAnswer.answerGrp1}</div></td>
+												<td class="edit-pop-btn"><div class="answerCon">${fillInAnswer.answerGrp2}</div></td>
+												<td class="edit-pop-btn"><div class="answerCon">${fillInAnswer.answerGrp3}</div></td>
+												<td class="edit-pop-btn"><div class="answerCon">${fillInAnswer.answerGrp4}</div></td>
+											</tr>
+										</c:forEach>
+									</tbody>
+								</table>
+							</span>
+							</li>
+							</ul>
+						<ul class="commonUL">
+							<li>
+								<label class="text fontBold left"> 学生答案：</label>
+								<span class="font">
+								<c:if test="${ques.type == 'FILL_IN_BLANK'}">
+									<c:if test="${!empty ques.myAnswer}">
+										<table class="anyTable">
+											<tbody>
+												<c:forEach items="${ques.fillInQuesAnswer}" varStatus="status">
+													<tr>
+														<td>第${status.index+1}空</td>
+													
+														<td class="edit-pop-btn">
+														<div class="answerCon">
+												${fn:split(ques.myAnswer, '∷')[status.index]}		
+														</div>
+														</td>
+													
+													</tr>
+													</c:forEach>
+													
+													
+													
+											</tbody>
+										</table>
+									</c:if>
+								</c:if>
+							</span>
+					</li>
+					</ul>
+					</c:if>
+						<c:if test="${ques.type != 'FILL_IN_BLANK'}">
+						<c:if test="${ques.type != 'ASK_ANSWER' && ques.type !='COMPUTING'}">
+							<span class="fontBold">  正确答案：  <span class="mr40"> ${ques.answer} </span> </span> 
+							<span class="fontBold">  学生答案:  <span class="mr40"> ${ques.myAnswer} </span> </span> 
+							</c:if>    
+							<c:if test="${ques.type == 'ASK_ANSWER' || ques.type =='COMPUTING'}">
+							 <div class="teaComments">
+							 <ul class="commonUL">
+								<li>
+									<label class="text left fontBold">学生答案:</label>
+									<span class="cont"> ${ques.myAnswer} </span> 
+								</li>
+							</ul>
+							<c:if test="${!empty ques.answerVideo}">
+							<p class="uploadMediaWrap mt20 mb20">
+								<a href="javaScript:;" class="btn btnUpLoad uploadBox" onclick="showContentVideo('${ques.answerVideo}','${ques.workQuestionId}');">点击播放音视频</a>
+								<span id="showVideo${ques.workQuestionId}"></span>
+							</p>
+							</c:if>
+							 </div>
+							</c:if>
+						</c:if>
+						<span class="fontBold">  难易度：  <span class="mr40"> 
+							<c:choose>
+								<c:when test="${ques.difficulty eq 'EASY'}">
+									容易
+								</c:when>
+								<c:when test="${ques.difficulty eq 'LITTLE_EASY'}">
+									较易
+								</c:when>
+								<c:when test="${ques.difficulty eq 'NORMAL'}">
+									一般
+								</c:when>
+								<c:when test="${ques.difficulty eq 'LITTLE_DIFFICULT'}">
+									较难
+								</c:when>
+								<c:when test="${ques.difficulty eq 'DIFFICULT'}">
+									困难
+								</c:when>
+								<c:otherwise>
+									容易
+								</c:otherwise>
+								</c:choose>
+							</span>
+						</span>

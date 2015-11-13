@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.codyy.oc.onlinetest.dao.ExamQueFillInAnswerMapper" >
+  <resultMap id="BaseResultMap" type="com.codyy.oc.onlinetest.entity.ExamQueFillInAnswer" >
+    <id column="EXAM_QUE_FILL_IN_ANSWER_ID" property="examQueFillInAnswerId" jdbcType="VARCHAR" />
+    <result column="EXAM_QUESTION_ID" property="examQuestionId" jdbcType="VARCHAR" />
+    <result column="SORT" property="sort" jdbcType="VARCHAR" />
+    <result column="EXAM_PRACTICE_QUESTION_ID" property="examPracticeQuestionId" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="com.codyy.oc.onlinetest.entity.ExamQueFillInAnswer" extends="BaseResultMap" >
+    <result column="ANSWER_GRP1" property="answerGrp1" jdbcType="CLOB" />
+    <result column="ANSWER_GRP2" property="answerGrp2" jdbcType="CLOB" />
+    <result column="ANSWER_GRP3" property="answerGrp3" jdbcType="CLOB" />
+    <result column="ANSWER_GRP4" property="answerGrp4" jdbcType="CLOB" />
+    <result column="ANSWER_GRP1_TXT" property="answerGrp1Txt" jdbcType="CLOB" />
+    <result column="ANSWER_GRP2_TXT" property="answerGrp2Txt" jdbcType="CLOB" />
+    <result column="ANSWER_GRP3_TXT" property="answerGrp3Txt" jdbcType="CLOB" />
+    <result column="ANSWER_GRP4_TXT" property="answerGrp4Txt" jdbcType="CLOB" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    EXAM_QUE_FILL_IN_ANSWER_ID, EXAM_QUESTION_ID, SORT, EXAM_PRACTICE_QUESTION_ID
+  </sql>
+  <sql id="Blob_Column_List" >
+    ANSWER_GRP1, ANSWER_GRP2, ANSWER_GRP3, ANSWER_GRP4, ANSWER_GRP1_TXT, ANSWER_GRP2_TXT, 
+    ANSWER_GRP3_TXT, ANSWER_GRP4_TXT
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from EXAM_QUE_FILL_IN_ANSWER
+    where EXAM_QUE_FILL_IN_ANSWER_ID = #{examQueFillInAnswerId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from EXAM_QUE_FILL_IN_ANSWER
+    where EXAM_QUE_FILL_IN_ANSWER_ID = #{examQueFillInAnswerId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.codyy.oc.onlinetest.entity.ExamQueFillInAnswer" >
+    insert into EXAM_QUE_FILL_IN_ANSWER (EXAM_QUE_FILL_IN_ANSWER_ID, EXAM_QUESTION_ID, 
+      SORT, ANSWER_GRP1, ANSWER_GRP2, 
+      ANSWER_GRP3, ANSWER_GRP4, ANSWER_GRP1_TXT, 
+      ANSWER_GRP2_TXT, ANSWER_GRP3_TXT, ANSWER_GRP4_TXT
+      )
+    values (#{examQueFillInAnswerId,jdbcType=VARCHAR}, #{examQuestionId,jdbcType=VARCHAR}, 
+      #{sort,jdbcType=VARCHAR}, #{answerGrp1,jdbcType=CLOB}, #{answerGrp2,jdbcType=CLOB}, 
+      #{answerGrp3,jdbcType=CLOB}, #{answerGrp4,jdbcType=CLOB}, #{answerGrp1Txt,jdbcType=CLOB}, 
+      #{answerGrp2Txt,jdbcType=CLOB}, #{answerGrp3Txt,jdbcType=CLOB}, #{answerGrp4Txt,jdbcType=CLOB}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.codyy.oc.onlinetest.entity.ExamQueFillInAnswer" >
+    insert into EXAM_QUE_FILL_IN_ANSWER
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="examQueFillInAnswerId != null" >
+        EXAM_QUE_FILL_IN_ANSWER_ID,
+      </if>
+      <if test="examQuestionId != null" >
+        EXAM_QUESTION_ID,
+      </if>
+      <if test="sort != null" >
+        SORT,
+      </if>
+      <if test="answerGrp1 != null" >
+        ANSWER_GRP1,
+      </if>
+      <if test="answerGrp2 != null" >
+        ANSWER_GRP2,
+      </if>
+      <if test="answerGrp3 != null" >
+        ANSWER_GRP3,
+      </if>
+      <if test="answerGrp4 != null" >
+        ANSWER_GRP4,
+      </if>
+      <if test="answerGrp1Txt != null" >
+        ANSWER_GRP1_TXT,
+      </if>
+      <if test="answerGrp2Txt != null" >
+        ANSWER_GRP2_TXT,
+      </if>
+      <if test="answerGrp3Txt != null" >
+        ANSWER_GRP3_TXT,
+      </if>
+      <if test="answerGrp4Txt != null" >
+        ANSWER_GRP4_TXT,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="examQueFillInAnswerId != null" >
+        #{examQueFillInAnswerId,jdbcType=VARCHAR},
+      </if>
+      <if test="examQuestionId != null" >
+        #{examQuestionId,jdbcType=VARCHAR},
+      </if>
+      <if test="sort != null" >
+        #{sort,jdbcType=VARCHAR},
+      </if>
+      <if test="answerGrp1 != null" >
+        #{answerGrp1,jdbcType=CLOB},
+      </if>
+      <if test="answerGrp2 != null" >
+        #{answerGrp2,jdbcType=CLOB},
+      </if>
+      <if test="answerGrp3 != null" >
+        #{answerGrp3,jdbcType=CLOB},
+      </if>
+      <if test="answerGrp4 != null" >
+        #{answerGrp4,jdbcType=CLOB},
+      </if>
+      <if test="answerGrp1Txt != null" >
+        #{answerGrp1Txt,jdbcType=CLOB},
+      </if>
+      <if test="answerGrp2Txt != null" >
+        #{answerGrp2Txt,jdbcType=CLOB},
+      </if>
+      <if test="answerGrp3Txt != null" >
+        #{answerGrp3Txt,jdbcType=CLOB},
+      </if>
+      <if test="answerGrp4Txt != null" >
+        #{answerGrp4Txt,jdbcType=CLOB},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.codyy.oc.onlinetest.entity.ExamQueFillInAnswer" >
+    update EXAM_QUE_FILL_IN_ANSWER
+    <set >
+      <if test="examQuestionId != null" >
+        EXAM_QUESTION_ID = #{examQuestionId,jdbcType=VARCHAR},
+      </if>
+      <if test="sort != null" >
+        SORT = #{sort,jdbcType=VARCHAR},
+      </if>
+      <if test="answerGrp1 != null" >
+        ANSWER_GRP1 = #{answerGrp1,jdbcType=CLOB},
+      </if>
+      <if test="answerGrp2 != null" >
+        ANSWER_GRP2 = #{answerGrp2,jdbcType=CLOB},
+      </if>
+      <if test="answerGrp3 != null" >
+        ANSWER_GRP3 = #{answerGrp3,jdbcType=CLOB},
+      </if>
+      <if test="answerGrp4 != null" >
+        ANSWER_GRP4 = #{answerGrp4,jdbcType=CLOB},
+      </if>
+      <if test="answerGrp1Txt != null" >
+        ANSWER_GRP1_TXT = #{answerGrp1Txt,jdbcType=CLOB},
+      </if>
+      <if test="answerGrp2Txt != null" >
+        ANSWER_GRP2_TXT = #{answerGrp2Txt,jdbcType=CLOB},
+      </if>
+      <if test="answerGrp3Txt != null" >
+        ANSWER_GRP3_TXT = #{answerGrp3Txt,jdbcType=CLOB},
+      </if>
+      <if test="answerGrp4Txt != null" >
+        ANSWER_GRP4_TXT = #{answerGrp4Txt,jdbcType=CLOB},
+      </if>
+    </set>
+    where EXAM_QUE_FILL_IN_ANSWER_ID = #{examQueFillInAnswerId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.codyy.oc.onlinetest.entity.ExamQueFillInAnswer" >
+    update EXAM_QUE_FILL_IN_ANSWER
+    set EXAM_QUESTION_ID = #{examQuestionId,jdbcType=VARCHAR},
+      SORT = #{sort,jdbcType=VARCHAR},
+      ANSWER_GRP1 = #{answerGrp1,jdbcType=CLOB},
+      ANSWER_GRP2 = #{answerGrp2,jdbcType=CLOB},
+      ANSWER_GRP3 = #{answerGrp3,jdbcType=CLOB},
+      ANSWER_GRP4 = #{answerGrp4,jdbcType=CLOB},
+      ANSWER_GRP1_TXT = #{answerGrp1Txt,jdbcType=CLOB},
+      ANSWER_GRP2_TXT = #{answerGrp2Txt,jdbcType=CLOB},
+      ANSWER_GRP3_TXT = #{answerGrp3Txt,jdbcType=CLOB},
+      ANSWER_GRP4_TXT = #{answerGrp4Txt,jdbcType=CLOB}
+    where EXAM_QUE_FILL_IN_ANSWER_ID = #{examQueFillInAnswerId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.codyy.oc.onlinetest.entity.ExamQueFillInAnswer" >
+    update EXAM_QUE_FILL_IN_ANSWER
+    set EXAM_QUESTION_ID = #{examQuestionId,jdbcType=VARCHAR},
+      SORT = #{sort,jdbcType=VARCHAR}
+    where EXAM_QUE_FILL_IN_ANSWER_ID = #{examQueFillInAnswerId,jdbcType=VARCHAR}
+  </update>
+  
+  <!-- 根据examQuestionId删除所有对应习题填空题答案 -->
+  <delete id="deleteFillInAnswerByExamQuestionId" parameterType="java.lang.String">
+   	delete from EXAM_QUE_FILL_IN_ANSWER
+    where EXAM_QUESTION_ID = #{examQuestionId,jdbcType=VARCHAR}
+  </delete>
+  
+  <!-- 获取填空题的答案 -->
+  <select id="getQueFillInAnswerByQuestionId" parameterType="java.lang.String" resultMap="ResultMapWithBLOBs">
+     select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from EXAM_QUE_FILL_IN_ANSWER 
+    where EXAM_QUESTION_ID = #{examQuestionId}
+  
+  </select>
+  
+  <!-- 学生空间 - 插入填空题答案 -->
+  <insert id="insertFillAnswerBatch" parameterType="java.util.List">
+	insert into EXAM_QUE_FILL_IN_ANSWER (EXAM_QUE_FILL_IN_ANSWER_ID, EXAM_PRACTICE_QUESTION_ID, 
+      SORT, ANSWER_GRP1, ANSWER_GRP2, 
+      ANSWER_GRP3, ANSWER_GRP4, ANSWER_GRP1_TXT, 
+      ANSWER_GRP2_TXT, ANSWER_GRP3_TXT, ANSWER_GRP4_TXT
+     )
+      <foreach collection="list" item="item" open="(" close=")" separator="union all" >  
+         select 
+           #{item.examQueFillInAnswerId},
+           #{item.examPracticeQuestionId},
+           #{item.sort},
+           #{item.answerGrp1},
+           #{item.answerGrp2},
+           #{item.answerGrp3},
+           #{item.answerGrp4},
+           #{item.answerGrp1Txt},
+           #{item.answerGrp2Txt},
+           #{item.answerGrp3Txt},
+           #{item.answerGrp4Txt}
+         from dual
+      </foreach>  
+   
+  
+  </insert>
+  
+  <!-- 获取巩固测试填空题答案 -->
+  <select id="getPracticeFillInAnswer" parameterType="java.util.List" resultMap="ResultMapWithBLOBs">
+	select 
+      <include refid="Base_Column_List" />
+      ,
+      <include refid="Blob_Column_List" />
+    from EXAM_QUE_FILL_IN_ANSWER 
+    where EXAM_PRACTICE_QUESTION_ID = #{examPracticeQuestionId}
+  </select>
+</mapper>

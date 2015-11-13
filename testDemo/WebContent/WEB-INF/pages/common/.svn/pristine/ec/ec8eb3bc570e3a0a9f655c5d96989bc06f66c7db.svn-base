@@ -1,0 +1,33 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page import="com.codyy.commons.HostConfig"%>
+<%@ page import="com.codyy.commons.context.SpringContext"%>
+</head>
+<div class="header_down_wrap">
+    <div class="header_down_inner_wrap">
+        <div class="_header">
+            <div class="title_wrap_p">
+                <div class="logo_s"><img src="${PUBLIC_PATH}/public/img/workplace/img_class.jpg" width="120" height="120"></div>
+                <div  class="title_s title_stu">
+                	<input type="hidden" id="classroomId" value="${headerInfo.CLASSID }">
+	                <span>${headerInfo.CLASSLEVELNAME }${headerInfo.CLASSNAME }</span>
+	                <span>${headerInfo.SCHOOLNAME }</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="w1200 marginauto mt70">
+<ul class="weibo_nav coffee_nav mb30 clearfix">
+	<li><a href="#" class="visited">主页</a></li>
+	<li><a href="#">优课资源</a></li>
+	<li><a href="#">博文</a></li>
+	<li><a href="#">课程表</a></li>
+	<li><a href="#">测试</a></li>
+	<li><a href="#">作业</a></li>
+	<li><a href="#">黑板报</a></li>
+	<li><a href="#">荣誉榜</a></li>
+	<li><a href="#">相册</a></li>
+	<li><a href="#">话题</a></li>
+	<li><a href="#">班级成员</a></li>
+</ul>
+</div>

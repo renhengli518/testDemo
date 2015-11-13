@@ -1,0 +1,59 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<div class="container clearfix w1200 bkgNone marginauto">
+	<div class="content">
+		<div class="content-in">
+			<div class="borderBox gn-bgWhite pd20">
+				<ul class="commonUL gn-searchCondition">
+					<li>
+						<label class="text gn-labelText"><b>布置时间：</b></label>
+						<span class="cont gn-sortBox clearfix gn-containInput">
+							<input type="text" value="" onclick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm',maxDate:'#F{$dp.$D(\'endTime\')}'});" name="startTime" class="Wdate mr10" id="startTime">
+							至
+							<input type="text" value="" onclick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm',minDate:'#F{$dp.$D(\'startTime\')}'});" name="endTime" class="Wdate ml10" id="endTime">
+						</span>
+					</li>
+					<li id="subjectLi">
+						<label class="text gn-labelText"><b>学科：</b></label>
+							<span class="cont gn-sortBox clearfix">
+								<a href="javascript:;" class="selected gn-sortAll fl" id="">全部</a>
+									<c:forEach items="${subjects}" var="sub">
+										<a class="ml10" href="javascript:;" id="${sub.subjectId}">${sub.subjectName}</a>
+									</c:forEach>
+							</span>
+					</li>
+					<li id="status">
+						<label class="text gn-labelText"><b>状态：</b></label>
+							<span class="cont gn-sortBox clearfix">
+								<a href="javascript:;" class="selected gn-sortAll fl" id="">
+									全部
+								</a>
+								<a href="javascript:;" id="PROGRESS">
+									未完成
+								</a>
+								<a href="javascript:;" id="END">
+									待批阅
+								</a>
+								<a href="javascript:;" id="CHECKED">
+									已完成
+								</a>
+							</span>
+					</li>
+					<li>
+						<label class="text gn-labelText"><b>试卷名称：</b></label>
+						<span class="cont gn-sortBox clearfix gn-containInput">
+							<input type="text" name="workName" id="workName">
+							<button class="btn btnColorSearch ml20" onclick="listHomeWork();">搜索</button>
+						</span>
+					</li>
+				</ul>
+			</div>
+		</div>
+		<div class="gn-main mt30 clearfix pl10 pr10" id="pageBody">
+		
+		</div>
+	</div>
+	<div class="pageNavi" id="pager"></div>
+</div>

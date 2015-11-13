@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.codyy.oc.homework.dao.WorkReadOverStuMapper" >
+  <resultMap id="BaseResultMap" type="com.codyy.oc.homework.entity.WorkReadOverStu" >
+    <id column="WORK_READ_OVER_STU_ID" property="workReadOverStuId" jdbcType="VARCHAR" />
+    <result column="BASE_USER_ID" property="baseUserId" jdbcType="VARCHAR" />
+    <result column="WORK_HOMEWORK_ID" property="workHomeworkId" jdbcType="VARCHAR" />
+    <result column="SORT" property="sort" jdbcType="DECIMAL" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    WORK_READ_OVER_STU_ID, BASE_USER_ID, WORK_HOMEWORK_ID, SORT
+  </sql>
+  
+  <select id="selectByHomework" resultType="com.codyy.oc.base.view.StudentClassView" parameterType="java.lang.String" >
+    select 
+    bu.realname name,bu.BASE_USER_ID userId
+    from WORK_READ_OVER_STU wros,BASE_USER bu
+    where wros.WORK_HOMEWORK_ID = #{workHomeworkId,jdbcType=VARCHAR}
+    and bu.BASE_USER_ID = wros.BASE_USER_ID
+    order by wros.SORT
+  </select>
+  <delete id="deleteByHomework" parameterType="java.lang.String" >
+    delete from WORK_READ_OVER_STU
+    where WORK_HOMEWORK_ID = #{workHomeworkId,jdbcType=VARCHAR}
+  </delete>
+  
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from WORK_READ_OVER_STU
+    where WORK_READ_OVER_STU_ID = #{workReadOverStuId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from WORK_READ_OVER_STU
+    where WORK_READ_OVER_STU_ID = #{workReadOverStuId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.codyy.oc.homework.entity.WorkReadOverStu" >
+    insert into WORK_READ_OVER_STU (WORK_READ_OVER_STU_ID, BASE_USER_ID, WORK_HOMEWORK_ID, 
+      SORT)
+    values (#{workReadOverStuId,jdbcType=VARCHAR}, #{baseUserId,jdbcType=VARCHAR}, #{workHomeworkId,jdbcType=VARCHAR}, 
+      #{sort,jdbcType=DECIMAL})
+  </insert>
+  <insert id="insertSelective" parameterType="com.codyy.oc.homework.entity.WorkReadOverStu" >
+    insert into WORK_READ_OVER_STU
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="workReadOverStuId != null" >
+        WORK_READ_OVER_STU_ID,
+      </if>
+      <if test="baseUserId != null" >
+        BASE_USER_ID,
+      </if>
+      <if test="workHomeworkId != null" >
+        WORK_HOMEWORK_ID,
+      </if>
+      <if test="sort != null" >
+        SORT,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="workReadOverStuId != null" >
+        #{workReadOverStuId,jdbcType=VARCHAR},
+      </if>
+      <if test="baseUserId != null" >
+        #{baseUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="workHomeworkId != null" >
+        #{workHomeworkId,jdbcType=VARCHAR},
+      </if>
+      <if test="sort != null" >
+        #{sort,jdbcType=DECIMAL},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.codyy.oc.homework.entity.WorkReadOverStu" >
+    update WORK_READ_OVER_STU
+    <set >
+      <if test="baseUserId != null" >
+        BASE_USER_ID = #{baseUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="workHomeworkId != null" >
+        WORK_HOMEWORK_ID = #{workHomeworkId,jdbcType=VARCHAR},
+      </if>
+      <if test="sort != null" >
+        SORT = #{sort,jdbcType=DECIMAL},
+      </if>
+    </set>
+    where WORK_READ_OVER_STU_ID = #{workReadOverStuId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.codyy.oc.homework.entity.WorkReadOverStu" >
+    update WORK_READ_OVER_STU
+    set BASE_USER_ID = #{baseUserId,jdbcType=VARCHAR},
+      WORK_HOMEWORK_ID = #{workHomeworkId,jdbcType=VARCHAR},
+      SORT = #{sort,jdbcType=DECIMAL}
+    where WORK_READ_OVER_STU_ID = #{workReadOverStuId,jdbcType=VARCHAR}
+  </update>
+</mapper>

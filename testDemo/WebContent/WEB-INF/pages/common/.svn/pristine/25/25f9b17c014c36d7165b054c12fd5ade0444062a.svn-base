@@ -1,0 +1,44 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8" isErrorPage="true"%>
+<%@ include file="../meta.jsp"%>
+<body class="mainIndex lost">
+	<!--#include virtual="工作台/common/header.shtml"-->
+	<div class="container w1000 marginauto bkgNone clearfix">
+		<div class="outWrap posRelative">
+			<div class="inner clearfix posRelative">
+				<img src='${root }/public/img/common/404.png' class="fl mr100">
+				<div class="lostRight">
+					<button class="btn backToHomePage" id="backToHome">返回首页</button>
+					<p class="theWay">您可以通过以下方式继续访问……</p>
+					<p class="praiseTheWay">
+						啊哟不错喔<br /> 这个退场方式有点特别呦！
+					</p>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script>
+      $(function(){
+    	var h=$(window).height()-160;  
+    	var outHeight=$(".outWrap").height();
+    	var t=parseInt((h-outHeight)/2);
+    	$(".outWrap").css("top",t+'px');
+    	$(window).resize(function(){
+    		h=$(window).height()-160;  
+        	outHeight=$(".outWrap").height();
+        	t=parseInt((h-outHeight)/2);
+        	$(".outWrap").css("top",t+'px');
+    	});
+    	var url = "${sessionScope.SESSION_USER.homeHost}"||"";
+    	$("#backToHome").click(function(){
+    		if(url!=""){
+				window.location.href= url +'/index.html';
+    			}else{
+    				//history.go(-1);
+    				window.location.href ="/Home/index.html";
+    			}
+    	});
+      })
+    </script>
+</body>
+</html>

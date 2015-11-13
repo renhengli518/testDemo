@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.codyy.oc.homework.dao.ClassHomeWorkMapper">
+<resultMap type="com.codyy.oc.homework.entity.HomeWork" id="homeWorkMap">
+<id column="WORK_HOMEWORK_ID" property="homeWorkId" jdbcType="VARCHAR" />
+		<result column="WORK_TITLE" property="workTitle" jdbcType="VARCHAR" />
+		<result column="CREATE_TIME" property="createTime" jdbcType="TIMESTAMP" />
+		<result column="ASSIGN_TIME" property="assignTime" jdbcType="TIMESTAMP" />
+		<result column="FINISH_TIME" property="finishTime" jdbcType="TIMESTAMP" />
+		<result column="STATUS" property="status" jdbcType="VARCHAR" />
+		<result column="SUBJECT_NAME" property="subjectName" jdbcType="VARCHAR" />
+		<result column="subWorkStuCount" property="subWorkStuCount" jdbcType="DECIMAL" />
+		<result column="stuCount" property="stuCount" jdbcType="DECIMAL" />
+		<result column="read_over_type" property="readOverType" jdbcType="DECIMAL" />
+</resultMap>
+<!-- 查询出班级角色对应的作业列表 -->
+<select id="findClassHomeworkByConditionsPageList" parameterType="com.codyy.commons.page.Page" resultMap="homeWorkMap">
+select c.*, d.subWorkStuCount, e.stuCount
+  from (select wh.work_homework_id,
+               wh.work_title,
+               wh.assign_time,
+               wh.finish_time,
+               wh.status,
+               wh.create_time,
+               wh.base_subject_id,
+               bs.subject_name,
+               a.base_class_id
+          from work_homework wh
+          join (select distinct (wrs.work_homework_id), wrs.base_class_id
+                 from work_receive_stu wrs
+                where wrs.base_class_id = #{map.userId}) a
+            on wh.work_homework_id = a.work_homework_id
+          left join base_subject bs
+            on wh.base_subject_id = bs.base_subject_id) c
+ left join((select count(*) as subWorkStuCount, work_homework_id
+          from work_receive_stu wrs
+         where wrs.status = 'END'
+           and wrs.base_class_id = #{map.userId}
+         group by wrs.work_homework_id)) d
+    on c.work_homework_id = d.work_homework_id
+left  join((select count(*) as stuCount, work_homework_id
+          from work_receive_stu wrs
+         where wrs.base_class_id = #{map.userId}
+         group by wrs.work_homework_id)) e
+    on c.work_homework_id = e.work_homework_id
+ where 1 = 1 and c.status!='INIT'
+    <if test="map.assignStartTime != null and map.assignStartTime != ''">
+		 	and to_char(c.assign_time,'yyyy-MM-dd HH24:mi') &gt;= #{map.assignStartTime}
+		 </if>
+		
+		 <if test="map.assignEndTime != null and map.assignEndTime != ''">
+		    and to_char(c.assign_time,'yyyy-MM-dd HH24:mi') &lt;= #{map.assignEndTime}
+		 </if>
+		  <if test="map.status != null and map.status != ''">
+		   and c.status = #{map.status}
+		 </if>
+		  <if test="map.subjectId != null and map.subjectId != ''">
+		   and c.base_subject_id = #{map.subjectId}
+		 </if>
+        <if test="map.homeWorkName != null and map.homeWorkName != ''">
+		    and c.work_title  like '%'||#{map.homeWorkName}||'%' escape '/'
+		 </if>
+order by  c.create_time desc
+</select>
+</mapper>

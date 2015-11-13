@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.codyy.oc.questionlib.dao.QueFavoriteMapper" >
+  <resultMap id="BaseResultMap" type="com.codyy.oc.questionlib.entity.QueFavorite" >
+    <id column="QUE_FAVORITE_ID" property="queFavoriteId" jdbcType="VARCHAR" />
+    <result column="QUE_QUESTION_ID" property="queQuestionId" jdbcType="VARCHAR" />
+    <result column="BASE_USER_ID" property="baseUserId" jdbcType="VARCHAR" />
+    <result column="CREATE_TIME" property="createTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    QUE_FAVORITE_ID, QUE_QUESTION_ID, BASE_USER_ID, CREATE_TIME
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from QUE_FAVORITE
+    where QUE_FAVORITE_ID = #{queFavoriteId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from QUE_FAVORITE
+    where QUE_FAVORITE_ID = #{queFavoriteId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.codyy.oc.questionlib.entity.QueFavorite" >
+    insert into QUE_FAVORITE (QUE_FAVORITE_ID, QUE_QUESTION_ID, BASE_USER_ID, 
+      CREATE_TIME)
+    values (#{queFavoriteId,jdbcType=VARCHAR}, #{queQuestionId,jdbcType=VARCHAR}, #{baseUserId,jdbcType=VARCHAR}, 
+      #{createTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.codyy.oc.questionlib.entity.QueFavorite" >
+    insert into QUE_FAVORITE
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="queFavoriteId != null" >
+        QUE_FAVORITE_ID,
+      </if>
+      <if test="queQuestionId != null" >
+        QUE_QUESTION_ID,
+      </if>
+      <if test="baseUserId != null" >
+        BASE_USER_ID,
+      </if>
+      <if test="createTime != null" >
+        CREATE_TIME,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="queFavoriteId != null" >
+        #{queFavoriteId,jdbcType=VARCHAR},
+      </if>
+      <if test="queQuestionId != null" >
+        #{queQuestionId,jdbcType=VARCHAR},
+      </if>
+      <if test="baseUserId != null" >
+        #{baseUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.codyy.oc.questionlib.entity.QueFavorite" >
+    update QUE_FAVORITE
+    <set >
+      <if test="queQuestionId != null" >
+        QUE_QUESTION_ID = #{queQuestionId,jdbcType=VARCHAR},
+      </if>
+      <if test="baseUserId != null" >
+        BASE_USER_ID = #{baseUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where QUE_FAVORITE_ID = #{queFavoriteId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.codyy.oc.questionlib.entity.QueFavorite" >
+    update QUE_FAVORITE
+    set QUE_QUESTION_ID = #{queQuestionId,jdbcType=VARCHAR},
+      BASE_USER_ID = #{baseUserId,jdbcType=VARCHAR},
+      CREATE_TIME = #{createTime,jdbcType=TIMESTAMP}
+    where QUE_FAVORITE_ID = #{queFavoriteId,jdbcType=VARCHAR}
+  </update>
+  
+  <select id="selectByQesIdAndUserId" resultMap="BaseResultMap" parameterType="java.util.Map" >
+    select 
+    <include refid="Base_Column_List" />
+    from QUE_FAVORITE
+    where QUE_QUESTION_ID = #{queQuestionId,jdbcType=VARCHAR}
+    AND BASE_USER_ID = #{baseUserId,jdbcType=VARCHAR}
+  </select>
+  
+</mapper>

@@ -1,0 +1,948 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.codyy.oc.questionlib.dao.QueQuestionMapper">
+	<resultMap id="QuestionResultMap" type="com.codyy.oc.questionlib.entity.QueQuestion">
+		<id column="QUE_QUESTION_ID" property="queQuestionId" jdbcType="VARCHAR" />
+		<result column="BASE_SEMESTER_ID" property="baseSemesterId" jdbcType="VARCHAR" />
+		<result column="BASE_CLASSLEVEL_ID" property="baseClasslevelId" jdbcType="VARCHAR" />
+		<result column="BASE_SUBJECT_ID" property="baseSubjectId" jdbcType="VARCHAR" />
+		<result column="BASE_USER_ID" property="baseUserId" jdbcType="VARCHAR" />
+		<result column="CONTENT_VIDEO" property="contentVideo" jdbcType="VARCHAR" />
+		<result column="ANSWER" property="answer" jdbcType="VARCHAR" />
+		<result column="DIFFICULTY" property="difficulty" jdbcType="VARCHAR" />
+		<result column="TYPE" property="type" jdbcType="VARCHAR" />
+		<result column="RESOLVE_VIDEO" property="resolveVideo" jdbcType="VARCHAR" />
+		<result column="CREATE_TIME" property="createTime" jdbcType="TIMESTAMP" />
+		<result column="UPDATE_TIME" property="updateTime" jdbcType="TIMESTAMP" />
+		<result column="FILL_IN_ANSWER_TYPE" property="fillInAnswerType" jdbcType="VARCHAR" />
+		<result column="FILL_IN_SCORE_TYPE" property="fillInScoreType" jdbcType="VARCHAR" />
+		<result column="USE_COUNT" property="useCount" jdbcType="DECIMAL" />
+		<result column="RELATIONAL_INDICATOR" property="relationalIndicator" jdbcType="VARCHAR" />
+		<result column="MOTHER_ID" property="motherId" jdbcType="VARCHAR" />
+		<result column="USABLE_TYPE" property="usableType" jdbcType="VARCHAR" />
+		<result column="SOURCE" property="source" jdbcType="VARCHAR" />
+		<result column="AUDIT_STATUS" property="auditStatus" jdbcType="VARCHAR" />
+		<result column="STORE_SERVER" property="storeServer" jdbcType="VARCHAR" />
+		<result column="CONTENT" property="content" jdbcType="CLOB" />
+		<result column="OPTIONS" property="options" jdbcType="CLOB" />
+		<result column="RESOLVE" property="resolve" jdbcType="CLOB" />
+		<result column="OPTIONS_TXT" property="optionsTxt" jdbcType="CLOB" />
+		<result column="QUE_FAVORITE_ID" property="queFavoriteId" jdbcType="VARCHAR" />
+	</resultMap>
+	<resultMap id="BaseResultMap" type="com.codyy.oc.base.form.QuestionListResult" extends="QuestionResultMap">
+	 	<collection column="QUE_QUESTION_ID" property="rChapters" ofType="com.codyy.oc.questionlib.entity.QueQuestionRChapter"
+			select="selecChapter" />
+		<collection column="QUE_QUESTION_ID" property="rKnowledges" ofType="com.codyy.oc.questionlib.entity.QueQuestionRKnowledge"
+			select="selecKnowLedge" />
+		<collection column="QUE_QUESTION_ID" property="fillInAnswers" ofType="com.codyy.oc.questionlib.entity.QueFillInAnswer"
+			select="selecFinnAnswer" />
+ 		<collection column="QUE_QUESTION_ID" property="childrenQuestionList" ofType="com.codyy.oc.questionlib.entity.QueQuestion"
+			select="getChildrenQuestionList" />
+	</resultMap>
+
+	<!-- 章节 -->
+	<resultMap id="chapterMap" type="com.codyy.oc.questionlib.entity.QueQuestionRChapter">
+		<id column="QUE_QUESTION_R_CHAPTER_ID" property="queQuestionRChapterId" jdbcType="VARCHAR" />
+		<result column="QUE_QUESTION_ID" property="queQuestionId" jdbcType="VARCHAR" />
+		<result column="BASE_VERSION_ID" property="baseVersionId" jdbcType="VARCHAR" />
+		<result column="BASE_SECTION_ID" property="baseSectionId" jdbcType="VARCHAR" />
+		<result column="BASE_CHAPTER_ID" property="baseChapterId" jdbcType="VARCHAR" />
+		<result column="BASE_VOLUME_ID" property="baseVolumeId" jdbcType="VARCHAR" />
+	</resultMap>
+
+	<!-- 知识点 -->
+	<resultMap id="knowLedgeMap" type="com.codyy.oc.questionlib.entity.QueQuestionRKnowledge">
+		<id column="QUE_QUESTION_R_KNOWLEDGE_ID" property="queQuestionRKnowledgeId" jdbcType="VARCHAR" />
+		<result column="QUE_QUESTION_ID" property="queQuestionId" jdbcType="VARCHAR" />
+		<result column="BASE_KNOWLEDGE_ID" property="baseKnowledgeId" jdbcType="VARCHAR" />
+		<result column="BASE_SUB_KNOWLEDGE1_ID" property="baseSubKnowledge1Id" jdbcType="VARCHAR" />
+		<result column="BASE_SUB_KNOWLEDGE2_ID" property="baseSubKnowledge2Id" jdbcType="VARCHAR" />
+		<result column="BASE_SUB_KNOWLEDGE3_ID" property="baseSubKnowledge3Id" jdbcType="VARCHAR" />
+		<result column="BASE_SUB_KNOWLEDGE4_ID" property="baseSubKnowledge4Id" jdbcType="VARCHAR" />
+		<result column="BASE_SUB_KNOWLEDGE5_ID" property="baseSubKnowledge5Id" jdbcType="VARCHAR" />
+		<result column="BASE_END_KNOWLEDGE_ID" property="baseEndKnowledgeId" jdbcType="VARCHAR" />
+	</resultMap>
+
+	<!-- 填空题 -->
+	<resultMap id="fillAnswerMap" type="com.codyy.oc.questionlib.entity.QueFillInAnswer">
+		<id column="QUE_FILL_IN_ANSWER_ID" property="queFillInAnswerId" jdbcType="VARCHAR" />
+		<result column="QUE_QUESTION_ID" property="queQuestionId" jdbcType="VARCHAR" />
+		<result column="ANSWER_GRP1" property="answerGrp1" jdbcType="CLOB" />
+		<result column="ANSWER_GRP2" property="answerGrp2" jdbcType="CLOB" />
+		<result column="ANSWER_GRP3" property="answerGrp3" jdbcType="CLOB" />
+		<result column="ANSWER_GRP4" property="answerGrp4" jdbcType="CLOB" />
+		<result column="ANSWER_GRP1_TXT" property="answerGrp1Txt" jdbcType="CLOB" />
+		<result column="ANSWER_GRP2_TXT" property="answerGrp2Txt" jdbcType="CLOB" />
+		<result column="ANSWER_GRP3_TXT" property="answerGrp3Txt" jdbcType="CLOB" />
+		<result column="ANSWER_GRP4_TXT" property="answerGrp4Txt" jdbcType="CLOB" />
+		<result column="SORT" property="sort" jdbcType="VARCHAR" />
+	</resultMap>
+
+	<!-- 根据习题的id来获取关联的章节集合 -->
+	<!-- resultMap="chapterMap" -->
+	<select id="selecChapter" resultMap="chapterMap">
+		select QUE_QUESTION_R_CHAPTER_ID, QUE_QUESTION_ID, BASE_VERSION_ID,
+		BASE_SECTION_ID, BASE_CHAPTER_ID,
+		BASE_VOLUME_ID from QUE_QUESTION_R_CHAPTER where QUE_QUESTION_ID=#{QUE_QUESTION_ID}
+	</select>
+	<!-- 根据习题的id来获取关联的知识点 -->
+	<select id="selecKnowLedge" resultMap="knowLedgeMap">
+		select QUE_QUESTION_R_KNOWLEDGE_ID, QUE_QUESTION_ID, BASE_KNOWLEDGE_ID,
+		BASE_SUB_KNOWLEDGE1_ID,
+		BASE_SUB_KNOWLEDGE2_ID, BASE_SUB_KNOWLEDGE3_ID, BASE_SUB_KNOWLEDGE4_ID, BASE_SUB_KNOWLEDGE5_ID,
+		BASE_END_KNOWLEDGE_ID from QUE_QUESTION_R_KNOWLEDGE where QUE_QUESTION_ID=#{QUE_QUESTION_ID}
+	</select>
+
+	<!-- 根据习题的id来获取关联的填空题的集合 -->
+	<select id="selecFinnAnswer" resultMap="fillAnswerMap">
+		select QUE_FILL_IN_ANSWER_ID, QUE_QUESTION_ID,ANSWER_GRP1, ANSWER_GRP2,
+		ANSWER_GRP3, ANSWER_GRP4, ANSWER_GRP1_TXT,
+		ANSWER_GRP2_TXT,
+		ANSWER_GRP3_TXT, ANSWER_GRP4_TXT,SORT from
+		QUE_FILL_IN_ANSWER where QUE_QUESTION_ID=#{QUE_QUESTION_ID} order by SORT ASC
+	</select>
+
+	<resultMap id="ResultMapWithBLOBs" type="com.codyy.oc.questionlib.entity.QueQuestion" extends="BaseResultMap">
+		<result column="CONTENT" property="content" jdbcType="CLOB" />
+		<result column="OPTIONS" property="options" jdbcType="CLOB" />
+		<result column="RESOLVE" property="resolve" jdbcType="CLOB" />
+		<result column="OPTIONS_TXT" property="optionsTxt" jdbcType="CLOB" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		QUE_QUESTION_ID, BASE_SEMESTER_ID, BASE_CLASSLEVEL_ID, BASE_SUBJECT_ID, BASE_USER_ID,CLS_SCHOOL_ID,BASE_AREA_ID,
+		CONTENT_VIDEO, ANSWER,
+		DIFFICULTY, TYPE, RESOLVE_VIDEO, CREATE_TIME, UPDATE_TIME,
+		FILL_IN_ANSWER_TYPE, FILL_IN_SCORE_TYPE, USE_COUNT,
+		RELATIONAL_INDICATOR, MOTHER_ID,
+		USABLE_TYPE, SOURCE, AUDIT_STATUS,CONTENT, OPTIONS, RESOLVE, OPTIONS_TXT
+	</sql>
+	<sql id="Blob_Column_List">
+		CONTENT, OPTIONS, RESOLVE, OPTIONS_TXT
+	</sql>
+
+
+	<!-- 新建习题(添加习题的基本内容) -->
+	<insert id="addQuestionLib" parameterType="com.codyy.oc.questionlib.entity.QueQuestion">
+		insert into QUE_QUESTION(
+		<include refid="Base_Column_List" />
+		) values(
+		#{queQuestionId},#{baseSemesterId},#{baseClasslevelId},#{baseSubjectId},
+		#{baseUserId},#{clsSchoolId},#{areaId},#{contentVideo},#{answer},#{difficulty},#{type},#{resolveVideo},
+		#{createTime},#{updateTime},#{fillInAnswerType},#{fillInScoreType},
+		#{useCount},#{relationalIndicator},#{motherId},#{usableType},#{source},#{auditStatus},#{content},#{options},
+		#{resolve},#{optionsTxt}
+		)
+	</insert>
+
+	<!-- 根据习题id将所有的习题以及关联的所有章节、知识点、填空题集合查询出来 -->
+	<select id="queryQuestionById" resultMap="BaseResultMap" parameterType="java.lang.String">
+		select
+		<include refid="Base_Column_List" />
+		from QUE_QUESTION where QUE_QUESTION_ID=#{queQuestionId}
+	</select>
+	<select id="selectByIds" resultMap="QuestionResultMap">
+		select
+		<include refid="Base_Column_List" />
+		,
+		<include refid="Blob_Column_List" />
+		from QUE_QUESTION
+		where 
+		QUE_QUESTION_ID in
+	    <foreach item="item" index="index" collection="array" open="(" separator="," close=")">  
+	     #{item}  
+	    </foreach>  
+	    order by 
+	    (case when TYPE = 'SINGLE_CHOICE' then 1
+		    when TYPE = 'MULTI_CHOICE' then 2
+		    when TYPE = 'JUDEMENT' then 3
+		    when TYPE = 'FILL_IN_BLANK' then 4
+		    when TYPE = 'ASK_ANSWER' then 5
+		    when TYPE = 'COMPUTING' then 6
+	    end
+	    ),update_time desc
+	</select>
+
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String">
+		select
+		<include refid="Base_Column_List" />
+		,
+		<include refid="Blob_Column_List" />
+		from QUE_QUESTION
+		where QUE_QUESTION_ID = #{queQuestionId,jdbcType=VARCHAR}
+	</select>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+		delete from QUE_QUESTION
+		where QUE_QUESTION_ID =
+		#{queQuestionId,jdbcType=VARCHAR}
+	</delete>
+	<insert id="insert" parameterType="com.codyy.oc.questionlib.entity.QueQuestion">
+		insert into QUE_QUESTION (QUE_QUESTION_ID, BASE_SEMESTER_ID,
+		BASE_CLASSLEVEL_ID,
+		BASE_SUBJECT_ID, BASE_USER_ID, CONTENT_VIDEO,
+		ANSWER, DIFFICULTY, TYPE,
+		RESOLVE_VIDEO, CREATE_TIME,
+		UPDATE_TIME,
+		FILL_IN_ANSWER_TYPE, FILL_IN_SCORE_TYPE, USE_COUNT,
+		RELATIONAL_INDICATOR, MOTHER_ID, USABLE_TYPE,
+		SOURCE,
+		AUDIT_STATUS, STORE_SERVER,
+		CONTENT, OPTIONS, RESOLVE, OPTIONS_TXT
+		)
+		values (#{queQuestionId,jdbcType=VARCHAR},
+		#{baseSemesterId,jdbcType=VARCHAR}, #{baseClasslevelId,jdbcType=VARCHAR},
+		#{baseSubjectId,jdbcType=VARCHAR},
+		#{baseUserId,jdbcType=VARCHAR}, #{contentVideo,jdbcType=VARCHAR},
+		#{answer,jdbcType=VARCHAR},
+		#{difficulty,jdbcType=VARCHAR}, #{type,jdbcType=VARCHAR},
+		#{resolveVideo,jdbcType=VARCHAR},
+		#{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP},
+		#{fillInAnswerType,jdbcType=VARCHAR},
+		#{fillInScoreType,jdbcType=VARCHAR}, #{useCount,jdbcType=DECIMAL},
+		#{relationalIndicator,jdbcType=VARCHAR},
+		#{motherId,jdbcType=VARCHAR}, #{usableType,jdbcType=VARCHAR},
+		#{source,jdbcType=VARCHAR},
+		#{auditStatus,jdbcType=VARCHAR}, #{storeServer,jdbcType=VARCHAR},
+		#{content,jdbcType=CLOB}, #{options,jdbcType=CLOB},
+		#{resolve,jdbcType=CLOB}, #{optionsTxt,jdbcType=CLOB}
+		)
+	</insert>
+	<insert id="insertSelective" parameterType="com.codyy.oc.questionlib.entity.QueQuestion">
+		insert into QUE_QUESTION
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="queQuestionId != null">
+				QUE_QUESTION_ID,
+			</if>
+			<if test="baseSemesterId != null">
+				BASE_SEMESTER_ID,
+			</if>
+			<if test="baseClasslevelId != null">
+				BASE_CLASSLEVEL_ID,
+			</if>
+			<if test="baseSubjectId != null">
+				BASE_SUBJECT_ID,
+			</if>
+			<if test="baseUserId != null">
+				BASE_USER_ID,
+			</if>
+			<if test="contentVideo != null">
+				CONTENT_VIDEO,
+			</if>
+			<if test="answer != null">
+				ANSWER,
+			</if>
+			<if test="difficulty != null">
+				DIFFICULTY,
+			</if>
+			<if test="type != null">
+				TYPE,
+			</if>
+			<if test="resolveVideo != null">
+				RESOLVE_VIDEO,
+			</if>
+			<if test="createTime != null">
+				CREATE_TIME,
+			</if>
+			<if test="updateTime != null">
+				UPDATE_TIME,
+			</if>
+			<if test="fillInAnswerType != null">
+				FILL_IN_ANSWER_TYPE,
+			</if>
+			<if test="fillInScoreType != null">
+				FILL_IN_SCORE_TYPE,
+			</if>
+			<if test="useCount != null">
+				USE_COUNT,
+			</if>
+			<if test="relationalIndicator != null">
+				RELATIONAL_INDICATOR,
+			</if>
+			<if test="motherId != null">
+				MOTHER_ID,
+			</if>
+			<if test="usableType != null">
+				USABLE_TYPE,
+			</if>
+			<if test="source != null">
+				SOURCE,
+			</if>
+			<if test="auditStatus != null">
+				AUDIT_STATUS,
+			</if>
+			<if test="storeServer != null">
+				STORE_SERVER,
+			</if>
+			<if test="content != null">
+				CONTENT,
+			</if>
+			<if test="options != null">
+				OPTIONS,
+			</if>
+			<if test="resolve != null">
+				RESOLVE,
+			</if>
+			<if test="optionsTxt != null">
+				OPTIONS_TXT,
+			</if>
+			<if test="clsSchoolId != null">
+				CLS_SCHOOL_ID,
+			</if>
+			<if test="baseAreaId != null">
+				BASE_AREA_ID
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="queQuestionId != null">
+				#{queQuestionId,jdbcType=VARCHAR},
+			</if>
+			<if test="baseSemesterId != null">
+				#{baseSemesterId,jdbcType=VARCHAR},
+			</if>
+			<if test="baseClasslevelId != null">
+				#{baseClasslevelId,jdbcType=VARCHAR},
+			</if>
+			<if test="baseSubjectId != null">
+				#{baseSubjectId,jdbcType=VARCHAR},
+			</if>
+			<if test="baseUserId != null">
+				#{baseUserId,jdbcType=VARCHAR},
+			</if>
+			<if test="contentVideo != null">
+				#{contentVideo,jdbcType=VARCHAR},
+			</if>
+			<if test="answer != null">
+				#{answer,jdbcType=VARCHAR},
+			</if>
+			<if test="difficulty != null">
+				#{difficulty,jdbcType=VARCHAR},
+			</if>
+			<if test="type != null">
+				#{type,jdbcType=VARCHAR},
+			</if>
+			<if test="resolveVideo != null">
+				#{resolveVideo,jdbcType=VARCHAR},
+			</if>
+			<if test="createTime != null">
+				#{createTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="updateTime != null">
+				#{updateTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="fillInAnswerType != null">
+				#{fillInAnswerType,jdbcType=VARCHAR},
+			</if>
+			<if test="fillInScoreType != null">
+				#{fillInScoreType,jdbcType=VARCHAR},
+			</if>
+			<if test="useCount != null">
+				#{useCount,jdbcType=DECIMAL},
+			</if>
+			<if test="relationalIndicator != null">
+				#{relationalIndicator,jdbcType=VARCHAR},
+			</if>
+			<if test="motherId != null">
+				#{motherId,jdbcType=VARCHAR},
+			</if>
+			<if test="usableType != null">
+				#{usableType,jdbcType=VARCHAR},
+			</if>
+			<if test="source != null">
+				#{source,jdbcType=VARCHAR},
+			</if>
+			<if test="auditStatus != null">
+				#{auditStatus,jdbcType=VARCHAR},
+			</if>
+			<if test="storeServer != null">
+				#{storeServer,jdbcType=VARCHAR},
+			</if>
+			<if test="content != null">
+				#{content,jdbcType=CLOB},
+			</if>
+			<if test="options != null">
+				#{options,jdbcType=CLOB},
+			</if>
+			<if test="resolve != null">
+				#{resolve,jdbcType=CLOB},
+			</if>
+			<if test="optionsTxt != null">
+				#{optionsTxt,jdbcType=CLOB},
+			</if>
+			<if test="clsSchoolId != null">
+				#{clsSchoolId,jdbcType=VARCHAR},
+			</if>
+			<if test="baseAreaId != null">
+				#{baseAreaId,jdbcType=VARCHAR},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="com.codyy.oc.questionlib.entity.QueQuestion">
+		update QUE_QUESTION
+		<set>
+			<if test="baseSemesterId != null">
+				BASE_SEMESTER_ID = #{baseSemesterId,jdbcType=VARCHAR},
+			</if>
+			<if test="baseClasslevelId != null">
+				BASE_CLASSLEVEL_ID = #{baseClasslevelId,jdbcType=VARCHAR},
+			</if>
+			<if test="baseSubjectId != null">
+				BASE_SUBJECT_ID = #{baseSubjectId,jdbcType=VARCHAR},
+			</if>
+			<if test="baseUserId != null">
+				BASE_USER_ID = #{baseUserId,jdbcType=VARCHAR},
+			</if>
+			<if test="contentVideo != null">
+				CONTENT_VIDEO = #{contentVideo,jdbcType=VARCHAR},
+			</if>
+			<if test="answer != null">
+				ANSWER = #{answer,jdbcType=VARCHAR},
+			</if>
+			<if test="difficulty != null">
+				DIFFICULTY = #{difficulty,jdbcType=VARCHAR},
+			</if>
+			<if test="type != null">
+				TYPE = #{type,jdbcType=VARCHAR},
+			</if>
+			<if test="resolveVideo != null">
+				RESOLVE_VIDEO = #{resolveVideo,jdbcType=VARCHAR},
+			</if>
+			<if test="createTime != null">
+				CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="updateTime != null">
+				UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="fillInAnswerType != null">
+				FILL_IN_ANSWER_TYPE = #{fillInAnswerType,jdbcType=VARCHAR},
+			</if>
+			<if test="fillInScoreType != null">
+				FILL_IN_SCORE_TYPE = #{fillInScoreType,jdbcType=VARCHAR},
+			</if>
+			<if test="useCount != null">
+				USE_COUNT = #{useCount,jdbcType=DECIMAL},
+			</if>
+			<if test="relationalIndicator != null">
+				RELATIONAL_INDICATOR = #{relationalIndicator,jdbcType=VARCHAR},
+			</if>
+			<if test="motherId != null">
+				MOTHER_ID = #{motherId,jdbcType=VARCHAR},
+			</if>
+			<if test="usableType != null">
+				USABLE_TYPE = #{usableType,jdbcType=VARCHAR},
+			</if>
+			<if test="source != null">
+				SOURCE = #{source,jdbcType=VARCHAR},
+			</if>
+			<if test="auditStatus != null">
+				AUDIT_STATUS = #{auditStatus,jdbcType=VARCHAR},
+			</if>
+			<if test="storeServer != null">
+				STORE_SERVER = #{storeServer,jdbcType=VARCHAR},
+			</if>
+			<if test="content != null">
+				CONTENT = #{content,jdbcType=CLOB},
+			</if>
+			<if test="options != null">
+				OPTIONS = #{options,jdbcType=CLOB},
+			</if>
+			<if test="resolve != null">
+				RESOLVE = #{resolve,jdbcType=CLOB},
+			</if>
+			<if test="optionsTxt != null">
+				OPTIONS_TXT = #{optionsTxt,jdbcType=CLOB},
+			</if>
+		</set>
+		where QUE_QUESTION_ID = #{queQuestionId,jdbcType=VARCHAR}
+	</update>
+	<update id="updateByPrimaryKeyWithBLOBs" parameterType="com.codyy.oc.questionlib.entity.QueQuestion">
+		update QUE_QUESTION
+		set BASE_SEMESTER_ID =
+		#{baseSemesterId,jdbcType=VARCHAR},
+		BASE_CLASSLEVEL_ID = #{baseClasslevelId,jdbcType=VARCHAR},
+		BASE_SUBJECT_ID =
+		#{baseSubjectId,jdbcType=VARCHAR},
+		BASE_USER_ID = #{baseUserId,jdbcType=VARCHAR},
+		CONTENT_VIDEO =
+		#{contentVideo,jdbcType=VARCHAR},
+		ANSWER = #{answer,jdbcType=VARCHAR},
+		DIFFICULTY = #{difficulty,jdbcType=VARCHAR},
+		TYPE
+		= #{type,jdbcType=VARCHAR},
+		RESOLVE_VIDEO = #{resolveVideo,jdbcType=VARCHAR},
+		CREATE_TIME =
+		#{createTime,jdbcType=TIMESTAMP},
+		UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP},
+		FILL_IN_ANSWER_TYPE =
+		#{fillInAnswerType,jdbcType=VARCHAR},
+		FILL_IN_SCORE_TYPE = #{fillInScoreType,jdbcType=VARCHAR},
+		USE_COUNT =
+		#{useCount,jdbcType=DECIMAL},
+		RELATIONAL_INDICATOR = #{relationalIndicator,jdbcType=VARCHAR},
+		MOTHER_ID =
+		#{motherId,jdbcType=VARCHAR},
+		USABLE_TYPE = #{usableType,jdbcType=VARCHAR},
+		SOURCE = #{source,jdbcType=VARCHAR},
+		AUDIT_STATUS = #{auditStatus,jdbcType=VARCHAR},
+		STORE_SERVER = #{storeServer,jdbcType=VARCHAR},
+		CONTENT =
+		#{content,jdbcType=CLOB},
+		OPTIONS = #{options,jdbcType=CLOB},
+		RESOLVE = #{resolve,jdbcType=CLOB},
+		OPTIONS_TXT =
+		#{optionsTxt,jdbcType=CLOB}
+		where QUE_QUESTION_ID = #{queQuestionId,jdbcType=VARCHAR}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="com.codyy.oc.questionlib.entity.QueQuestion">
+		update QUE_QUESTION
+		set BASE_SEMESTER_ID =
+		#{baseSemesterId,jdbcType=VARCHAR},
+		BASE_CLASSLEVEL_ID = #{baseClasslevelId,jdbcType=VARCHAR},
+		BASE_SUBJECT_ID =
+		#{baseSubjectId,jdbcType=VARCHAR},
+		BASE_USER_ID = #{baseUserId,jdbcType=VARCHAR},
+		CONTENT_VIDEO =
+		#{contentVideo,jdbcType=VARCHAR},
+		ANSWER = #{answer,jdbcType=VARCHAR},
+		DIFFICULTY = #{difficulty,jdbcType=VARCHAR},
+		TYPE
+		= #{type,jdbcType=VARCHAR},
+		RESOLVE_VIDEO = #{resolveVideo,jdbcType=VARCHAR},
+		CREATE_TIME =
+		#{createTime,jdbcType=TIMESTAMP},
+		UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP},
+		FILL_IN_ANSWER_TYPE =
+		#{fillInAnswerType,jdbcType=VARCHAR},
+		FILL_IN_SCORE_TYPE = #{fillInScoreType,jdbcType=VARCHAR},
+		USE_COUNT =
+		#{useCount,jdbcType=DECIMAL},
+		RELATIONAL_INDICATOR = #{relationalIndicator,jdbcType=VARCHAR},
+		MOTHER_ID =
+		#{motherId,jdbcType=VARCHAR},
+		USABLE_TYPE = #{usableType,jdbcType=VARCHAR},
+		SOURCE = #{source,jdbcType=VARCHAR},
+		AUDIT_STATUS = #{auditStatus,jdbcType=VARCHAR},
+		STORE_SERVER = #{storeServer,jdbcType=VARCHAR}
+		where QUE_QUESTION_ID =
+		#{queQuestionId,jdbcType=VARCHAR}
+	</update>
+
+
+	<sql id="Base_Column_List_1">
+		a.QUE_QUESTION_ID, a.BASE_SEMESTER_ID, a.BASE_CLASSLEVEL_ID, a.BASE_SUBJECT_ID,a.BASE_USER_ID,
+		a.CONTENT_VIDEO, a.ANSWER, a.DIFFICULTY, a.TYPE, a.RESOLVE_VIDEO, a.CREATE_TIME, a.UPDATE_TIME,
+		a.FILL_IN_ANSWER_TYPE,
+		a.FILL_IN_SCORE_TYPE, a.USE_COUNT, a.RELATIONAL_INDICATOR, a.MOTHER_ID,
+		a.USABLE_TYPE, a.SOURCE,
+		a.AUDIT_STATUS,a.CONTENT, a.OPTIONS, a.RESOLVE, a.OPTIONS_TXT
+	</sql>
+	<sql id="Blob_Column_List_1">
+		a.CONTENT, a.OPTIONS, a.RESOLVE, a.OPTIONS_TXT
+	</sql>
+	<!-- 共享题库列表 -->
+	<select id="getShareQuePageList" parameterType="com.codyy.commons.page.Page" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List_1" />
+		from que_question a ,base_area c,base_user d
+		where
+		a.base_area_id = c.base_area_id(+)
+		and a.base_user_id = d.base_user_id
+		and a.relational_indicator='MOTHER'
+		and (a.usable_type='PUBLIC'
+		<if test="map.userType =='TEACHER' or map.userType =='AREA_USR'">
+			and a.audit_status='PASSED'
+		</if>
+		<if test='map.baseAreaId!=null and map.baseAreaId!=""'>
+			or (a.usable_type='AREA' and c.area_id_path like CONCAT('${map.areaIdPath}','%' ) )
+		</if>
+		<if test='map.clsSchoolId!=null and map.clsSchoolId!=""'>
+			or (a.usable_type='SCHOOL' and a.cls_school_id =#{map.clsSchoolId})
+		</if> 
+		)
+		<if test='map.difficulty!=null and map.difficulty!="" and map.difficulty!="0"'>
+			and a.difficulty=#{map.difficulty}
+		</if>
+		<if test='map.type!=null and map.type!="" and map.type!="0"'>
+			and a.type=#{map.type}
+		</if>
+		<if test='map.baseSemesterId!=null and map.baseSemesterId!="" and map.baseSemesterId!="0"'>
+			and a.base_semester_id=#{map.baseSemesterId}
+		</if>
+		<if test='map.baseClasslevelId!=null and map.baseClasslevelId!="" and map.baseClasslevelId!="0"'>
+			and a.base_classlevel_id=#{map.baseClasslevelId}
+		</if>
+		<if test='map.baseSubjectId!=null and map.baseSubjectId!="" and map.baseSubjectId!="0"'>
+			and a.base_subject_id=#{map.baseSubjectId}
+		</if>
+		
+		<if test='map.baseVersionId!=null and map.baseVersionId!="" and map.baseVersionId!="0"'>
+			
+			and exists (
+				select 1 from que_question_r_chapter b where a.que_question_id = b.que_question_id
+				and b.base_version_id=#{map.baseVersionId}
+			<if test='map.baseVolumeId!=null and map.baseVolumeId!="" and map.baseVolumeId!="0"'>
+				and b.base_volume_id=#{map.baseVolumeId}
+			</if>
+			<if test='map.baseChapterId!=null and map.baseChapterId!="" and map.baseChapterId!="0"'>
+				and b.base_chapter_id=#{map.baseChapterId}
+			</if>
+			<if test='map.baseSectionId!=null and map.baseSectionId!="" and map.baseSectionId!="0"'>
+				and b.base_section_id=#{map.baseSectionId}
+			</if>
+			)
+		</if>
+		
+		
+		
+		<if test='map.baseKnowledgeId!=null and map.baseKnowledgeId!="" and map.baseKnowledgeId!="0"'>
+			and exists (
+				select 1 from que_question_r_knowledge e where a.que_question_id = e.que_question_id
+				and e.base_knowledge_id=#{map.baseKnowledgeId}
+			<if test='map.baseSubKnowledge1Id!=null and map.baseSubKnowledge1Id!="" and map.baseSubKnowledge1Id!="0"'>
+				and e.base_sub_knowledge1_id=#{map.baseSubKnowledge1Id}
+			</if>
+			<if test='map.baseSubKnowledge2Id!=null and map.baseSubKnowledge2Id!="" and map.baseSubKnowledge2Id!="0"'>
+				and e.base_sub_knowledge2_id=#{map.baseSubKnowledge2Id}
+			</if>
+			<if test='map.baseSubKnowledge3Id!=null and map.baseSubKnowledge3Id!="" and map.baseSubKnowledge3Id!="0"'>
+				and e.base_sub_knowledge3_id=#{map.baseSubKnowledge3Id}
+			</if>
+			<if test='map.baseSubKnowledge4Id!=null and map.baseSubKnowledge4Id!="" and map.baseSubKnowledge4Id!="0"'>
+				and e.base_sub_knowledge4_id=#{map.baseSubKnowledge4Id}
+			</if>
+			<if test='map.baseSubKnowledge5Id!=null and map.baseSubKnowledge5Id!="" and map.baseSubKnowledge5Id!="0"'>
+				and e.base_sub_knowledge5_id=#{map.baseSubKnowledge5Id}
+			</if>
+			)
+		</if>
+		
+		
+		
+		<if test='map.auditStatus!=null and map.auditStatus!="" and map.auditStatus!="0"'>
+			and a.audit_status=#{map.auditStatus}
+		</if>
+		<if test='map.relationalIndicator!=null and map.relationalIndicator!="" and map.relationalIndicator!="0"'>
+			and exists (
+			select 1 from que_question m where a.que_question_id = m.mother_id
+			and
+			m.relational_indicator=#{map.relationalIndicator}
+			and m.mother_id is not null
+			)
+		</if>
+		order by a.update_time desc
+
+	</select>
+	<!-- 智能组卷获取随机题目 -->
+
+	<select id="searchIntelligenceList" resultMap="BaseResultMap" parameterType="com.codyy.oc.base.form.QuestionListCriteria">
+		SELECT *
+		FROM (select q.*,(select count(*) from exam_question eq where eq.QUE_QUESTION_ID = q.QUE_QUESTION_ID)
+		EXAM_TIMES
+		from que_question q,base_area c
+		where 1=1
+		and q.base_area_id = c.base_area_id(+)
+		<if test="version !=null">
+			and q.QUE_QUESTION_ID in
+			(select distinct (t.QUE_QUESTION_ID)
+			from que_question_r_chapter t
+			where
+			t.base_version_id  = #{version}
+			<if test="selectcatalogs !=null">
+				and t.base_chapter_id in
+				<foreach item="item" index="index" collection="selectcatalogs" open="(" separator="," close=")">
+					#{item}
+				</foreach>
+			</if>
+			)
+		</if>
+		AND Q.DIFFICULTY = #{difficulty,jdbcType=VARCHAR}
+		AND Q.TYPE = #{questionType,jdbcType=VARCHAR}
+		AND Q.BASE_SEMESTER_ID =
+		#{baseSemesterId,jdbcType=VARCHAR}
+		AND Q.BASE_SUBJECT_ID =#{baseSubjectId,jdbcType=VARCHAR}
+		AND Q.relational_indicator='MOTHER'
+		and (q.usable_type='PUBLIC'
+		<if test='baseAreaId!=null and baseAreaId!=""'>
+			or (q.usable_type='AREA' and c.area_id_path like CONCAT('${areaIdPath}','%' ) )
+		</if>
+		<if test='clsSchoolId!=null and clsSchoolId!=""'>
+			or (q.usable_type='SCHOOL' and q.cls_school_id =#{map.clsSchoolId})
+		</if>
+		)
+		ORDER BY
+		DBMS_RANDOM.VALUE())
+		WHERE ROWNUM &lt;= #{num,jdbcType=INTEGER}
+	</select>
+
+	<!-- 根据que_question_id 获取该题的字体列表 -->
+	<select id="getChildrenQuestionList"  resultMap="QuestionResultMap"> 
+		select
+		a.QUE_QUESTION_ID,RELATIONAL_INDICATOR
+		from que_question a
+		where a.relational_indicator &lt;&gt; 'MOTHER' and a.mother_id is not null
+		and a.mother_id = #{QUE_QUESTION_ID}
+		order by a.update_time
+	</select>
+	
+	<!-- 更新审核状态 -->
+	<update id="updateAuditStatusByKey" parameterType="map">
+		update QUE_QUESTION
+		<set>
+			<if test="auditStatus != null">
+				AUDIT_STATUS = #{auditStatus,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where QUE_QUESTION_ID = #{queQuestionId,jdbcType=VARCHAR}
+	</update>
+	
+	<!-- 收藏习题列表 -->
+	<select id="getFavoriteQuePageList" parameterType="com.codyy.commons.page.Page" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List_1" />,c.que_favorite_id
+		from que_favorite c,que_question a ,que_question_r_chapter b,que_question_r_knowledge e
+		where  c.que_question_id = a.que_question_id
+		and a.que_question_id = b.que_question_id(+)
+		and a.que_question_id = e.que_question_id(+)
+		and a.relational_indicator='MOTHER'
+		<if test='map.baseUserId!=null and map.baseUserId!="" and map.baseUserId!="0"'>
+			and c.base_user_id=#{map.baseUserId}
+		</if>
+		<if test='map.difficulty!=null and map.difficulty!="" and map.difficulty!="0"'>
+			and a.difficulty=#{map.difficulty}
+		</if>
+		<if test='map.type!=null and map.type!="" and map.type!="0"'>
+			and a.type=#{map.type}
+		</if>
+		<if test='map.baseSemesterId!=null and map.baseSemesterId!="" and map.baseSemesterId!="0"'>
+			and a.base_semester_id=#{map.baseSemesterId}
+		</if>
+		<if test='map.baseClasslevelId!=null and map.baseClasslevelId!="" and map.baseClasslevelId!="0"'>
+			and a.base_classlevel_id=#{map.baseClasslevelId}
+		</if>
+		<if test='map.baseSubjectId!=null and map.baseSubjectId!="" and map.baseSubjectId!="0"'>
+			and a.base_subject_id=#{map.baseSubjectId}
+		</if>
+		<if test='map.baseVersionId!=null and map.baseVersionId!="" and map.baseVersionId!="0"'>
+			and b.base_version_id=#{map.baseVersionId}
+		</if>
+		<if test='map.baseVolumeId!=null and map.baseVolumeId!="" and map.baseVolumeId!="0"'>
+			and b.base_volume_id=#{map.baseVolumeId}
+		</if>
+		<if test='map.baseChapterId!=null and map.baseChapterId!="" and map.baseChapterId!="0"'>
+			and b.base_chapter_id=#{map.baseChapterId}
+		</if>
+		<if test='map.baseSectionId!=null and map.baseSectionId!="" and map.baseSectionId!="0"'>
+			and b.base_section_id=#{map.baseSectionId}
+		</if>
+		<if test='map.baseKnowledgeId!=null and map.baseKnowledgeId!="" and map.baseKnowledgeId!="0"'>
+			and e.base_knowledge_id=#{map.baseKnowledgeId}
+		</if>
+		<if test='map.baseSubKnowledge1Id!=null and map.baseSubKnowledge1Id!="" and map.baseSubKnowledge1Id!="0"'>
+			and e.base_sub_knowledge1_id=#{map.baseSubKnowledge1Id}
+		</if>
+		<if test='map.baseSubKnowledge2Id!=null and map.baseSubKnowledge2Id!="" and map.baseSubKnowledge2Id!="0"'>
+			and e.base_sub_knowledge2_id=#{map.baseSubKnowledge2Id}
+		</if>
+		<if test='map.baseSubKnowledge3Id!=null and map.baseSubKnowledge3Id!="" and map.baseSubKnowledge3Id!="0"'>
+			and e.base_sub_knowledge3_id=#{map.baseSubKnowledge3Id}
+		</if>
+		<if test='map.baseSubKnowledge4Id!=null and map.baseSubKnowledge4Id!="" and map.baseSubKnowledge4Id!="0"'>
+			and e.base_sub_knowledge4_id=#{map.baseSubKnowledge4Id}
+		</if>
+		<if test='map.baseSubKnowledge5Id!=null and map.baseSubKnowledge5Id!="" and map.baseSubKnowledge5Id!="0"'>
+			and e.base_sub_knowledge5_id=#{map.baseSubKnowledge5Id}
+		</if>
+		<if test='map.relationalIndicator!=null and map.relationalIndicator!="" and map.relationalIndicator!="0"'>
+			and exists (
+			select 1 from que_question m where a.que_question_id = m.mother_id
+			and
+			m.relational_indicator=#{map.relationalIndicator}
+			and m.mother_id is not null
+			)
+		</if>
+		order by a.update_time desc
+
+	</select>
+	
+	<!-- 我的习题列表 -->
+	<select id="getOwnQuePageList" parameterType="com.codyy.commons.page.Page" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List_1" />
+		from que_question a 
+		where a.relational_indicator='MOTHER'
+		<if test='map.baseUserId!=null and map.baseUserId!="" and map.baseUserId!="0"'>
+			and a.base_user_id=#{map.baseUserId}
+		</if> 
+		<if test='map.difficulty!=null and map.difficulty!="" and map.difficulty!="0"'>
+			and a.difficulty=#{map.difficulty}
+		</if>
+		<if test='map.type!=null and map.type!="" and map.type!="0"'>
+			and a.type=#{map.type}
+		</if>
+		<if test='map.baseSemesterId!=null and map.baseSemesterId!="" and map.baseSemesterId!="0"'>
+			and a.base_semester_id=#{map.baseSemesterId}
+		</if>
+		<if test='map.baseClasslevelId!=null and map.baseClasslevelId!="" and map.baseClasslevelId!="0"'>
+			and a.base_classlevel_id=#{map.baseClasslevelId}
+		</if>
+		<if test='map.baseSubjectId!=null and map.baseSubjectId!="" and map.baseSubjectId!="0"'>
+			and a.base_subject_id=#{map.baseSubjectId}
+		</if>
+		<if test='map.baseVersionId!=null and map.baseVersionId!="" and map.baseVersionId!="0"'>
+			and exists(select 1 from que_question_r_chapter t where t.que_question_id=a.que_question_id
+			and t.base_version_id=#{map.baseVersionId}
+			)
+		</if>
+		<if test='map.baseVolumeId!=null and map.baseVolumeId!="" and map.baseVolumeId!="0"'>
+			and exists(select 1 from que_question_r_chapter t where t.que_question_id=a.que_question_id
+			and t.base_volume_id=#{map.baseVolumeId}
+			)
+		</if>
+		<if test='map.baseChapterId!=null and map.baseChapterId!="" and map.baseChapterId!="0"'>
+			and exists(select 1 from que_question_r_chapter t where t.que_question_id=a.que_question_id
+			and t.base_chapter_id=#{map.baseChapterId}
+			)
+		</if>
+		<if test='map.baseSectionId!=null and map.baseSectionId!="" and map.baseSectionId!="0"'>
+			and exists(select 1 from que_question_r_chapter t where t.que_question_id=a.que_question_id
+			and t.base_section_id=#{map.baseSectionId}
+			)
+		</if>
+		<if test='map.baseKnowledgeId!=null and map.baseKnowledgeId!="" and map.baseKnowledgeId!="0"'>
+			and exists(select 1 from que_question_r_knowledge t where t.que_question_id=a.que_question_id
+			and t.base_knowledge_id=#{map.baseKnowledgeId}
+			)
+		</if>
+		<if test='map.baseSubKnowledge1Id!=null and map.baseSubKnowledge1Id!="" and map.baseSubKnowledge1Id!="0"'>
+			and exists(select 1 from que_question_r_knowledge t where t.que_question_id=a.que_question_id
+			and t.base_sub_knowledge1_id=#{map.baseSubKnowledge1Id}
+			)
+		</if>
+		<if test='map.baseSubKnowledge2Id!=null and map.baseSubKnowledge2Id!="" and map.baseSubKnowledge2Id!="0"'>
+			and exists(select 1 from que_question_r_knowledge t where t.que_question_id=a.que_question_id
+			and t.base_sub_knowledge2_id=#{map.baseSubKnowledge2Id}
+			)
+		</if>
+		<if test='map.baseSubKnowledge3Id!=null and map.baseSubKnowledge3Id!="" and map.baseSubKnowledge3Id!="0"'>
+			and exists(select 1 from que_question_r_knowledge t where t.que_question_id=a.que_question_id
+			and t.base_sub_knowledge3_id=#{map.baseSubKnowledge3Id}
+			)
+		</if>
+		<if test='map.baseSubKnowledge4Id!=null and map.baseSubKnowledge4Id!="" and map.baseSubKnowledge4Id!="0"'>
+			and exists(select 1 from que_question_r_knowledge t where t.que_question_id=a.que_question_id
+			and t.base_sub_knowledge4_id=#{map.baseSubKnowledge4Id}
+			)
+		</if>
+		<if test='map.baseSubKnowledge5Id!=null and map.baseSubKnowledge5Id!="" and map.baseSubKnowledge5Id!="0"'>
+			and exists(select 1 from que_question_r_knowledge t where t.que_question_id=a.que_question_id
+			and t.base_sub_knowledge5_id=#{map.baseSubKnowledge5Id}
+			)
+		</if>
+		<if test='map.auditStatus!=null and map.auditStatus!="" and map.auditStatus!="0"'>
+			and a.audit_status=#{map.auditStatus}
+		</if>
+		<if test='map.relationalIndicator!=null and map.relationalIndicator!="" and map.relationalIndicator!="0"'>
+			and exists (
+			select 1 from que_question m where a.que_question_id = m.mother_id
+			and
+			m.relational_indicator=#{map.relationalIndicator}
+			and m.mother_id is not null
+			)
+		</if>
+		order by a.update_time desc
+	</select>
+	
+
+	
+	<!-- 修改习题的基本内容-->
+    <update id="updateQuestionLib" parameterType="com.codyy.oc.questionlib.entity.QueQuestion">
+          update QUE_QUESTION u
+          <set>
+			<if test="baseSemesterId != null">
+				u.BASE_SEMESTER_ID = #{baseSemesterId},
+			</if>
+			<if test="baseClasslevelId != null">
+				u.BASE_CLASSLEVEL_ID = #{baseClasslevelId},
+			</if>
+			<if test="baseSubjectId != null">
+				u.BASE_SUBJECT_ID = #{baseSubjectId},
+			</if>
+			<if test="contentVideo != null">
+				u.CONTENT_VIDEO = #{contentVideo},
+			</if>
+			<if test="answer != null">
+				u.ANSWER = #{answer},
+			</if>
+			<if test="difficulty != null">
+				u.DIFFICULTY = #{difficulty},
+			</if>
+			<if test="type != null">
+				u.TYPE = #{type},
+			</if>
+			<if test="resolveVideo != null">
+				u.RESOLVE_VIDEO = #{resolveVideo},
+			</if>
+			<if test="createTime != null">
+				u.CREATE_TIME = #{createTime},
+			</if>
+			<if test="updateTime != null">
+				u.UPDATE_TIME = #{updateTime},
+			</if>
+			<if test="fillInAnswerType != null">
+				u.FILL_IN_ANSWER_TYPE = #{fillInAnswerType},
+			</if>
+			<if test="fillInScoreType != null">
+				u.FILL_IN_SCORE_TYPE = #{fillInScoreType},
+			</if>
+			<if test="useCount != null">
+				u.USE_COUNT = #{useCount},
+			</if>
+			<if test="relationalIndicator != null">
+				u.RELATIONAL_INDICATOR = #{relationalIndicator},
+			</if>
+			<if test="motherId != null">
+				u.MOTHER_ID = #{motherId},
+			</if>
+			<if test="usableType != null">
+				u.USABLE_TYPE = #{usableType},
+			</if>
+			<if test="source != null">
+				u.SOURCE = #{source},
+			</if>
+			<if test="auditStatus != null">
+				u.AUDIT_STATUS = #{auditStatus},
+			</if>
+			<if test="content != null">
+				u.CONTENT = #{content},
+			</if>
+			<if test="options != null">
+				u.OPTIONS = #{options},
+			</if>
+			<if test="resolve != null">
+				u.RESOLVE = #{resolve},
+			</if>
+			<if test="optionsTxt != null">
+				u.OPTIONS_TXT = #{optionsTxt},
+			</if>
+		  </set>
+		<where>
+			<if test="queQuestionId != null">
+            u.QUE_QUESTION_ID = #{queQuestionId}
+          </if>
+        </where> 
+    </update>
+    
+    <!-- 获取当前编辑的母题所拥有的子题的总个数-->
+    <select id="countMotherSon" resultType="java.lang.Integer">
+       select count(*) from  que_question q where q.mother_id=#{queQuestionId}
+    </select>
+    
+    <!-- 根据motherId删除 -->
+    <delete id="deleteByMotherId" parameterType="java.lang.String">
+    	delete from  que_question where mother_id = #{motherId}
+    </delete>
+    
+    <!-- 编辑子题的时候更新其母题的时间-->
+    <update id="updateMotherTime" parameterType="com.codyy.oc.questionlib.view.UpDateMothTimeView">
+       update que_question q  set q.update_time=#{sonDate} where q.que_question_id=#{questionId}
+    </update>
+	
+</mapper>

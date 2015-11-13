@@ -1,0 +1,665 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.codyy.oc.homework.dao.WorkQuestionMapper" >
+  <resultMap id="BaseResultMap" type="com.codyy.oc.homework.entity.WorkQuestion" >
+    <id column="WORK_QUESTION_ID" property="workQuestionId" jdbcType="VARCHAR" />
+    <result column="WORK_HOMEWORK_ID" property="workHomeworkId" jdbcType="VARCHAR" />
+    <result column="BASE_SEMESTER_ID" property="baseSemesterId" jdbcType="VARCHAR" />
+    <result column="BASE_CLASSLEVEL_ID" property="baseClasslevelId" jdbcType="VARCHAR" />
+    <result column="BASE_SUBJECT_ID" property="baseSubjectId" jdbcType="VARCHAR" />
+    <result column="BASE_USER_ID" property="baseUserId" jdbcType="VARCHAR" />
+    <result column="CONTENT_VIDEO" property="contentVideo" jdbcType="VARCHAR" />
+    <result column="ANSWER" property="answer" jdbcType="VARCHAR" />
+    <result column="DIFFICULTY" property="difficulty" jdbcType="VARCHAR" />
+    <result column="TYPE" property="type" jdbcType="VARCHAR" />
+    <result column="RESOLVE_VIDEO" property="resolveVideo" jdbcType="VARCHAR" />
+    <result column="FILL_IN_ANSWER_TYPE" property="fillInAnswerType" jdbcType="VARCHAR" />
+    <result column="FILL_IN_SCORE_TYPE" property="fillInScoreType" jdbcType="VARCHAR" />
+    <result column="RELATIONAL_INDICATOR" property="relationalIndicator" jdbcType="VARCHAR" />
+    <result column="MOTHER_ID" property="motherId" jdbcType="VARCHAR" />
+    <result column="SORT" property="sort" jdbcType="DECIMAL" />
+    <result column="STORE_SERVER" property="storeServer" jdbcType="VARCHAR" />
+    <result column="UPDATE_TIME" property="updateTime" jdbcType="OTHER" />
+    <result column="USE_COUNT" property="useCount" jdbcType="DECIMAL" />
+    <result column="QUE_QUESTION_ID" property="queQuestionId" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="com.codyy.oc.homework.entity.WorkQuestion" extends="BaseResultMap" >
+    <result column="CONTENT" property="content" jdbcType="CLOB" />
+    <result column="CONTENT_VIDEO" property="contentVideo" jdbcType="VARCHAR" />
+    <result column="OPTIONS" property="options" jdbcType="CLOB" />
+    <result column="RESOLVE" property="resolve" jdbcType="CLOB" />
+    <result column="OPTIONS_TXT" property="optionsTxt" jdbcType="CLOB" />
+  </resultMap>
+
+  <!-- 根据作业ID查询题库习题 -->
+<resultMap type="com.codyy.oc.homework.entity.QuestionInfo" id="questionReadOverInfoMap">
+    <result column="WORK_HOMEWORK_ID" property="homeWorkId" jdbcType="VARCHAR" />
+	<result column="WORK_QUESTION_ID" property="workQuestionId" jdbcType="VARCHAR" />
+    <result column="CONTENT" property="content" jdbcType="CLOB" />
+    <result column="CONTENT_VIDEO" property="contentVideo" jdbcType="VARCHAR" />
+    <result column="OPTIONS" property="options" jdbcType="CLOB" />
+    <result column="DIFFICULTY" property="difficulty" jdbcType="VARCHAR" />
+    <result column="TYPE" property="type" jdbcType="VARCHAR" />
+    <result column="RESOLVE" property="resolve" jdbcType="CLOB" />
+    <result column="RESOLVE_VIDEO" property="resolveVideo" jdbcType="VARCHAR" />
+    <result column="ANSWER" property="answer" jdbcType="VARCHAR" />
+    <result column="FILL_IN_ANSWER_TYPE" property="fillInAnswerType" jdbcType="VARCHAR" />
+    <result column="WORK_REC_STU_QUE_ANSWER_ID" property="workReceiveStuId" jdbcType="VARCHAR" />
+    <result column="WORK_RECEIVE_STU_ID" property="workRecStuQueAnswerId" jdbcType="VARCHAR" />
+    <result column="CORRECT_FLAG" property="correctFlag" jdbcType="VARCHAR" />
+    <result column="MY_ANSWER" property="myAnswer" jdbcType="CLOB" />
+   <!-- <result column="COMMENT" property="comment" jdbcType="CLOB" />  --> 
+    <collection column="WORK_QUESTION_ID" property="questionKnowLedge" select="getQuestionKnowLedge" ofType="string"></collection>
+    <collection column="WORK_QUESTION_ID" property="fillInQuesAnswer" select="getFillInQuesAnswer" ofType="string"></collection>
+
+</resultMap>
+<resultMap type="com.codyy.oc.homework.entity.QuestionInfo" id="questionInfoMap">
+    <result column="WORK_HOMEWORK_ID" property="homeWorkId" jdbcType="VARCHAR" />
+	<result column="WORK_QUESTION_ID" property="workQuestionId" jdbcType="VARCHAR" />
+    <result column="CONTENT" property="content" jdbcType="CLOB" />
+    <result column="CONTENT_VIDEO" property="contentVideo" jdbcType="VARCHAR" />
+    <result column="OPTIONS" property="options" jdbcType="CLOB" />
+    <result column="DIFFICULTY" property="difficulty" jdbcType="VARCHAR" />
+    <result column="TYPE" property="type" jdbcType="VARCHAR" />
+    <result column="RESOLVE" property="resolve" jdbcType="VARCHAR" />
+    <result column="RESOLVE_VIDEO" property="resolveVideo" jdbcType="VARCHAR" />
+    <result column="ANSWER" property="answer" jdbcType="VARCHAR" />
+    <result column="FILL_IN_ANSWER_TYPE" property="fillInAnswerType" jdbcType="VARCHAR" />
+    <collection column="WORK_QUESTION_ID" property="fillInQuesAnswer" select="getFillInQuesAnswer" ofType="string"></collection>
+</resultMap>
+<resultMap type="com.codyy.oc.homework.entity.QuestionKnowLedge" id="questionKnowLedgeMap">
+    <result column="WORK_HOMEWORK_ID" property="homeWorkId" jdbcType="VARCHAR" />
+	<result column="WORK_QUESTION_ID" property="workQuestionId" jdbcType="VARCHAR" />
+    <result column="QUE_QUESTION_R_KNOWLEDGE_ID" property="workQueRelKnowLedgeId" jdbcType="VARCHAR" />
+    <result column="BASE_END_KNOWLEDGE_ID" property="baseEndKnowLedgeId" jdbcType="VARCHAR" />
+	<result column="KNOWLEDGE_NAME" property="knowLedgeName" jdbcType="VARCHAR" />
+</resultMap>
+
+<resultMap type="com.codyy.oc.homework.entity.FillInQuesAnswer" id="fillInQuesAnswerMap">
+    <id column="WORK_QUE_FILL_IN_ANSWER_ID" property="workQueFillInAnswerId" jdbcType="VARCHAR" />
+    <result column="ANSWER_GRP1" property="answerGrp1" jdbcType="VARCHAR" />
+    <result column="ANSWER_GRP2" property="answerGrp2" jdbcType="VARCHAR" />
+    <result column="ANSWER_GRP3" property="answerGrp3" jdbcType="VARCHAR" />
+    <result column="ANSWER_GRP4" property="answerGrp4" jdbcType="VARCHAR" />
+
+</resultMap>
+
+
+ <select id="getQuestionKnowLedge" parameterType="java.lang.String" resultMap="questionKnowLedgeMap">
+  select wq.work_homework_id,
+         wq.work_question_id,
+         wqrk.work_question_r_knowledge_id,
+         wqrk.base_end_knowledge_id ,
+         bk.knowledge_name
+       from work_question wq left join 
+       work_question_r_knowledge  wqrk  on wq.work_question_id=wqrk.work_question_id 
+       left join base_knowledge bk on wqrk.base_end_knowledge_id=bk.base_knowledge_id
+       where wq.work_question_id=#{work_question_id}
+</select>
+
+<select id="getFillInQuesAnswer" parameterType="java.lang.String" resultMap="fillInQuesAnswerMap">
+        select wqfia.work_que_fill_in_answer_id,
+      
+               wqfia.answer_grp1,
+               wqfia.answer_grp2,
+               wqfia.answer_grp3,
+               wqfia.answer_grp4 from work_question wq join  
+               work_que_fill_in_answer wqfia  on wq.work_question_id=wqfia.work_question_id 
+         where wq.type='FILL_IN_BLANK' and wqfia.work_question_id=#{work_question_id}
+
+
+</select>
+<select id="findQueReadOverInfo" parameterType="java.util.Map" resultMap="questionReadOverInfoMap">
+select wq.work_question_id,
+       wq.work_homework_id,
+       wq.content,
+       wq.content_video,
+       wq.options,
+       wq.difficulty,
+       wq.type,
+       wq.resolve,
+       wq.resolve_video,
+       wq.answer,
+       wq.fill_in_answer_type,
+       wrs.work_receive_stu_id,
+       wrsqa.work_rec_stu_que_answer_id,
+       wrsqa.work_receive_stu_id,
+       wrsqa.correct_flag,
+       wrsqa.my_answer
+       
+  from work_question wq  
+  left join work_rec_stu_que_answer wrsqa on wrsqa.work_question_id=wq.work_question_id
+  left join work_receive_stu wrs on  wrs.work_homework_id=wq.work_homework_id
+ where wq.work_homework_id = #{workId} and wrs.base_user_id=#{userId}
+</select>
+
+	<resultMap id="WorkSearchQueResultChildMap" type="com.codyy.oc.homework.view.WorkSearchQuestionView" >
+		<id column="QUE_QUESTION_ID" property="queQuestionId" jdbcType="VARCHAR" />
+		<result column="RELATIONAL_INDICATOR" property="relationalIndicator" jdbcType="VARCHAR" />
+	</resultMap>
+  <resultMap id="WorkSearchQueResultMap" type="com.codyy.oc.homework.view.WorkSearchQuestionView" >
+  	<id column="QUE_QUESTION_ID" property="queQuestionId" jdbcType="VARCHAR" />
+	<result column="DIFFICULTY" property="difficulty" jdbcType="VARCHAR" />
+	<result column="UPDATE_TIME" property="updateTime" jdbcType="TIMESTAMP" />
+	<result column="USE_COUNT" property="useCount" jdbcType="DECIMAL" />
+	<result column="RELATIONAL_INDICATOR" property="relationalIndicator" jdbcType="VARCHAR" />
+	<result column="CONTENT" property="content" jdbcType="CLOB" />
+	<result column="OPTIONS" property="options" jdbcType="CLOB" />
+	<result column="TYPE" property="type" jdbcType="VARCHAR" />
+    <result column="RESOLVE_VIDEO" property="resolveVideo" jdbcType="VARCHAR" />
+    <result column="ANSWER" property="answer" jdbcType="VARCHAR" />
+    <result column="RESOLVE" property="resolve" jdbcType="CLOB" />
+    <result column="FILL_IN_ANSWER_TYPE" property="fillInAnswerType" jdbcType="VARCHAR" />
+    <result column="FILL_IN_SCORE_TYPE" property="fillInScoreType" jdbcType="VARCHAR" />
+	<collection column="QUE_QUESTION_ID" property="knowledges" ofType="java.lang.String"
+		select="selecKnowLedge" />
+	<collection column="QUE_QUESTION_ID" property="childrenQuestionList" ofType="com.codyy.oc.homework.view.WorkSearchQuestionView"
+		select="getChildrenQuestionList" />
+	<collection column="QUE_QUESTION_ID" property="fillInAnswers" ofType="com.codyy.oc.questionlib.entity.QueFillInAnswer"
+			select="selecFinnAnswer" />	
+  </resultMap>
+  <!-- 填空题 -->
+	<resultMap id="fillAnswerMap" type="com.codyy.oc.questionlib.entity.QueFillInAnswer">
+		<id column="QUE_FILL_IN_ANSWER_ID" property="queFillInAnswerId" jdbcType="VARCHAR" />
+		<result column="QUE_QUESTION_ID" property="queQuestionId" jdbcType="VARCHAR" />
+		<result column="ANSWER_GRP1" property="answerGrp1" jdbcType="CLOB" />
+		<result column="ANSWER_GRP2" property="answerGrp2" jdbcType="CLOB" />
+		<result column="ANSWER_GRP3" property="answerGrp3" jdbcType="CLOB" />
+		<result column="ANSWER_GRP4" property="answerGrp4" jdbcType="CLOB" />
+		<result column="ANSWER_GRP1_TXT" property="answerGrp1Txt" jdbcType="CLOB" />
+		<result column="ANSWER_GRP2_TXT" property="answerGrp2Txt" jdbcType="CLOB" />
+		<result column="ANSWER_GRP3_TXT" property="answerGrp3Txt" jdbcType="CLOB" />
+		<result column="ANSWER_GRP4_TXT" property="answerGrp4Txt" jdbcType="CLOB" />
+		<result column="SORT" property="sort" jdbcType="VARCHAR" />
+	</resultMap>
+
+  <sql id="Base_Column_List" >
+    WORK_QUESTION_ID, WORK_HOMEWORK_ID, BASE_SEMESTER_ID, BASE_CLASSLEVEL_ID, BASE_SUBJECT_ID, 
+    BASE_USER_ID, CONTENT_VIDEO, ANSWER, DIFFICULTY, TYPE, RESOLVE_VIDEO, FILL_IN_ANSWER_TYPE, 
+    FILL_IN_SCORE_TYPE, RELATIONAL_INDICATOR, MOTHER_ID, SORT, STORE_SERVER, UPDATE_TIME, 
+    USE_COUNT, QUE_QUESTION_ID
+  </sql>
+  <sql id="Blob_Column_List" >
+    CONTENT, OPTIONS, RESOLVE, OPTIONS_TXT
+  </sql>
+  
+  <select id="selectCountByHomework" resultType="int" parameterType="java.lang.String" >
+    select 
+    count(1)
+    from WORK_QUESTION
+    where WORK_HOMEWORK_ID = #{workHomeworkId,jdbcType=VARCHAR}
+  </select>
+  <select id="selectObjectiveCountByHomework" resultType="int" parameterType="java.lang.String" >
+    select 
+    count(1)
+    from WORK_QUESTION
+    where WORK_HOMEWORK_ID = #{workHomeworkId,jdbcType=VARCHAR}
+    and (TYPE <![CDATA[<>]]> 'ASK_ANSWER' and TYPE <![CDATA[<>]]> 'COMPUTING')
+  </select>
+  <select id="selectByHomework" resultMap="ResultMapWithBLOBs" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from WORK_QUESTION
+    where WORK_HOMEWORK_ID = #{workHomeworkId,jdbcType=VARCHAR}
+  </select>
+  <select id="selectAnswerQuestionByHomework" resultMap="ResultMapWithBLOBs" parameterType="java.lang.String" >
+    select 
+    WORK_QUESTION_ID,TYPE,SORT,CONTENT,CONTENT_VIDEO,OPTIONS
+    from WORK_QUESTION
+    where WORK_HOMEWORK_ID = #{workHomeworkId,jdbcType=VARCHAR}
+    order by SORT
+  </select>
+  <select id="selectReadByQueQuestionByHomework" resultMap="ResultMapWithBLOBs" parameterType="map" >
+    SELECT wqr.WORK_QUESTION_ID,wqr.TYPE,wqr.SORT,wqr.CONTENT,wqr.CONTENT_VIDEO,wqr.RESOLVE,wqr.DIFFICULTY
+	FROM 
+	 (select DISTINCT
+	   wq.WORK_QUESTION_ID
+	   from WORK_QUESTION wq 
+	   join WORK_RECEIVE_STU wrs ON WQ.WORK_HOMEWORK_ID = WRS.WORK_HOMEWORK_ID
+	   join WORK_REC_STU_QUE_ANSWER wrsqa ON wrsqa.WORK_RECEIVE_STU_ID = wrs.WORK_RECEIVE_STU_ID
+	   AND wq.WORK_QUESTION_ID = wrsqa.WORK_QUESTION_ID
+	    where wq.WORK_HOMEWORK_ID = #{homeworkId}
+	    and (wq.TYPE = 'ASK_ANSWER' or wq.TYPE = 'COMPUTING')
+	    AND WRS.BASE_CLASS_ID = #{classId}
+			AND wrsqa.read_over_flag = 'N'
+	)re 
+	join WORK_QUESTION wqr on re.WORK_QUESTION_ID = wqr.WORK_QUESTION_ID 
+	order by wqr.SORT
+	
+  </select>
+  <select id="selectHomeworkQuestion" resultType="java.lang.String" parameterType="java.lang.String" >
+    select 
+    QUE_QUESTION_ID
+    from WORK_QUESTION
+    where WORK_HOMEWORK_ID = #{workHomeworkId,jdbcType=VARCHAR}
+    order by SORT
+  </select>
+  <delete id="deleteByHomework" parameterType="java.lang.String" >
+    delete from WORK_QUESTION
+    where WORK_HOMEWORK_ID = #{workHomeworkId,jdbcType=VARCHAR}
+  </delete>
+  <select id="selectWorkSearchQuestionPageList" parameterType="com.codyy.commons.page.Page" resultMap="WorkSearchQueResultMap">
+		SELECT queq.QUE_QUESTION_ID,queq.USE_COUNT,queq.DIFFICULTY,queq.UPDATE_TIME,queq.CONTENT,queq.OPTIONS,
+		queq.RELATIONAL_INDICATOR,queq.TYPE,queq.RESOLVE_VIDEO,queq.ANSWER,queq.RESOLVE,queq.FILL_IN_ANSWER_TYPE,
+		queq.FILL_IN_SCORE_TYPE
+		FROM QUE_QUESTION queq
+		left join BASE_AREA ba on ba.BASE_AREA_ID = queq.BASE_AREA_ID
+		WHERE queq.RELATIONAL_INDICATOR='MOTHER'
+		and (queq.usable_type='PUBLIC'
+			or (queq.usable_type='AREA' and ba.area_id_path like CONCAT('${map.areaId}','%' ) )
+			or (queq.usable_type='SCHOOL' and queq.cls_school_id =#{map.schoolId})
+		)
+		<if test='map.type!=null and map.type!=""'>
+			and queq.type=#{map.type}
+		</if>
+		<if test='map.baseSemesterId!=null and map.baseSemesterId!="" and map.baseSemesterId!="0"'>
+			and queq.base_semester_id=#{map.baseSemesterId}
+		</if>
+		<if test='map.baseClasslevelId!=null and map.baseClasslevelId!="" and map.baseClasslevelId!="0"'>
+			and queq.base_classlevel_id=#{map.baseClasslevelId}
+		</if>
+		<if test='map.baseSubjectId!=null and map.baseSubjectId!="" and map.baseSubjectId!="0"'>
+			and queq.base_subject_id=#{map.baseSubjectId}
+		</if>
+		<if test='map.baseVersionId!=null and map.baseVersionId!="" and map.baseVersionId!="0"'>
+			and exists (
+				select 1 from que_question_r_chapter b where queq.que_question_id = b.que_question_id
+				and b.base_version_id=#{map.baseVersionId}
+			<if test='map.baseVolumeId!=null and map.baseVolumeId!="" and map.baseVolumeId!="0"'>
+				and b.base_volume_id=#{map.baseVolumeId}
+			</if>
+			<if test='map.baseChapterId!=null and map.baseChapterId!="" and map.baseChapterId!="0"'>
+				and b.base_chapter_id=#{map.baseChapterId}
+			</if>
+			)
+		</if>
+		order by queq.update_time desc
+  </select>
+  <select id="selectSecletedQuestionPageList" parameterType="com.codyy.commons.page.Page" resultMap="WorkSearchQueResultMap">
+		SELECT queq.QUE_QUESTION_ID,queq.USE_COUNT,queq.DIFFICULTY,queq.UPDATE_TIME,queq.CONTENT,queq.OPTIONS,
+		queq.RELATIONAL_INDICATOR,queq.TYPE,queq.RESOLVE_VIDEO,queq.ANSWER,queq.RESOLVE,queq.FILL_IN_ANSWER_TYPE,
+		queq.FILL_IN_SCORE_TYPE
+		FROM QUE_QUESTION queq
+		where queq.QUE_QUESTION_ID in (
+		<foreach collection="map.queIds" item="item" index="index" separator=",">
+			#{item}
+		</foreach>
+		)
+		order by 
+	    (case when queq.TYPE = 'SINGLE_CHOICE' then 1
+		    when queq.TYPE = 'MULTI_CHOICE' then 2
+		    when queq.TYPE = 'JUDEMENT' then 3
+		    when queq.TYPE = 'FILL_IN_BLANK' then 4
+		    when queq.TYPE = 'ASK_ANSWER' then 5
+		    when queq.TYPE = 'COMPUTING' then 6
+	    end
+	    ),queq.update_time desc
+  </select>
+  <!-- 根据习题的id来获取关联的知识点 -->
+  <select id="selecKnowLedge" resultType="java.lang.String">
+		select  basek.KNOWLEDGE_NAME
+		from QUE_QUESTION_R_KNOWLEDGE quek,
+		BASE_KNOWLEDGE basek
+		where quek.QUE_QUESTION_ID=#{QUE_QUESTION_ID}
+		and basek.BASE_KNOWLEDGE_ID = BASE_END_KNOWLEDGE_ID
+  </select>
+  <select id="getChildrenQuestionList"  resultMap="WorkSearchQueResultChildMap"> 
+		select
+		queq.QUE_QUESTION_ID,queq.RELATIONAL_INDICATOR
+		from que_question queq
+		where queq.mother_id = #{QUE_QUESTION_ID}
+		order by queq.update_time
+  </select>
+  <!-- 根据习题的id来获取关联的填空题的集合 -->
+  <select id="selecFinnAnswer" resultMap="fillAnswerMap">
+		select QUE_FILL_IN_ANSWER_ID, QUE_QUESTION_ID,ANSWER_GRP1, ANSWER_GRP2,
+		ANSWER_GRP3, ANSWER_GRP4, ANSWER_GRP1_TXT,
+		ANSWER_GRP2_TXT,
+		ANSWER_GRP3_TXT, ANSWER_GRP4_TXT,SORT from
+		QUE_FILL_IN_ANSWER where QUE_QUESTION_ID=#{QUE_QUESTION_ID}
+  </select>
+  
+  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from WORK_QUESTION
+    where WORK_QUESTION_ID = #{workQuestionId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from WORK_QUESTION
+    where WORK_QUESTION_ID = #{workQuestionId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.codyy.oc.homework.entity.WorkQuestion" >
+    insert into WORK_QUESTION (WORK_QUESTION_ID, WORK_HOMEWORK_ID, BASE_SEMESTER_ID, 
+      BASE_CLASSLEVEL_ID, BASE_SUBJECT_ID, BASE_USER_ID, 
+      CONTENT_VIDEO, ANSWER, DIFFICULTY, 
+      TYPE, RESOLVE_VIDEO, FILL_IN_ANSWER_TYPE, 
+      FILL_IN_SCORE_TYPE, RELATIONAL_INDICATOR, MOTHER_ID, 
+      SORT, STORE_SERVER, UPDATE_TIME, 
+      USE_COUNT, QUE_QUESTION_ID, CONTENT, 
+      OPTIONS, RESOLVE, OPTIONS_TXT
+      )
+    values (#{workQuestionId,jdbcType=VARCHAR}, #{workHomeworkId,jdbcType=VARCHAR}, #{baseSemesterId,jdbcType=VARCHAR}, 
+      #{baseClasslevelId,jdbcType=VARCHAR}, #{baseSubjectId,jdbcType=VARCHAR}, #{baseUserId,jdbcType=VARCHAR}, 
+      #{contentVideo,jdbcType=VARCHAR}, #{answer,jdbcType=VARCHAR}, #{difficulty,jdbcType=VARCHAR}, 
+      #{type,jdbcType=VARCHAR}, #{resolveVideo,jdbcType=VARCHAR}, #{fillInAnswerType,jdbcType=VARCHAR}, 
+      #{fillInScoreType,jdbcType=VARCHAR}, #{relationalIndicator,jdbcType=VARCHAR}, #{motherId,jdbcType=VARCHAR}, 
+      #{sort,jdbcType=DECIMAL}, #{storeServer,jdbcType=VARCHAR}, #{updateTime,jdbcType=OTHER}, 
+      #{useCount,jdbcType=DECIMAL}, #{queQuestionId,jdbcType=VARCHAR}, #{content,jdbcType=CLOB}, 
+      #{options,jdbcType=CLOB}, #{resolve,jdbcType=CLOB}, #{optionsTxt,jdbcType=CLOB}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.codyy.oc.homework.entity.WorkQuestion" >
+    insert into WORK_QUESTION
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="workQuestionId != null" >
+        WORK_QUESTION_ID,
+      </if>
+      <if test="workHomeworkId != null" >
+        WORK_HOMEWORK_ID,
+      </if>
+      <if test="baseSemesterId != null" >
+        BASE_SEMESTER_ID,
+      </if>
+      <if test="baseClasslevelId != null" >
+        BASE_CLASSLEVEL_ID,
+      </if>
+      <if test="baseSubjectId != null" >
+        BASE_SUBJECT_ID,
+      </if>
+      <if test="baseUserId != null" >
+        BASE_USER_ID,
+      </if>
+      <if test="contentVideo != null" >
+        CONTENT_VIDEO,
+      </if>
+      <if test="answer != null" >
+        ANSWER,
+      </if>
+      <if test="difficulty != null" >
+        DIFFICULTY,
+      </if>
+      <if test="type != null" >
+        TYPE,
+      </if>
+      <if test="resolveVideo != null" >
+        RESOLVE_VIDEO,
+      </if>
+      <if test="fillInAnswerType != null" >
+        FILL_IN_ANSWER_TYPE,
+      </if>
+      <if test="fillInScoreType != null" >
+        FILL_IN_SCORE_TYPE,
+      </if>
+      <if test="relationalIndicator != null" >
+        RELATIONAL_INDICATOR,
+      </if>
+      <if test="motherId != null" >
+        MOTHER_ID,
+      </if>
+      <if test="sort != null" >
+        SORT,
+      </if>
+      <if test="storeServer != null" >
+        STORE_SERVER,
+      </if>
+      <if test="updateTime != null" >
+        UPDATE_TIME,
+      </if>
+      <if test="useCount != null" >
+        USE_COUNT,
+      </if>
+      <if test="queQuestionId != null" >
+        QUE_QUESTION_ID,
+      </if>
+      <if test="content != null" >
+        CONTENT,
+      </if>
+      <if test="options != null" >
+        OPTIONS,
+      </if>
+      <if test="resolve != null" >
+        RESOLVE,
+      </if>
+      <if test="optionsTxt != null" >
+        OPTIONS_TXT,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="workQuestionId != null" >
+        #{workQuestionId,jdbcType=VARCHAR},
+      </if>
+      <if test="workHomeworkId != null" >
+        #{workHomeworkId,jdbcType=VARCHAR},
+      </if>
+      <if test="baseSemesterId != null" >
+        #{baseSemesterId,jdbcType=VARCHAR},
+      </if>
+      <if test="baseClasslevelId != null" >
+        #{baseClasslevelId,jdbcType=VARCHAR},
+      </if>
+      <if test="baseSubjectId != null" >
+        #{baseSubjectId,jdbcType=VARCHAR},
+      </if>
+      <if test="baseUserId != null" >
+        #{baseUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="contentVideo != null" >
+        #{contentVideo,jdbcType=VARCHAR},
+      </if>
+      <if test="answer != null" >
+        #{answer,jdbcType=VARCHAR},
+      </if>
+      <if test="difficulty != null" >
+        #{difficulty,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null" >
+        #{type,jdbcType=VARCHAR},
+      </if>
+      <if test="resolveVideo != null" >
+        #{resolveVideo,jdbcType=VARCHAR},
+      </if>
+      <if test="fillInAnswerType != null" >
+        #{fillInAnswerType,jdbcType=VARCHAR},
+      </if>
+      <if test="fillInScoreType != null" >
+        #{fillInScoreType,jdbcType=VARCHAR},
+      </if>
+      <if test="relationalIndicator != null" >
+        #{relationalIndicator,jdbcType=VARCHAR},
+      </if>
+      <if test="motherId != null" >
+        #{motherId,jdbcType=VARCHAR},
+      </if>
+      <if test="sort != null" >
+        #{sort,jdbcType=DECIMAL},
+      </if>
+      <if test="storeServer != null" >
+        #{storeServer,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=OTHER},
+      </if>
+      <if test="useCount != null" >
+        #{useCount,jdbcType=DECIMAL},
+      </if>
+      <if test="queQuestionId != null" >
+        #{queQuestionId,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null" >
+        #{content,jdbcType=CLOB},
+      </if>
+      <if test="options != null" >
+        #{options,jdbcType=CLOB},
+      </if>
+      <if test="resolve != null" >
+        #{resolve,jdbcType=CLOB},
+      </if>
+      <if test="optionsTxt != null" >
+        #{optionsTxt,jdbcType=CLOB},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.codyy.oc.homework.entity.WorkQuestion" >
+    update WORK_QUESTION
+    <set >
+      <if test="workHomeworkId != null" >
+        WORK_HOMEWORK_ID = #{workHomeworkId,jdbcType=VARCHAR},
+      </if>
+      <if test="baseSemesterId != null" >
+        BASE_SEMESTER_ID = #{baseSemesterId,jdbcType=VARCHAR},
+      </if>
+      <if test="baseClasslevelId != null" >
+        BASE_CLASSLEVEL_ID = #{baseClasslevelId,jdbcType=VARCHAR},
+      </if>
+      <if test="baseSubjectId != null" >
+        BASE_SUBJECT_ID = #{baseSubjectId,jdbcType=VARCHAR},
+      </if>
+      <if test="baseUserId != null" >
+        BASE_USER_ID = #{baseUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="contentVideo != null" >
+        CONTENT_VIDEO = #{contentVideo,jdbcType=VARCHAR},
+      </if>
+      <if test="answer != null" >
+        ANSWER = #{answer,jdbcType=VARCHAR},
+      </if>
+      <if test="difficulty != null" >
+        DIFFICULTY = #{difficulty,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null" >
+        TYPE = #{type,jdbcType=VARCHAR},
+      </if>
+      <if test="resolveVideo != null" >
+        RESOLVE_VIDEO = #{resolveVideo,jdbcType=VARCHAR},
+      </if>
+      <if test="fillInAnswerType != null" >
+        FILL_IN_ANSWER_TYPE = #{fillInAnswerType,jdbcType=VARCHAR},
+      </if>
+      <if test="fillInScoreType != null" >
+        FILL_IN_SCORE_TYPE = #{fillInScoreType,jdbcType=VARCHAR},
+      </if>
+      <if test="relationalIndicator != null" >
+        RELATIONAL_INDICATOR = #{relationalIndicator,jdbcType=VARCHAR},
+      </if>
+      <if test="motherId != null" >
+        MOTHER_ID = #{motherId,jdbcType=VARCHAR},
+      </if>
+      <if test="sort != null" >
+        SORT = #{sort,jdbcType=DECIMAL},
+      </if>
+      <if test="storeServer != null" >
+        STORE_SERVER = #{storeServer,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null" >
+        UPDATE_TIME = #{updateTime,jdbcType=OTHER},
+      </if>
+      <if test="useCount != null" >
+        USE_COUNT = #{useCount,jdbcType=DECIMAL},
+      </if>
+      <if test="queQuestionId != null" >
+        QUE_QUESTION_ID = #{queQuestionId,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null" >
+        CONTENT = #{content,jdbcType=CLOB},
+      </if>
+      <if test="options != null" >
+        OPTIONS = #{options,jdbcType=CLOB},
+      </if>
+      <if test="resolve != null" >
+        RESOLVE = #{resolve,jdbcType=CLOB},
+      </if>
+      <if test="optionsTxt != null" >
+        OPTIONS_TXT = #{optionsTxt,jdbcType=CLOB},
+      </if>
+    </set>
+    where WORK_QUESTION_ID = #{workQuestionId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.codyy.oc.homework.entity.WorkQuestion" >
+    update WORK_QUESTION
+    set WORK_HOMEWORK_ID = #{workHomeworkId,jdbcType=VARCHAR},
+      BASE_SEMESTER_ID = #{baseSemesterId,jdbcType=VARCHAR},
+      BASE_CLASSLEVEL_ID = #{baseClasslevelId,jdbcType=VARCHAR},
+      BASE_SUBJECT_ID = #{baseSubjectId,jdbcType=VARCHAR},
+      BASE_USER_ID = #{baseUserId,jdbcType=VARCHAR},
+      CONTENT_VIDEO = #{contentVideo,jdbcType=VARCHAR},
+      ANSWER = #{answer,jdbcType=VARCHAR},
+      DIFFICULTY = #{difficulty,jdbcType=VARCHAR},
+      TYPE = #{type,jdbcType=VARCHAR},
+      RESOLVE_VIDEO = #{resolveVideo,jdbcType=VARCHAR},
+      FILL_IN_ANSWER_TYPE = #{fillInAnswerType,jdbcType=VARCHAR},
+      FILL_IN_SCORE_TYPE = #{fillInScoreType,jdbcType=VARCHAR},
+      RELATIONAL_INDICATOR = #{relationalIndicator,jdbcType=VARCHAR},
+      MOTHER_ID = #{motherId,jdbcType=VARCHAR},
+      SORT = #{sort,jdbcType=DECIMAL},
+      STORE_SERVER = #{storeServer,jdbcType=VARCHAR},
+      UPDATE_TIME = #{updateTime,jdbcType=OTHER},
+      USE_COUNT = #{useCount,jdbcType=DECIMAL},
+      QUE_QUESTION_ID = #{queQuestionId,jdbcType=VARCHAR},
+      CONTENT = #{content,jdbcType=CLOB},
+      OPTIONS = #{options,jdbcType=CLOB},
+      RESOLVE = #{resolve,jdbcType=CLOB},
+      OPTIONS_TXT = #{optionsTxt,jdbcType=CLOB}
+    where WORK_QUESTION_ID = #{workQuestionId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.codyy.oc.homework.entity.WorkQuestion" >
+    update WORK_QUESTION
+    set WORK_HOMEWORK_ID = #{workHomeworkId,jdbcType=VARCHAR},
+      BASE_SEMESTER_ID = #{baseSemesterId,jdbcType=VARCHAR},
+      BASE_CLASSLEVEL_ID = #{baseClasslevelId,jdbcType=VARCHAR},
+      BASE_SUBJECT_ID = #{baseSubjectId,jdbcType=VARCHAR},
+      BASE_USER_ID = #{baseUserId,jdbcType=VARCHAR},
+      CONTENT_VIDEO = #{contentVideo,jdbcType=VARCHAR},
+      ANSWER = #{answer,jdbcType=VARCHAR},
+      DIFFICULTY = #{difficulty,jdbcType=VARCHAR},
+      TYPE = #{type,jdbcType=VARCHAR},
+      RESOLVE_VIDEO = #{resolveVideo,jdbcType=VARCHAR},
+      FILL_IN_ANSWER_TYPE = #{fillInAnswerType,jdbcType=VARCHAR},
+      FILL_IN_SCORE_TYPE = #{fillInScoreType,jdbcType=VARCHAR},
+      RELATIONAL_INDICATOR = #{relationalIndicator,jdbcType=VARCHAR},
+      MOTHER_ID = #{motherId,jdbcType=VARCHAR},
+      SORT = #{sort,jdbcType=DECIMAL},
+      STORE_SERVER = #{storeServer,jdbcType=VARCHAR},
+      UPDATE_TIME = #{updateTime,jdbcType=OTHER},
+      USE_COUNT = #{useCount,jdbcType=DECIMAL},
+      QUE_QUESTION_ID = #{queQuestionId,jdbcType=VARCHAR}
+    where WORK_QUESTION_ID = #{workQuestionId,jdbcType=VARCHAR}
+  </update>
+  
+<!-- 查询某个作业的习题 （查看作业） -->
+<select id="findQuestionListById" parameterType="java.lang.String" resultMap="questionInfoMap">
+select wq.work_question_id,
+       wq.content,
+       wq.content_video,
+       wq.options,
+       wq.difficulty,
+       wq.answer,
+       wq.type,
+       wq.resolve,
+       wq.fill_in_answer_type,
+       wq.resolve_video
+  from work_question wq
+ where wq.work_homework_id = #{workId}
+ order by CASE wq.type
+            WHEN 'SINGLE_CHOICE' THEN
+             '1'
+            WHEN 'MULTI_CHOICE' THEN
+             '2'
+            WHEN 'JUDEMENT' THEN
+             '3'
+            WHEN 'FILL_IN_BLANK' THEN
+             '4'
+            WHEN 'ASK_ANSWER' THEN
+             '5'
+            WHEN 'COMPUTING' THEN
+             '6'
+            ELSE
+             '7'
+          END,
+          wq.sort
+</select>
+</mapper>

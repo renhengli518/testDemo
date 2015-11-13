@@ -1,0 +1,666 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.codyy.oc.base.dao.CommonsMapper">
+
+	<resultMap id="BaseUserResultMap" type="com.codyy.oc.base.entity.BaseUser">
+		<id column="BASE_USER_ID" property="baseUserId" jdbcType="VARCHAR" />
+		<result column="USERNAME" property="username" jdbcType="VARCHAR" />
+		<result column="SCHOOL_ID" property="schoolId" jdbcType="VARCHAR" />
+		<result column="BASE_AREA_ID" property="baseAreaId" jdbcType="VARCHAR" />
+		<result column="REALNAME" property="realname" jdbcType="VARCHAR" />
+		<result column="USER_TYPE" property="userType" jdbcType="VARCHAR" />
+		<result column="ADMIN_FLAG" property="adminFlag" jdbcType="VARCHAR" />
+		<result column="PERM_GRANT" property="permGrant" jdbcType="VARCHAR" />
+		<result column="LOCKED" property="locked" jdbcType="VARCHAR" />
+		<result column="HEAD_PIC" property="headPic" jdbcType="VARCHAR" />
+		<result column="CREATE_TIME" property="createTime" jdbcType="TIMESTAMP" />
+		<result column="CREATE_USER_ID" property="createUserId" jdbcType="VARCHAR" />
+		<result column="CREATE_USER_TYPE" property="createUserType" jdbcType="VARCHAR" />
+		<result column="CONTACT_PHONE" property="contactPhone" jdbcType="VARCHAR" />
+		<result column="REMARK" property="remark" jdbcType="VARCHAR" />
+		<result column="DELETE_FLAG" property="deleteFlag" jdbcType="VARCHAR" />
+		<result column="POSITION" property="position" jdbcType="VARCHAR" />
+		<result column="CREATE_EVA_FLAG" property="createEvaFlag" jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<!-- 知识点-->
+	<resultMap id="BaseResultMap" type="com.codyy.oc.base.entity.BaseKnowledge" >
+    <id column="BASE_KNOWLEDGE_ID" property="baseKnowledgeId" jdbcType="VARCHAR" />
+    <result column="BASE_SEMESTER_ID" property="baseSemesterId" jdbcType="VARCHAR" />
+    <result column="BASE_SUBJECT_ID" property="baseSubjectId" jdbcType="VARCHAR" />
+    <result column="KNOWLEDGE_NAME" property="knowledgeName" jdbcType="VARCHAR" />
+    <result column="PARENT_ID" property="parentId" jdbcType="VARCHAR" />
+    <result column="SORT" property="sort" jdbcType="DECIMAL" />
+    </resultMap>
+    
+    
+    <!-- 分册知识点-->
+	<resultMap id="VCResultMap" type="com.codyy.oc.base.view.VCSelectModel" >
+    	<id column="baseVolumeId" property="id" jdbcType="VARCHAR" />
+    	<result column="volumeName" property="name" jdbcType="VARCHAR" />
+		<collection column="baseVolumeId" property="list" ofType="com.codyy.oc.base.view.VCSelectModel"
+			select="selecChapter" />
+    </resultMap>
+    
+    <!-- 构建基础树 -->
+    <resultMap id="BaseTreeMap" type="com.codyy.oc.base.entity.TreeBean">
+    	<id column="id" property="id"/>
+    	<result column="name" property="name"/>
+    	<result column="parentId" property="parentId"/>
+    </resultMap>
+    
+    <!-- 构建班级树 -->
+    <resultMap id="ClassTreeMap" type="com.codyy.oc.base.entity.TreeBean">
+    	<id column="id" property="id"/>
+    	<result column="name" property="name"/>
+    	<collection property="children" column='{id=id,schoolId=schoolId}'  ofType="com.codyy.oc.base.entity.TreeBean" select="selectClassTree"/>
+    </resultMap>
+    
+    <select id="selectClassTree" resultMap="BaseTreeMap">
+    select bc.base_class_id as id, bc.base_class_name as name, #{id} as parentId
+	  from base_class bc
+	 where bc.base_classlevel_id = #{id}
+	    and bc.cls_school_id = #{schoolId}
+    </select>
+    
+    <select id="selecChapter" resultType="com.codyy.oc.base.view.VCSelectModel" parameterType="java.lang.String">
+    	select bc.base_chapter_id id,bc.chapter_name name from base_chapter bc where bc.base_volume_id = #{id} order by bc.sort
+    </select>
+    
+    
+    <!-- 根据班级IDs获取学生IDs -->
+    <select id="selectStuIdsByClassIds" parameterType="java.util.List" resultType="java.lang.String">
+    	select bu.base_user_id from base_user bu where bu.base_class_id in 
+    	<foreach collection="list" item="item" index="index" open="(" close=")" separator=",">
+			#{item}
+		</foreach>
+    </select>
+    
+	
+	<sql id="Base_Column_List" >
+    BASE_KNOWLEDGE_ID, BASE_SEMESTER_ID, BASE_SUBJECT_ID, KNOWLEDGE_NAME, PARENT_ID, 
+    SORT
+    </sql>
+
+	<!-- 根据parent获取直属行政区 yangyongwu -->
+	<select id="getAreaListByParentId" parameterType="java.util.Map" resultType="com.codyy.oc.base.view.SelectModel">
+		select
+		ba.base_area_id id,
+		ba.area_name name,
+		ba.parent_id parentId
+		from base_area ba
+		where 1=1
+		<choose>
+			<when test="parentId == null or parentId == ''">
+				and ba.parent_id is null
+			</when>
+			<otherwise>
+				and ba.parent_id = #{parentId}
+			</otherwise>
+		</choose>
+		order by ba.sort
+	</select>
+
+	<select id="getAreaById" parameterType="java.util.Map" resultType="com.codyy.oc.base.view.BaseAreaView">
+		select
+		ba.base_area_id baseAreaId,
+		ba.base_file_server_id baseFileServerId,
+		ba.base_pms_server_id basePmsServerId,
+		ba.area_name areaName,
+		ba.area_code areaCode,
+		ba.sort sort,
+		ba.parent_id parentId,
+		ba.edit_schedule editSchedule,
+		ba.software_upgrade softwareUpgrade,
+		ba.create_school createSchool,
+		ba.area_level areaLevel,
+		ba.area_path areaPath,
+		ba.area_id_path areaIdPath,
+		(select count(*) from base_area nba where nba.parent_id=ba.base_area_id) hasChilder,
+		(select bcal.level_title from base_config_area_level bcal where bcal.area_level=ba.area_level) levelName,
+		(select count(*) from cls_school ncs where ncs.base_area_id=ba.base_area_id) hasDirectlySchool
+		from base_area ba
+		where 1 = 1 and ba.base_area_id= #{id}
+	</select>
+
+	<select id="getAreasAndLevelByParentId" parameterType="java.util.Map" resultType="com.codyy.oc.base.view.BaseAreaView">
+		select
+		ba.base_area_id baseAreaId,
+		ba.base_file_server_id baseFileServerId,
+		ba.base_pms_server_id basePmsServerId,
+		ba.area_name areaName,
+		ba.area_code areaCode,
+		ba.sort sort,
+		ba.parent_id parentId,
+		ba.edit_schedule editSchedule,
+		ba.software_upgrade softwareUpgrade,
+		ba.create_school createSchool,
+		ba.area_level areaLevel,
+		ba.area_path areaPath,
+		ba.area_id_path areaIdPath,
+		(select count(*) from base_area nba where nba.parent_id=ba.base_area_id) hasChilder,
+		(select bcal.level_title from base_config_area_level bcal where bcal.area_level=ba.area_level) levelName
+		from base_area ba
+		where 1 = 1
+		<choose>
+			<when test="parentId == null or parentId ==''">
+				and ba.parent_id is null
+			</when>
+			<otherwise>
+				and ba.parent_id = #{parentId}
+			</otherwise>
+		</choose>
+	</select>
+
+	<!-- 根据level的级别号，查询对应的名称 -->
+	<select id="getAreaLevelByLevelId" parameterType="java.util.Map" resultType="com.codyy.oc.base.entity.BaseConfigAreaLevel">
+		select
+		bcal.base_config_area_level_id baseConfigAreaLevelId
+		,bcal.area_level areaLevel
+		,bcal.level_title levelTitle
+		,bcal.mobile_title mobileTitle
+		from base_config_area_level bcal where bcal.area_level=#{levelId}
+	</select>
+
+	<select id="getSelectModelByAreaCode" resultType="com.codyy.oc.base.view.SelectModel" parameterType="java.lang.String">
+		select
+		ba.base_area_id as id,
+		ba.area_name as name
+		from base_area ba where ba.area_code = #{areaCode}
+	</select>
+
+
+	<!-- 根据区域查询学校 -->
+	<select id="getSchoolByAreaId" parameterType="java.util.Map" resultType="com.codyy.oc.base.view.SelectModel">
+		select
+		cs.cls_school_id id,
+		cs.base_area_id parentId,
+		cs.school_name name
+		from cls_school cs
+		where 1=1 and cs.delete_flag != 'Y'
+		<choose>
+			<when test="areaId == null or areaId ==''">
+				and cs.base_area_id is null
+			</when>
+			<otherwise>
+				and cs.base_area_id = #{areaId}
+			</otherwise>
+		</choose>
+	</select>
+
+	<!-- 根据区域查询学校,及各子区域id号 -->
+	<select id="getSchoolsByAreaId" parameterType="java.util.Map" resultType="com.codyy.oc.base.view.SelectModel">
+		select
+		cs.cls_school_id id,
+		cs.base_area_id parentid,
+		cs.school_name name
+		from cls_school cs
+		where 1=1 and cs.delete_flag ='N' and cs.base_area_id in (
+		select ba.base_area_id from base_area ba where ba.area_id_path like '%' || #{areaid} || '%' escape '/')
+	</select>
+
+	<select id="getAllClasslevels" resultType="com.codyy.oc.base.view.SelectModel">
+		select
+		bc.base_classlevel_id id,
+		bc.base_semester_id parentid,
+		bc.classlevel_name name
+		from base_classlevel bc,base_semester sem
+		where sem.base_semester_id=bc.base_semester_id
+		order by sem.sort asc, bc.base_semester_id asc ,bc.sort asc
+	</select>
+	
+	<select id="getAllVersions" resultType="com.codyy.oc.base.view.SelectModel">
+		select base_version_id as id,version_name as name from base_version order by sort
+	</select>
+
+	<!-- 获取所有学科信息 -->
+	<select id="getAllSubjects" resultType="com.codyy.oc.base.view.SelectModel">
+		select base_subject_id as id,subject_name as name from base_subject order by sort
+	</select>
+	
+	<!-- 获取所有学科信息 -->
+	<select id="getAllVolumes" resultType="com.codyy.oc.base.view.SelectModel">
+		select base_volume_id as id,volume_name as name  from base_volume order by sort
+	</select>
+
+	<!-- 获取区域最大级别数 -->
+	<select id="getAreaMaxLevel" resultType="java.lang.Integer">
+		select max(area_level) From base_area
+	</select>
+
+	<select id="getAllAreaLevelConfig" resultType="com.codyy.oc.base.entity.BaseConfigAreaLevel">
+		select
+		bcal.base_config_area_level_id baseConfigAreaLevelId,
+		bcal.area_level areaLevel,
+		bcal.level_title levelTitle,
+		bcal.mobile_title mobileTitle
+		from base_config_area_level bcal
+	</select>
+
+	<!-- 根据父级ID获取子区域内容 -->
+	<select id="getBaseAreaByParentId" parameterType="java.lang.String" resultType="com.codyy.oc.base.entity.BaseArea">
+		select
+		base_area_id baseAreaId,
+		base_file_server_id baseFileServerId,
+		base_pms_server_id basePmsServerId,
+		area_name areaName,area_code areaCode,
+		sort sort,
+		parent_id parentId,
+		edit_schedule editSchedule,
+		software_upgrade softwareUpgrade,
+		create_school createSchool,
+		area_level areaLevel,
+		map_source mapSource,
+		map_output mapOutput
+		from base_area
+		where 1 = 1
+		<choose>
+			<when test="parentId == null or parentId =='' or parentId == '0'">
+				and parent_id is null
+			</when>
+			<otherwise>
+				and parent_id = #{parentId}
+			</otherwise>
+		</choose>
+	</select>
+
+	<select id="getBaseAreaById" parameterType="java.lang.String" resultType="com.codyy.oc.base.entity.BaseArea">
+		select
+		base_area_id baseAreaId,
+		base_file_server_id baseFileServerId,
+		base_pms_server_id basePmsServerId,
+		area_name areaName,area_code areaCode,
+		sort sort,
+		parent_id parentId,
+		edit_schedule editSchedule,
+		software_upgrade softwareUpgrade,
+		create_school createSchool,
+		area_level areaLevel,
+		map_source mapSource,
+		map_output mapOutput
+		from base_area
+		where base_area_id = #{areaId}
+	</select>
+
+	<select id="getClassLevelInfoBySchoolId" parameterType="java.lang.String" resultType="com.codyy.oc.base.view.SelectModel">
+		select
+		bc.base_classlevel_id as id,
+		bc.classlevel_name as name
+		from
+		cls_school_r_semester css,base_classlevel bc
+		where
+		css.base_semester_id = bc.base_semester_id and css.cls_school_id = #{schoolId}
+		order by bc.sort
+	</select>
+
+	<select id="getSubjectByClasslevelId" parameterType="java.lang.String" resultType="com.codyy.oc.base.view.SelectModel">
+		select
+		sub.base_subject_id as id,
+		sub.subject_name as name
+		from
+		base_subject sub,
+		base_classlevel_subject clsu
+		where
+		clsu.base_subject_id=sub.base_subject_id and
+		clsu.base_classlevel_id=#{classlevelId}
+		order by sub.sort
+	</select>
+
+
+	<select id="getAllSemester" resultType="com.codyy.oc.base.entity.BaseSemester">
+		select
+		base_semester_id as baseSemesterId,
+		semester_name as semesterName,
+		sort as sort
+		from base_semester order by sort
+	</select>
+
+	<select id="getAllClasslevelBySemesterId" parameterType="java.lang.String" resultType="com.codyy.oc.base.entity.BaseClasslevel">
+		select
+		base_classlevel_id as baseClasslevelId,
+		base_semester_id as baseSemesterId,
+		classlevel_name as classlevelName,
+		sort as sort
+		from base_classlevel where base_semester_id = #{semesterId}
+		order by sort
+	</select>
+
+	<select id="getAllSubjectByClslevelId" parameterType="java.lang.String" resultType="com.codyy.oc.base.view.BaseClslevelSubjectView">
+		select
+		bcs.base_classlevel_subject_id as baseClasslevelSubjectId,
+		bcs.base_classlevel_id as baseClasslevelId,
+		bcs.base_subject_id as baseSubjectId,
+		bcs.sort as sort,
+		clsl.classlevel_name as classlevelName,
+		sbj.subject_name as subjectName
+		from base_classlevel_subject bcs
+		left join base_classlevel clsl on bcs.base_classlevel_id = clsl.base_classlevel_id
+		left join base_subject sbj on bcs.base_subject_id = sbj.base_subject_id
+		where bcs.base_classlevel_id = #{classlevelId}
+		order by bcs.sort
+	</select>
+
+	<select id="getAllVersionByClslevelSubjectId" parameterType="java.lang.String" resultType="com.codyy.oc.base.entity.BaseClasslevelSubjectVer">
+		select
+		bcsv.base_classlevel_subject_ver_id as baseClasslevelSubjectVerId,
+		bcsv.base_classlevel_subject_id as baseClasslevelSubjectId,
+		bcsv.base_version_id as baseVersionId,
+		bcsv.sort as sort,
+		ver.version_name as versionName
+		from base_classlevel_subject_ver bcsv
+		left join base_version ver on bcsv.base_version_id = ver.base_version_id
+		where bcsv.base_classlevel_subject_id = #{classroomSubjectId}
+		order by bcsv.sort
+	</select>
+
+	<select id="getAllVolumeByClslevelSubjectVerId" parameterType="java.lang.String" resultType="com.codyy.oc.base.entity.BaseVolume">
+		select
+		base_volume_id as baseVolumeId,
+		base_classlevel_subject_ver_id as baseClasslevelSubjectVerId,
+		volume_name as volumeName,
+		sort as sort
+		from base_volume
+		where base_classlevel_subject_ver_id = #{classroomSubjectVersionId}
+		order by sort
+	</select>
+	
+	<select id="getAllVolumeByClslevelSubjectVerionId" resultType="com.codyy.oc.base.view.BaseVolumeView">
+		select
+		v.base_volume_id as baseVolumeId,
+		v.base_classlevel_subject_ver_id as baseClasslevelSubjectVerId,
+		v.volume_name as volumeName,
+		v.sort as sort,
+		(select count(1) from BASE_CHAPTER where BASE_VOLUME_ID = v.BASE_VOLUME_ID) as hasChapterChild
+		from base_volume v
+		left join BASE_CLASSLEVEL_SUBJECT_VER csv on v.BASE_CLASSLEVEL_SUBJECT_VER_ID = csv.BASE_CLASSLEVEL_SUBJECT_VER_ID
+		left join BASE_CLASSLEVEL_SUBJECT cs on csv.BASE_CLASSLEVEL_SUBJECT_ID = cs.BASE_CLASSLEVEL_SUBJECT_ID
+		where cs.BASE_CLASSLEVEL_ID = #{classlevelId} and cs.BASE_SUBJECT_ID = #{subjectId} and csv.BASE_VERSION_ID = #{versionId}
+		order by v.sort
+	</select>
+	
+	
+	<select id="getAllVCBySubjectVerionId" resultMap="VCResultMap">
+		select
+		v.base_volume_id as baseVolumeId,
+		v.base_classlevel_subject_ver_id as baseClasslevelSubjectVerId,
+		bcc.classlevel_name||v.volume_name as volumeName,
+		v.sort as sort,
+		(select count(1) from BASE_CHAPTER where BASE_VOLUME_ID = v.BASE_VOLUME_ID) as hasChapterChild
+		from base_volume v
+		left join BASE_CLASSLEVEL_SUBJECT_VER csv on v.BASE_CLASSLEVEL_SUBJECT_VER_ID = csv.BASE_CLASSLEVEL_SUBJECT_VER_ID
+		left join BASE_CLASSLEVEL_SUBJECT cs on csv.BASE_CLASSLEVEL_SUBJECT_ID = cs.BASE_CLASSLEVEL_SUBJECT_ID
+		left join BASE_CLASSLEVEL bcc on bcc.base_classlevel_id = cs.base_classlevel_id
+		where cs.BASE_SUBJECT_ID = #{subjectId} and csv.BASE_VERSION_ID = #{versionId}
+		order by v.sort
+	</select>
+	
+	
+	
+	<select id="getAllChapterViewByVolumeId" parameterType="java.lang.String" resultType="com.codyy.oc.base.view.BaseChapterView">
+		select
+		c.base_chapter_id as baseChapterId,
+		c.base_volume_id as baseVolumeId,
+		c.chapter_name as chapterName,
+		c.sort as sort,
+		(select count(1) from BASE_SECTION where BASE_CHAPTER_ID = c.BASE_CHAPTER_ID) as hasSectionChild
+		from base_chapter c
+		where c.base_volume_id =#{volumeId}
+		order by c.sort
+	</select>
+	
+	<select id="getRootKnowledgeViewBySemsterSubjectId" resultType="com.codyy.oc.base.view.BaseKnowledgeView">
+		select
+		klg.base_knowledge_id as baseKnowledgeId,
+		klg.base_subject_id as baseSubjectId,
+		klg.base_semester_id as baseSemesterId,
+		klg.knowledge_name as knowledgeName,
+		klg.parent_id as parentId,
+		klg.sort as sort,
+		(select count(1) from base_knowledge sklg where sklg.parent_id = klg.base_knowledge_id) as hasKnowledgeChild
+		from base_knowledge klg
+		where klg.base_subject_id = #{subjectId} and klg.base_semester_id = #{semesterId} and klg.parent_id = '-1'
+		order by klg.sort
+	</select>
+	
+	<select id="getChildKnowledgeViewByParentId" parameterType="java.lang.String" resultType="com.codyy.oc.base.view.BaseKnowledgeView">
+		select
+		klg.base_knowledge_id as baseKnowledgeId,
+		klg.base_subject_id as baseSubjectId,
+		klg.base_semester_id as baseSemesterId,
+		klg.knowledge_name as knowledgeName,
+		klg.parent_id as parentId,
+		klg.sort as sort,
+		(select count(1) from base_knowledge sklg where sklg.parent_id = klg.base_knowledge_id) as hasKnowledgeChild
+		from base_knowledge klg
+		where klg.parent_id = #{parentId}
+		order by klg.sort
+	</select>
+
+	<select id="getAllChapterByVolumeId" parameterType="java.lang.String" resultType="com.codyy.oc.base.entity.BaseChapter">
+		select
+		base_chapter_id as baseChapterId,
+		base_volume_id as baseVolumeId,
+		chapter_name as chapterName,
+		sort as sort
+		from base_chapter
+		where base_volume_id =#{volumeId}
+		order by sort
+	</select>
+
+	<select id="getAllSectionByChapterId" parameterType="java.lang.String" resultType="com.codyy.oc.base.entity.BaseSection">
+		select
+		base_section_id as baseSectionId,
+		base_chapter_id as baseChapterId,
+		section_name as sectionName,
+		sort as sort
+		from base_section
+		where base_chapter_id =#{chapterId}
+		order by sort
+	</select>
+
+	<select id="getRootKnowledgeBySemesterSubjectId" resultType="com.codyy.oc.base.entity.BaseKnowledge">
+		select
+		klg.base_knowledge_id as baseKnowledgeId,
+		klg.base_subject_id as baseSubjectId,
+		klg.base_semester_id as baseSemesterId,
+		klg.knowledge_name as knowledgeName,
+		klg.parent_id as parentId,
+		klg.sort as sort
+		from base_knowledge klg
+		where klg.base_subject_id = #{subjectId} and klg.base_semester_id = #{semesterId} and klg.parent_id = '-1'
+		order by klg.sort
+	</select>
+
+	<select id="getChildKnowledgeByParentId" parameterType="java.lang.String" resultType="com.codyy.oc.base.entity.BaseKnowledge">
+		select
+		klg.base_knowledge_id as baseKnowledgeId,
+		klg.base_subject_id as baseSubjectId,
+		klg.base_semester_id as baseSemesterId,
+		klg.knowledge_name as knowledgeName,
+		klg.parent_id as parentId,
+		klg.sort as sort
+		from base_knowledge klg
+		where klg.parent_id = #{parentId}
+		order by klg.sort
+	</select>
+
+	<select id="getBaseUserListByIds" resultMap="BaseUserResultMap" parameterType="java.util.List">
+		select
+		BASE_USER_ID , SCHOOL_ID , USERNAME , BASE_AREA_ID , REALNAME , USER_TYPE , ADMIN_FLAG ,
+		PERM_GRANT , LOCKED , HEAD_PIC , CREATE_TIME , CREATE_USER_ID , CREATE_USER_TYPE ,
+		CONTACT_PHONE , REMARK , DELETE_FLAG,POSITION,CREATE_EVA_FLAG
+		from base_user
+		where BASE_USER_ID in (
+		<foreach collection="list" item="item" index="index" separator=",">
+			#{item}
+		</foreach>
+		)
+	</select>
+    
+    <select id="getClassByClasslevelId" parameterType="java.util.Map" resultType="com.codyy.oc.base.view.SelectModel">
+       select 
+        base_class_id     as id,
+        base_class_name   as name 
+       from base_class cls
+       where cls.base_classlevel_id = #{classlevelId}
+           and cls.CLS_SCHOOL_ID = #{schoolId}
+           and cls.ENABLED_FLAG ='Y'
+    </select>
+    
+    <!-- 根据选中的学段来级联对应的年级-->
+	<select id="classLevelBySemId" parameterType="java.lang.String" resultType="com.codyy.oc.base.entity.BaseClasslevel">   
+    select base_classlevel_id as baseClasslevelId, classlevel_name as classlevelName
+    from BASE_CLASSLEVEL where base_semester_id=#{baseSemesterId}
+	</select>
+	
+	<!-- 根据学科级联年级-->
+	<select id="subjByclassId" parameterType="java.lang.String" resultType="com.codyy.oc.questionlib.view.SubjectView">
+	  select b.base_subject_id as baseSubjectId,bs.subject_name as baseSubjectName from BASE_CLASSLEVEL_SUBJECT  b  left join BASE_SUBJECT bs on bs.base_subject_id=b.base_subject_id
+        where b.base_classlevel_id=#{baseClasslevelId}
+	</select>
+	
+	<!-- 根据版本级联学科(必须是指定学科和年级才可确定对应版本)-->
+	 <select id="versionBySuClaId" parameterType="com.codyy.oc.questionlib.view.VersionParmView" resultType="com.codyy.oc.questionlib.view.VersionView">
+	     select  v.base_version_id as baseVersionId,v.version_name as versionName from BASE_VERSION v left join BASE_CLASSLEVEL_SUBJECT_VER r on r.base_version_id=v.base_version_id
+    left join  BASE_CLASSLEVEL_SUBJECT b on b.base_classlevel_subject_id=r.base_classlevel_subject_id 
+    where b.base_subject_id=#{baseSubjId} and b.base_classlevel_id=#{baseClassLevelId}
+	 </select>
+	<!-- 分册级联版本-->
+	<select id="volumeVersionByVerId" parameterType="com.codyy.oc.questionlib.view.VolumeParm" resultType="com.codyy.oc.questionlib.view.VolumeView">
+	  select b.base_volume_id as baseVolumeId,b.volume_name as volumeName from  BASE_VOLUME b
+    left join BASE_CLASSLEVEL_SUBJECT_VER r on b.base_classlevel_subject_ver_id=r.base_classlevel_subject_ver_id 
+    left join BASE_CLASSLEVEL_SUBJECT a  on r.base_classlevel_subject_id=a.base_classlevel_subject_id
+    where r.base_version_id=#{baseVersionId} and a.base_subject_id=#{baseSubjId} and a.base_classlevel_id=#{baseClassLevId}
+	</select>
+	
+
+	<!-- 级联章与分册-->
+	<select id="chaptervolumeBycId" parameterType="com.codyy.oc.questionlib.view.VolumeParm" resultType="com.codyy.oc.questionlib.view.ChapterView">
+	   select c.base_chapter_id as baseChapterId, c.chapter_name as chapterName from BASE_CHAPTER c 
+	    left join BASE_VOLUME b on c.base_volume_id=b.base_volume_id 
+     left join BASE_CLASSLEVEL_SUBJECT_VER r on b.base_classlevel_subject_ver_id=r.base_classlevel_subject_ver_id
+      left join BASE_CLASSLEVEL_SUBJECT a  on r.base_classlevel_subject_id=a.base_classlevel_subject_id
+    where r.base_version_id=#{baseVersionId} and a.base_subject_id=#{baseSubjId} and a.base_classlevel_id=#{baseClassLevId}
+    and c.base_volume_id =#{baseVolumeId}
+	</select>
+	
+	<!-- 节级联章-->
+	<select id="sectionChapBycId" parameterType="com.codyy.oc.questionlib.view.VolumeParm" resultType="com.codyy.oc.questionlib.view.SectionView">
+	    select e.base_section_id as sectionId, e.section_name as sectionName  from BASE_SECTION e left join BASE_CHAPTER f on f.base_chapter_id=e.base_chapter_id
+     left join BASE_VOLUME b on f.base_volume_id=b.base_volume_id 
+     left join BASE_CLASSLEVEL_SUBJECT_VER r on b.base_classlevel_subject_ver_id=r.base_classlevel_subject_ver_id
+      left join BASE_CLASSLEVEL_SUBJECT a  on r.base_classlevel_subject_id=a.base_classlevel_subject_id
+    where r.base_version_id=#{baseVersionId} and a.base_subject_id=#{baseSubjId} and a.base_classlevel_id=#{baseClassLevId}
+    and b.base_volume_id =#{baseVolumeId} and e.base_chapter_id=#{baseChapterId}
+	</select>
+	
+	
+	
+
+    
+    <select id="getTeacherSubjects" parameterType="java.lang.String" resultType="com.codyy.oc.base.view.IdNameView">
+        SELECT DISTINCT BS.BASE_SUBJECT_ID id,BS.SUBJECT_NAME name,bs.SORT 
+        FROM BASE_USER_TEACH but,BASE_SUBJECT bs
+		WHERE 
+		BUT.BASE_USER_ID = #{userId}
+		AND BS.BASE_SUBJECT_ID = BUT.BASE_SUBJECT_ID
+		ORDER BY bs.SORT
+    </select>
+    
+    <select id="getStudentByTeacher" parameterType="java.lang.String" resultType="com.codyy.oc.base.view.StudentClassView">
+    	SELECT DISTINCT BU.BASE_USER_ID userId,BU.BASE_CLASS_ID classId
+		FROM BASE_USER bu,BASE_USER_TEACH but 
+		WHERE BU.BASE_CLASS_ID = BUT.BASE_CLASS_ID AND BUT.BASE_USER_ID=#{userId}
+		AND BU.DELETE_FLAG = 'N'
+    </select>
+    
+    <select id="getSelectStudentByTeacher" parameterType="java.lang.String"  resultType="com.codyy.oc.base.view.SelectStudentView">
+	    SELECT BU.BASE_USER_ID userId,BU.REALNAME name,BS.BASE_SEMESTER_ID semesterId,BS.SEMESTER_NAME semesterName,
+	    BCL.BASE_CLASSLEVEL_ID classlevelId,BCL.CLASSLEVEL_NAME classlevelName,BC.BASE_CLASS_ID classId,BC.BASE_CLASS_NAME className
+		FROM BASE_USER_TEACH but,BASE_CLASS bc,BASE_CLASSLEVEL bcl,BASE_SEMESTER bs,BASE_USER bu
+		WHERE but.BASE_USER_ID=#{userId}
+		AND BUT.BASE_CLASS_ID=BC.BASE_CLASS_ID
+		AND BC.BASE_CLASSLEVEL_ID = BCL.BASE_CLASSLEVEL_ID
+		AND BCL.BASE_SEMESTER_ID = BS.BASE_SEMESTER_ID
+		AND BU.BASE_CLASS_ID = BC.BASE_CLASS_ID
+		AND BU.DELETE_FLAG = 'N'
+		ORDER BY BS.SORT,BCL.SORT,BC.BASE_CLASS_NAME
+    </select>
+    
+    <select id="getSelectClassBySchool" parameterType="java.lang.String"  resultMap="ClassTreeMap">
+    	select * from (
+	    	select
+			bc.base_classlevel_id as id,
+			bc.classlevel_name as name,
+			(select b.school_id from base_user b where b.base_user_id = #{id}) as schoolId
+			from
+			cls_school_r_semester css,base_classlevel bc
+			where
+			css.base_semester_id = bc.base_semester_id and css.cls_school_id = (select b.school_id from base_user b where b.base_user_id = #{id})
+			order by bc.sort
+		)
+    </select>
+    
+    <!--获取所有试卷类型 renhengli-->
+	<select id="getAllExamType" resultType="com.codyy.oc.base.view.SelectModel">
+		select exam_type_id as id , name  from exam_type order by sort
+	</select>
+	
+	<!-- 根据父知识点获得子知识点   lichen-->
+    <select id="getSubKnowledgeByParent" parameterType="String" resultMap="BaseResultMap">
+     select 
+    <include refid="Base_Column_List" />
+       from BASE_KNOWLEDGE a
+       where a.parent_id = #{parentId}
+  </select>  
+  
+    <!-- 根据学科获得首节知识点-->
+  <select id="getAllBaseKnowledgeBySemesterAndDiscipline" parameterType="map" resultMap="BaseResultMap">
+     select 
+    <include refid="Base_Column_List" />
+    from BASE_KNOWLEDGE a
+    where a.BASE_SEMESTER_ID = #{baseSemesterId} and BASE_SUBJECT_ID = #{baseDisciplineId} and parent_id = '-1'
+  </select>
+  
+  
+  
+  <!-- 根据学段的id获取学段名-->
+  <select id="selecSemById" resultType="java.lang.String" parameterType="java.lang.String">
+       select b.semester_name from base_semester b where b.base_semester_id=#{baseSemesterId}
+  </select>
+  <!-- 根据年级的id获取年级名-->
+  <select id="selecClassById" resultType="java.lang.String" parameterType="java.lang.String">
+       select c.classlevel_name from base_classlevel c where c.base_classlevel_id=#{baseClasslevelId}
+  </select>     
+  <!-- 根据学科的id获取学科名-->
+  <select id="selecSubjectById" resultType="java.lang.String" parameterType="java.lang.String">
+       select s.subject_name from base_subject s where s.base_subject_id=#{baseSubjectId}
+  </select>
+  
+  <!-- 根据版本号获得对应的版本名-->
+  <select id="selecVerNameById" resultType="java.lang.String" parameterType="java.lang.String">
+       select v.version_name from base_version v where v.base_version_id=#{baseVersionId} 
+  </select>
+  <!-- 根据分册获得对应的分册名-->
+  <select id="selecVoluNameById" resultType="java.lang.String" parameterType="java.lang.String">
+       select u.volume_name from base_volume u where u.base_volume_id=#{baseVolumeId}
+  </select>
+  <!-- 根据章的id获得章的名字-->
+  <select id="selecChapNameById" resultType="java.lang.String" parameterType="java.lang.String">
+       select b.chapter_name from base_chapter b where b.base_chapter_id=#{baseChapterId}
+  </select>
+  <!-- 根据节来获得对应的节的名字-->
+  <select id="selecSectNameById" resultType="java.lang.String" parameterType="java.lang.String">
+      select s.section_name from base_section s where s.base_section_id=#{baseSectionId}
+  </select>
+  
+  <select id="selectStuInfoById" parameterType="java.lang.String" resultType="com.codyy.oc.base.view.SelectStudentView">
+	select c.base_classlevel_id classlevelId, bc.base_semester_id semesterId
+	from base_user b
+	left join base_class c
+	on b.base_class_id = c.base_class_id
+	left join base_classlevel bc
+	on bc.base_classlevel_id = c.base_classlevel_id
+	where b.base_user_id = #{id}
+  </select>
+</mapper>

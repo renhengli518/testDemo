@@ -1,0 +1,288 @@
+<%@page import="com.codyy.commons.HostConfig"%>
+<%@page import="com.codyy.commons.context.SpringContext"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<link media="all" type="text/css" rel="stylesheet" href="${PUBLIC_PATH}/public/css/4.0/differentRoleStyle.css"/>
+<link media="all" type="text/css" rel="stylesheet" href="${PUBLIC_PATH}/public/css/4.1/test.css"/>
+<script>
+  $(function(){
+	  var h=$(".fixedRight").height(),
+	  	  wH=$(window).height();
+	  var t=(h-wH)/2
+	  $(".fixedRight").css("marginTop",t+'px');
+	  $(window).resize(function(){
+		  h=$(".fixedRight").height();
+	  	  wH=$(window).height();
+	  	  t=(h-wH)/2;
+	  	 $(".fixedRight").css("marginTop",t+'px');  
+	  });
+	  var hash=parseInt(window.location.hash.substring(1));
+	  if(!hash) hash=0;
+	  $(".kinds a").eq(hash).addClass("active").siblings().removeClass("active");
+	  if(hash==0){
+		  $('html,body').animate({scrollTop:0}, 0);
+	  }else if(hash&&hash!=1){
+		
+		  $('html,body').animate({scrollTop:$(".testCon:visible").eq(hash).offset().top}, 0); 
+	  }
+	  var index=0;
+	  $(".kinds").on("click",'a',function(){;
+		  $('html,body').stop(true,true);
+		  var $this=$(this);
+		  index=$this.index();
+		  
+		  window.location.hash=index;
+		  $(this).addClass("active").siblings().removeClass("active");
+		  
+		  $('html,body').animate({scrollTop:$(".testCon:visible").eq(index).offset().top}, 500);  
+	  });
+	  $(".fixedRight").on("click",".prev",function(){
+		  $('html,body').stop(true);
+		  var prevSib=$(".kinds .active").prev("a");
+		  if(prevSib)
+			 {
+			   prevSib.addClass("active").siblings().removeClass("active");
+			   index=prevSib.index();
+			   window.location.hash=index;
+			   $('html,body').animate({scrollTop:$(".testCon:visible").eq(index).offset().top}, 500);
+			 }
+		  else{return;}
+	  })
+	  $(".fixedRight").on("click",".next",function(){
+		  $('html,body').stop(true,true);
+		  var nextSib=$(".kinds .active").next("a")
+		 if(nextSib)
+			 {
+			   nextSib.addClass("active").siblings().removeClass("active");
+			   index=nextSib.index();
+			   window.location.hash=index;
+			   $('html,body').animate({scrollTop:$(".testCon:visible").eq(index).offset().top}, 500);
+			 }
+		 else
+			 {
+			 return ;
+			 }
+	  })
+  });
+  	   //获取习题种类（测试任务）
+	  function getQuestionTypeByTask(examTaskId){
+		  $.post('${root}/common/getQuestionTypeByTask.do', {examTaskId:examTaskId}, function(data){
+			  if(data != null && data.length > 0){
+				  var html = '';
+				  var has = false;
+				  for(var i = 0; i < data.length; i++){
+					 if (data[i] == 'SINGLE_CHOICE'){
+						
+						if(!has){
+	  					  html += '<a href="javascript:void(0);" class="active" id='+data[i]+'>单选题</a>';
+	  					 
+						}else{
+						  html += '<a href="javascript:void(0);" class="" id='+data[i]+'>单选题</a>';
+						}
+						has = true;
+					 }
+					 if (data[i] == 'MULTI_CHOICE'){
+	  					
+						 if(!has){
+						   html += '<a href="javascript:void(0);" class="active" id='+data[i]+'>多选题</a>';
+						 
+						 }else{
+						   html += '<a href="javascript:void(0);" class="" id='+data[i]+'>多选题</a>';
+						 }
+						 has = true;
+	  				 }
+					 if (data[i] == 'JUDEMENT'){
+		  			    
+						 if(!has){
+							 html += '<a href="javascript:void(0);" class="active" id='+data[i]+'>判断题</a>';
+							  
+						 }else{
+							 html += '<a href="javascript:void(0);" class="" id='+data[i]+'>判断题</a>';
+						 }
+						 has = true; 
+						 
+		  			 }
+					 if (data[i] == 'FILL_IN_BLANK'){
+	  					
+						 if(!has){
+							 html += '<a href="javascript:void(0);" class="active" id='+data[i]+'>填空题</a>';
+							  
+						 }else{
+							 html += '<a href="javascript:void(0);" class="" id='+data[i]+'>填空题</a>';
+						 }
+						 has = true;
+	  					
+	  				 }
+					 if (data[i] == 'ASK_ANSWER'){
+		  					
+						 if(!has){
+							 html += '<a href="javascript:void(0);" class="active" id='+data[i]+'>问答题</a>';
+							 
+						 }else{
+							 html += '<a href="javascript:void(0);" class="" id='+data[i]+'>问答题</a>';
+						 }
+						 has = true; 
+	  			     }
+					 if (data[i] == 'COMPUTING'){
+		  			     
+						 if(!has){
+							 html += '<a href="javascript:void(0);" class="active" id='+data[i]+'>计算题</a>';
+							 
+						 }else{
+							 html += '<a href="javascript:void(0);" class="" id='+data[i]+'>计算题</a>';
+						 }
+						 has = true; 
+		  			 }
+					 
+				  }
+			    $(".kinds").html(html);
+			  }
+		  }, 'json');
+	  } 
+  	   
+  	   
+	  //获取习题种类（试卷）
+	  function getQuestionTypeByExam(examId){
+		  $.post('${root}/common/getQuestionTypeByExam.do', {examId:examId}, function(data){
+			  if(data != null && data.length > 0){
+				  var html = '';
+				  var has = false;
+				  for(var i = 0; i < data.length; i++){
+					 if (data[i] == 'SINGLE_CHOICE'){
+						
+						if(!has){
+	  					  html += '<a href="javascript:void(0);" class="active" id='+data[i]+'>单选题</a>';
+	  					 
+						}else{
+						  html += '<a href="javascript:void(0);" class="" id='+data[i]+'>单选题</a>';
+						}
+						has = true;
+					 }
+					 if (data[i] == 'MULTI_CHOICE'){
+	  					
+						 if(!has){
+						   html += '<a href="javascript:void(0);" class="active" id='+data[i]+'>多选题</a>';
+						 
+						 }else{
+						   html += '<a href="javascript:void(0);" class="" id='+data[i]+'>多选题</a>';
+						 }
+						 has = true;
+	  				 }
+					 if (data[i] == 'JUDEMENT'){
+		  			    
+						 if(!has){
+							 html += '<a href="javascript:void(0);" class="active" id='+data[i]+'>判断题</a>';
+							  
+						 }else{
+							 html += '<a href="javascript:void(0);" class="" id='+data[i]+'>判断题</a>';
+						 }
+						 has = true; 
+						 
+		  			 }
+					 if (data[i] == 'FILL_IN_BLANK'){
+	  					
+						 if(!has){
+							 html += '<a href="javascript:void(0);" class="active" id='+data[i]+'>填空题</a>';
+							  
+						 }else{
+							 html += '<a href="javascript:void(0);" class="" id='+data[i]+'>填空题</a>';
+						 }
+						 has = true;
+	  					
+	  				 }
+					 if (data[i] == 'ASK_ANSWER'){
+		  					
+						 if(!has){
+							 html += '<a href="javascript:void(0);" class="active" id='+data[i]+'>问答题</a>';
+							 
+						 }else{
+							 html += '<a href="javascript:void(0);" class="" id='+data[i]+'>问答题</a>';
+						 }
+						 has = true; 
+	  			     }
+					 if (data[i] == 'COMPUTING'){
+		  			     
+						 if(!has){
+							 html += '<a href="javascript:void(0);" class="active" id='+data[i]+'>计算题</a>';
+							 
+						 }else{
+							 html += '<a href="javascript:void(0);" class="" id='+data[i]+'>计算题</a>';
+						 }
+						 has = true; 
+		  			 }
+					 
+				  }
+			    $(".kinds").html(html);
+			  }
+		  }, 'json');
+	  } 
+	  
+  	   //组卷时初始化
+	  function initCreateExamQuestionType(){
+		 		 var has = false;
+				 var html = '';
+				 if (type1 != 0){
+					if(!has){
+	  					html += '<a href="javascript:void(0);" class="active" id="SINGLE_CHOICE">单选题</a>';
+					}else{
+						html += '<a href="javascript:void(0);"  id="SINGLE_CHOICE">单选题</a>';
+					}
+					has = true;
+  				 }
+				 if (type2 != 0){
+					 if(!has){
+						 	html += '<a href="javascript:void(0);" class="active" id="MULTI_CHOICE">多选题</a>';
+						}else{
+							html += '<a href="javascript:void(0);"  id="MULTI_CHOICE">多选题</a>';
+						}
+					has = true;
+  				 }
+				 if (type3 != 0){
+					if(!has){
+						html += '<a href="javascript:void(0);" class="active" id="JUDEMENT">判断题</a>';
+					}else{
+						html += '<a href="javascript:void(0);"  id="JUDEMENT">判断题</a>';
+					}
+					has = true;
+  				 }
+				 if (type4 != 0){
+					 if(!has){
+							html += '<a href="javascript:void(0);" class="active" id="FILL_IN_BLANK">填空题</a>';
+						}else{
+							html += '<a href="javascript:void(0);"  id="FILL_IN_BLANK">填空题</a>';
+						}
+						has = true;
+  				 }
+				 if (type5 != 0){
+					 if(!has){
+						 	html += '<a href="javascript:void(0);" class="active" id="ASK_ANSWER">问答题</a>';
+						}else{
+							html += '<a href="javascript:void(0);"  id="ASK_ANSWER">问答题</a>';
+						}
+					has = true;
+  					
+  			     }
+				 if (type6 != 0){
+					 if(!has){
+						 	html += '<a href="javascript:void(0);" class="active" id="COMPUTING">计算题</a>';
+						}else{
+							html += '<a href="javascript:void(0);"  id="COMPUTING">计算题</a>';
+						}
+					has = true;
+  			    	
+  			     }
+			    $(".kinds").html(html);
+	  } 
+</script>
+   <div class="fixedRight">
+      <a href="javascript:;" class="prev"></a>
+      <div class="kinds">
+          <!-- <a href="javascript:void(0);" class="active">单选题</a>
+	      <a href="javascript:void(0);">多选题</a>
+	      <a href="javascript:void(0);">填空题</a>
+	      <a href="javascript:void(0);">问答题</a>
+	      <a href="javascript:void(0);">判断题</a>
+	      <a href="javascript:void(0);">计算题</a> -->
+      </div>
+      <a href="javascript:;" class="next"></a>
+    </div>

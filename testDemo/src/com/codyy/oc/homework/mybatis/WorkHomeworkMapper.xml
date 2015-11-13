@@ -1,0 +1,437 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.codyy.oc.homework.dao.WorkHomeworkMapper" >
+  <resultMap id="BaseResultMap" type="com.codyy.oc.homework.entity.WorkHomework" >
+    <id column="WORK_HOMEWORK_ID" property="workHomeworkId" jdbcType="VARCHAR" />
+    <result column="WORK_TITLE" property="workTitle" jdbcType="VARCHAR" />
+    <result column="BASE_SUBJECT_ID" property="baseSubjectId" jdbcType="VARCHAR" />
+    <result column="BASE_USER_ID" property="baseUserId" jdbcType="VARCHAR" />
+    <result column="ASSIGN_TYPE" property="assignType" jdbcType="VARCHAR" />
+    <result column="READ_OVER_TYPE" property="readOverType" jdbcType="VARCHAR" />
+    <result column="CREATE_TIME" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="STATUS" property="status" jdbcType="VARCHAR" />
+    <result column="ASSIGN_TIME" property="assignTime" jdbcType="TIMESTAMP" />
+    <result column="FINISH_TIME" property="finishTime" jdbcType="TIMESTAMP" />
+    <result column="QUESTION_COUNT" property="questionCount" jdbcType="DECIMAL" />
+  </resultMap>
+  
+  
+<resultMap type="com.codyy.oc.homework.entity.HomeWorkQuestionInfo" id="homeWorkQuestionInfoMap">
+        <id column="WORK_HOMEWORK_ID" property="homeWorkId" jdbcType="VARCHAR" />
+		<result column="WORK_TITLE" property="workTitle" jdbcType="VARCHAR" />
+		<result column="TEXT_QUE_CONTENT" property="textQueContent" jdbcType="CLOB" />
+		
+</resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="com.codyy.oc.homework.entity.WorkHomework" extends="BaseResultMap" >
+    <result column="TEXT_QUE_CONTENT" property="textQueContent" jdbcType="CLOB" />
+  </resultMap>
+  
+  <resultMap type="com.codyy.oc.homework.view.WorkCountView" id="workCountMap">
+		<result column="allCount" property="allCount" jdbcType="DECIMAL" />
+		<result column="queCount" property="queCount" jdbcType="DECIMAL" />
+		<result column="objectQueCount" property="objectQueCount" jdbcType="DECIMAL" />
+		
+  </resultMap>
+  
+  <resultMap type="com.codyy.oc.homework.entity.ReceiveStu" id="receiveStuMap">
+		<result column="SUBMIT_TIME" property="submitTime" jdbcType="TIMESTAMP" />
+		<result column="FINISH_TIME" property="finishTime" jdbcType="TIMESTAMP" />
+		<result column="ANSWER_COUNT" property="answerCount" jdbcType="DECIMAL" />
+		<result column="BASE_USER_ID" property="workReceiveStuId" jdbcType="VARCHAR" />
+		<result column="REALNAME" property="realName" jdbcType="VARCHAR" />
+		<result column="rightCount" property="rightCount" jdbcType="DECIMAL" />
+		<result column="objectQueCount" property="objectQueCount" jdbcType="DECIMAL" />
+		<result column="summary" property="summary" jdbcType="TIMESTAMP" />
+		<result column="correctPercent" property="correctPercent" jdbcType="VARCHAR" />
+</resultMap>
+
+  <sql id="Base_Column_List" >
+    WORK_HOMEWORK_ID, WORK_TITLE, BASE_SUBJECT_ID, BASE_USER_ID, ASSIGN_TYPE, READ_OVER_TYPE, 
+    CREATE_TIME, STATUS, ASSIGN_TIME, FINISH_TIME, QUESTION_COUNT
+  </sql>
+  <sql id="Blob_Column_List" >
+    TEXT_QUE_CONTENT
+  </sql>
+  
+  <update id="updateHomeworkStatus" parameterType="map" >
+    update WORK_HOMEWORK
+    set 
+      STATUS = #{status,jdbcType=VARCHAR}
+    where WORK_HOMEWORK_ID = #{workHomeworkId,jdbcType=VARCHAR}
+  </update>
+  <select id="selectHomeworkClass_BAK" parameterType="java.lang.String" resultType="com.codyy.oc.base.view.IdNameView">
+  	SELECT BC.base_class_id id,bcl.classlevel_name||BC.base_class_name name
+	FROM (SELECT * FROM base_class WHERE base_class_id in 
+	(SELECT DISTINCT base_class_id FROM work_receive_stu where WORK_HOMEWORK_ID = #{workHomeworkId,jdbcType=VARCHAR})) bc,
+	base_classlevel bcl 
+	where bc.base_classlevel_id = BCL.base_classlevel_id
+	order by BCL.sort,BC.base_class_name
+  </select>
+  <select id="selectHomeworkClass" parameterType="java.lang.String" resultType="com.codyy.oc.base.view.IdNameView">
+	SELECT DISTINCT base_class_id id,CLASSLEVEL_NAME||BASE_CLASS_NAME name
+	FROM work_receive_stu where 
+	WORK_HOMEWORK_ID = #{workHomeworkId,jdbcType=VARCHAR}
+  </select>
+  <select id="selectClassInfoByClassId" parameterType="java.lang.String" resultType="map">
+  	SELECT BC.BASE_CLASS_ID classId,BC.BASE_CLASS_NAME className,BCL.BASE_CLASSLEVEL_ID classlevelId,BCL.CLASSLEVEL_NAME classlevelName
+	FROM BASE_CLASS bc,BASE_CLASSLEVEL bcl
+	WHERE BC.BASE_CLASSLEVEL_ID = BCL.BASE_CLASSLEVEL_ID
+	AND BC.BASE_CLASS_ID = #{classId,jdbcType=VARCHAR}
+  </select>
+  
+  
+  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from WORK_HOMEWORK
+    where WORK_HOMEWORK_ID = #{workHomeworkId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from WORK_HOMEWORK
+    where WORK_HOMEWORK_ID = #{workHomeworkId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.codyy.oc.homework.entity.WorkHomework" >
+    insert into WORK_HOMEWORK (WORK_HOMEWORK_ID, WORK_TITLE, BASE_SUBJECT_ID, 
+      BASE_USER_ID, ASSIGN_TYPE, READ_OVER_TYPE, 
+      CREATE_TIME, STATUS, ASSIGN_TIME, 
+      FINISH_TIME, QUESTION_COUNT, TEXT_QUE_CONTENT
+      )
+    values (#{workHomeworkId,jdbcType=VARCHAR}, #{workTitle,jdbcType=VARCHAR}, #{baseSubjectId,jdbcType=VARCHAR}, 
+      #{baseUserId,jdbcType=VARCHAR}, #{assignType,jdbcType=VARCHAR}, #{readOverType,jdbcType=VARCHAR}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{status,jdbcType=VARCHAR}, #{assignTime,jdbcType=TIMESTAMP}, 
+      #{finishTime,jdbcType=TIMESTAMP}, #{questionCount,jdbcType=DECIMAL}, #{textQueContent,jdbcType=CLOB}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.codyy.oc.homework.entity.WorkHomework" >
+    insert into WORK_HOMEWORK
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="workHomeworkId != null" >
+        WORK_HOMEWORK_ID,
+      </if>
+      <if test="workTitle != null" >
+        WORK_TITLE,
+      </if>
+      <if test="baseSubjectId != null" >
+        BASE_SUBJECT_ID,
+      </if>
+      <if test="baseUserId != null" >
+        BASE_USER_ID,
+      </if>
+      <if test="assignType != null" >
+        ASSIGN_TYPE,
+      </if>
+      <if test="readOverType != null" >
+        READ_OVER_TYPE,
+      </if>
+      <if test="createTime != null" >
+        CREATE_TIME,
+      </if>
+      <if test="status != null" >
+        STATUS,
+      </if>
+      <if test="assignTime != null" >
+        ASSIGN_TIME,
+      </if>
+      <if test="finishTime != null" >
+        FINISH_TIME,
+      </if>
+      <if test="questionCount != null" >
+        QUESTION_COUNT,
+      </if>
+      <if test="textQueContent != null" >
+        TEXT_QUE_CONTENT,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="workHomeworkId != null" >
+        #{workHomeworkId,jdbcType=VARCHAR},
+      </if>
+      <if test="workTitle != null" >
+        #{workTitle,jdbcType=VARCHAR},
+      </if>
+      <if test="baseSubjectId != null" >
+        #{baseSubjectId,jdbcType=VARCHAR},
+      </if>
+      <if test="baseUserId != null" >
+        #{baseUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="assignType != null" >
+        #{assignType,jdbcType=VARCHAR},
+      </if>
+      <if test="readOverType != null" >
+        #{readOverType,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="assignTime != null" >
+        #{assignTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="finishTime != null" >
+        #{finishTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="questionCount != null" >
+        #{questionCount,jdbcType=DECIMAL},
+      </if>
+      <if test="textQueContent != null" >
+        #{textQueContent,jdbcType=CLOB},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.codyy.oc.homework.entity.WorkHomework" >
+    update WORK_HOMEWORK
+    <set >
+      <if test="workTitle != null" >
+        WORK_TITLE = #{workTitle,jdbcType=VARCHAR},
+      </if>
+      <if test="baseSubjectId != null" >
+        BASE_SUBJECT_ID = #{baseSubjectId,jdbcType=VARCHAR},
+      </if>
+      <if test="baseUserId != null" >
+        BASE_USER_ID = #{baseUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="assignType != null" >
+        ASSIGN_TYPE = #{assignType,jdbcType=VARCHAR},
+      </if>
+      <if test="readOverType != null" >
+        READ_OVER_TYPE = #{readOverType,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null" >
+        STATUS = #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="assignTime != null" >
+        ASSIGN_TIME = #{assignTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="finishTime != null" >
+        FINISH_TIME = #{finishTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="questionCount != null" >
+        QUESTION_COUNT = #{questionCount,jdbcType=DECIMAL},
+      </if>
+      <if test="textQueContent != null" >
+        TEXT_QUE_CONTENT = #{textQueContent,jdbcType=CLOB},
+      </if>
+    </set>
+    where WORK_HOMEWORK_ID = #{workHomeworkId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.codyy.oc.homework.entity.WorkHomework" >
+    update WORK_HOMEWORK
+    set WORK_TITLE = #{workTitle,jdbcType=VARCHAR},
+      BASE_SUBJECT_ID = #{baseSubjectId,jdbcType=VARCHAR},
+      BASE_USER_ID = #{baseUserId,jdbcType=VARCHAR},
+      ASSIGN_TYPE = #{assignType,jdbcType=VARCHAR},
+      READ_OVER_TYPE = #{readOverType,jdbcType=VARCHAR},
+      CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
+      STATUS = #{status,jdbcType=VARCHAR},
+      ASSIGN_TIME = #{assignTime,jdbcType=TIMESTAMP},
+      FINISH_TIME = #{finishTime,jdbcType=TIMESTAMP},
+      QUESTION_COUNT = #{questionCount,jdbcType=DECIMAL},
+      TEXT_QUE_CONTENT = #{textQueContent,jdbcType=CLOB}
+    where WORK_HOMEWORK_ID = #{workHomeworkId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.codyy.oc.homework.entity.WorkHomework" >
+    update WORK_HOMEWORK
+    set WORK_TITLE = #{workTitle,jdbcType=VARCHAR},
+      BASE_SUBJECT_ID = #{baseSubjectId,jdbcType=VARCHAR},
+      BASE_USER_ID = #{baseUserId,jdbcType=VARCHAR},
+      ASSIGN_TYPE = #{assignType,jdbcType=VARCHAR},
+      READ_OVER_TYPE = #{readOverType,jdbcType=VARCHAR},
+      CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
+      STATUS = #{status,jdbcType=VARCHAR},
+      ASSIGN_TIME = #{assignTime,jdbcType=TIMESTAMP},
+      FINISH_TIME = #{finishTime,jdbcType=TIMESTAMP},
+      QUESTION_COUNT = #{questionCount,jdbcType=DECIMAL}
+    where WORK_HOMEWORK_ID = #{workHomeworkId,jdbcType=VARCHAR}
+  </update>
+  <!-- 根据作业ID查询出作业的标题等  （查看作业）-->
+<select id="findHomeWorkQuestionInfo" parameterType="java.lang.String" resultMap="homeWorkQuestionInfoMap">
+
+select whw.work_homework_id,
+       whw.work_title,
+       whw.text_que_content
+ from work_homework whw 
+        where whw.work_homework_id = #{workId}
+</select>
+<select id="getWorkCountByworkQueCount" parameterType="string" resultMap="workCountMap">
+
+select b.allCount, a.queCount, c.objectQueCount
+  from (
+        
+        select count(wq.work_question_id) as queCount, wq.work_homework_id
+        
+          from work_question wq
+        
+         where wq.work_homework_id = #{workId}
+         group by wq.work_homework_id) a
+
+  join (select wh.question_count as allCount, wh.work_homework_id
+          from work_homework wh
+         where wh.work_homework_id = #{workId}) b
+    on a.work_homework_id = b.work_homework_id
+
+  join (select count(wq.work_question_id) as objectQueCount,
+               wq.work_homework_id
+        
+          from work_question wq
+        
+         where wq.work_homework_id = #{workId}
+           and wq.type != 'COMPUTING'
+           and wq.type != 'ASK_ANSWER'
+            group by wq.work_homework_id
+           ) c
+    on a.work_homework_id = b.work_homework_id
+
+</select>
+
+<select id="getReceiveStuInfo" parameterType="java.util.Map" resultMap="receiveStuMap">
+ select wrs.base_user_id,
+       bs.realname,
+       wrs.answer_count,
+       wrs.submit_time,
+       wrs.summary,
+       wrs.work_homework_id,
+       wh.finish_time,
+       receStu.rightCount,
+       objQueInfo.objectQueCount,
+       round((nvl(receStu.rightCount, 0) /
+             (nvl(objQueInfo.objectQueCount, 1))) * 100,
+             2) || '%' as correctPercent
+  from work_receive_stu wrs
+  join base_user bs
+    on wrs.base_user_id = bs.base_user_id
+  join work_homework wh
+    on wrs.work_homework_id = wh.work_homework_id
+  join (select wrs.work_receive_stu_id, wrs.base_user_id,rew.rightCount
+                 from work_receive_stu wrs
+              
+                  left join
+                  (select wrsqa.work_receive_stu_id, count(wrsqa.work_question_id) as rightCount
+          from work_rec_stu_que_answer wrsqa   where wrsqa.correct_flag = 'Y'
+         group by wrsqa.work_receive_stu_id
+         )  rew
+            on rew.work_receive_stu_id = wrs.work_receive_stu_id  
+              where wrs.base_class_id = #{classId}
+                  and wrs.work_homework_id = #{workId}
+                  and wrs.status = 'CHECKED'
+       ) receStu
+    on wrs.base_user_id = receStu.base_user_id
+
+  join (
+        
+        select wq.work_homework_id,
+                count(wq.work_question_id) as objectQueCount
+          from work_question wq
+        
+         where wq.work_homework_id = #{workId}
+           and wq.type != 'COMPUTING'
+           and wq.type != 'ASK_ANSWER'
+         group by wq.work_homework_id) objQueInfo
+    on wrs.work_homework_id = objQueInfo.work_homework_id
+
+ where wrs.work_homework_id = #{workId}
+   and wrs.status = 'CHECKED'
+   and wrs.base_class_id = #{classId}
+ 
+ 
+<if test="pid =='submitTime' and type == 'down'" >
+order by wrs.submit_time desc,receStu.rightCount desc
+</if>
+<if test="pid == 'submitTime' and type == 'up'" >
+order by wrs.submit_time asc,receStu.rightCount desc
+</if>
+<if test="pid == 'correct' and type == 'down'" >
+order by receStu.rightCount desc,wrs.submit_time desc
+</if>
+<if test="pid == 'correct' and type == 'up'" >
+order by receStu.rightCount asc,wrs.submit_time desc
+</if>
+
+</select>
+<select id="getStuSubmitCountByStatus" parameterType="java.util.Map" resultType="java.util.Map">
+select wrs.status as STATUS,count(wrs.base_user_id) as STUCOUNT
+from work_receive_stu wrs
+ where wrs.work_homework_id = #{workId}
+   and wrs.base_class_id = #{classId}
+   group by wrs.status
+</select>
+
+<select id="getStuCountByStatus" parameterType="string" resultType="java.util.Map">
+select wrs.status as STATUS,count(wrs.base_user_id) as STUCOUNT
+from work_receive_stu wrs
+ where wrs.work_homework_id = #{workId}
+   group by wrs.status
+</select>
+
+<select id="getStuAllCount" parameterType="java.util.Map" resultType="int">
+select count(wrs.base_user_id) as stuAllCount
+from work_receive_stu wrs
+ where wrs.work_homework_id = #{workId}
+   and wrs.base_class_id = #{classId}
+</select>
+<select id="getCorrectCount" parameterType="java.util.Map" resultType="com.codyy.oc.homework.entity.correctCount">
+select res.*,rownum rn
+from
+(
+select a.work_question_id as workQuestionId,
+       a.type,
+       b.rightStuCount,
+       d.checkedStuCount,
+       round((nvl(b.rightStuCount, 0) / (nvl(d.checkedStuCount, 1))) * 100,
+             2) || '%' as quePercent
+  from (select wq.work_question_id, wq.type,wq.sort
+          from work_question wq
+         where wq.work_homework_id = #{workId}
+           and wq.type != 'ASK_ANSWER'
+           and wq.type != 'COMPUTING'
+        ) a
+  left join (select count(aw.base_user_id) as rightStuCount,
+                    wrsqa.work_question_id
+               from work_rec_stu_que_answer wrsqa
+               join (select wrs.work_receive_stu_id, wrs.base_user_id
+                      from work_receive_stu wrs
+                     where wrs.base_class_id = #{classId}
+                       and wrs.work_homework_id = #{workId}
+                       and wrs.status = 'CHECKED') aw
+                 on wrsqa.work_receive_stu_id = aw.work_receive_stu_id
+              where wrsqa.correct_flag = 'Y'
+              group by wrsqa.work_question_id) b
+    on a.work_question_id = b.work_question_id
+  left join (select count(aw.base_user_id) as checkedStuCount,
+                    wrsqa.work_question_id
+               from work_rec_stu_que_answer wrsqa
+               join (select wrs.work_receive_stu_id, wrs.base_user_id
+                      from work_receive_stu wrs
+                     where wrs.base_class_id = #{classId}
+                       and wrs.work_homework_id = #{workId}
+                       and wrs.status = 'CHECKED') aw
+                 on wrsqa.work_receive_stu_id = aw.work_receive_stu_id
+              group by wrsqa.work_question_id) d
+    on d.work_question_id = a.work_question_id
+ order by CASE a.type
+                    WHEN 'SINGLE_CHOICE' THEN
+                     '1'
+                    WHEN 'MULTI_CHOICE' THEN
+                     '2'
+                    WHEN 'JUDEMENT' THEN
+                     '3'
+                    ELSE
+                     '4'
+                  END,
+                 a.sort
+                 )res
+
+</select>
+
+<update id="updateWorkStatusByWorkId" parameterType="string">
+update work_homework wh set wh.status='END' where wh.work_homework_id=#{workId}
+
+</update>
+</mapper>

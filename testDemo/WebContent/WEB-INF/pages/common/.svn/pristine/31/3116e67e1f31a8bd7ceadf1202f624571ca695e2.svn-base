@@ -1,0 +1,114 @@
+<%@page import="com.codyy.commons.HostConfig"%>
+<%@page import="com.codyy.commons.context.SpringContext"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<div class="header_down_wrap">
+    <div class="header_down_inner_wrap">
+        <div class="header_down_inner_wrap">
+	        <div class="_header">
+	            <div class="title_wrap_p"> 
+		            <div class="logo_s">
+		            	<img src="${PUBLIC_PATH}/public/img/workplace/img_class.jpg" width="120" height="120">
+		            </div>
+		            <div class="title_s">
+		            	<span>李家长</span>
+		            	<div id="sch" class="w380 clearfix" >
+		            		
+		            	</div>
+		            	<p id="cls">
+		            		
+		            	</p>
+		            </div>
+	            </div>
+				<div class="my_use" id="my_use">
+					<div id="stu" class="my_use_img" >
+						
+					</div>
+					<ul id="yylb" class="myuse_ul">
+						
+					</ul>
+				</div>
+	        </div>
+	    </div>
+	</div>
+</div>
+<div class="w1200 clearfix marginauto mt70">
+  	<ul class="weibo_nav mb30 clearfix">
+		<li><a href="${HOME_PATH}/myHome/PARENT/index/${baseUserId}.html" class="visited">个人主页</a></li>
+		<li><a href="#">微博</a></li>
+		<li><a href="#">博文</a></li>
+		<!-- <li><a href="#">相册</a></li>
+		<li><a href="#">话题</a></li>
+		<li><a href="#">优课资源</a></li> -->
+	</ul>
+</div>
+<script>
+var projectMap = {
+		"onlineclass.id":"<%=SpringContext.getBean(HostConfig.class).getOnlineClass()%>",
+		"liveclass.id":"<%=SpringContext.getBean(HostConfig.class).getOnlineClass()%>",
+		"prepare.lession.id":"<%=SpringContext.getBean(HostConfig.class).getMeeting()%>",
+		"interact.lession.id":"<%=SpringContext.getBean(HostConfig.class).getMeeting()%>",
+		"evaluation.meeting.id":"<%=SpringContext.getBean(HostConfig.class).getEvaluation()%>",
+		"video.meeting.id":"<%=SpringContext.getBean(HostConfig.class).getMeeting()%>",
+		"information.id":"<%=SpringContext.getBean(HostConfig.class).getBase()%>",
+		"resource.id":"<%=SpringContext.getBean(HostConfig.class).getResource()%>",
+		"statistic.id":"<%=SpringContext.getBean(HostConfig.class).getOnlineClass()%>",
+		"basicInfo.id":"<%=SpringContext.getBean(HostConfig.class).getBase()%>",
+		"prepare.lesson.plan.id":"<%=SpringContext.getBean(HostConfig.class).getEvaluation()%>",
+		"onlineedit.id":"<%=SpringContext.getBean(HostConfig.class).getResource()%>",
+		"rethink.id":"<%=SpringContext.getBean(HostConfig.class).getEvaluation()%>",
+		"announcement.id":"<%=SpringContext.getBean(HostConfig.class).getBase()%>",
+		"home":"${sessionScope.hostDomain}",
+		"base":"<%=SpringContext.getBean(HostConfig.class).getBase()%>",
+		"evaluation":"<%=SpringContext.getBean(HostConfig.class).getEvaluation()%>",
+		"usercenter":"<%=SpringContext.getBean(HostConfig.class).getUserCenter()%>"
+		
+};
+	$(function(){
+		$(".weibo_nav li").on("click","a",function(){
+			if(!$(this).hasClass("visited")) {
+				$(this).addClass("visited").parent(".weibo_nav li").siblings().find("a").removeClass("visited");
+			}
+		});
+		getStudentByParent();
+	});
+	// 根据家长找学生
+	function getStudentByParent(){
+		var href = window.location.href;
+		var start=href.lastIndexOf("/")+1;
+		var end=href.lastIndexOf(".");
+		var parentId=href.substring(start, end);
+		var url="${root}/myHome/getParentChildrenListInfo.do";
+		$.post(url,{parentUserId:parentId},function(data){
+			var schHtml = "";// 学校
+			var clsHtml = "";// 班级
+			var stuHtml = "";// 学生
+			$.each(data,function(i,o){
+				// TODO
+				schHtml+='<a href="${root}/myHome/"><i title="'+o.schoolName+'" class="fl mr20 ellipsis w150" style="color:#000">'+o.schoolName+'</i></a>';
+				clsHtml+='<a href="${root}/space/classroom/index/'+o.baseClassId+'.html"><i class="mr20" style="color:#000">'+o.classlevelName+'('+o.baseClassName+')</i></a>';
+				stuHtml+='<a href="javascript:;" onclick="getMenu(\''+o.baseUserId+'\',\''+o.clsSchoolId+'\',\''+parentId+'\')"><img src="${root}/images/'+o.headPic+'" alt="" class="fl tou_img mr10"/></a>';
+			});
+			// TODO
+			$("#sch").html(schHtml);
+			$("#cls").html(clsHtml);
+			$("#stu").html(stuHtml);
+			$('#stu').find("img").first().parent().click();// 加载我的应用
+		});
+	 }
+	
+	//我的应用
+	function getMenu(baseUserId,schoolId,parentId){
+		var url="${root}/myHome/getMenu.do";
+		$.post(url,{baseUserId:baseUserId,schoolId:schoolId,parentId:parentId},function(data){
+			var html='';
+			$.each(data,function(i,o){
+				html+='<li class="myuse_li01 "><a href="'+projectMap[o.baseMenuId]+o.url+'"><img src="${root}/images/'+o.imagePath+'" alt=""><span>'+o.menuName+'</span></a></li>';
+				if(i==3){
+					return false;
+				}
+			});
+			html+='<li id="gd_li" class="myuse_li01 use_li_last"><a href="${root}/myHome/toMyApplicationConfig.html"><img src="${PUBLIC_PATH}/public/img/workplace/myuse_11.png" alt=""><span>更多</span></a></li>';
+			$("#yylb").html(html);
+		});
+	}
+</script>

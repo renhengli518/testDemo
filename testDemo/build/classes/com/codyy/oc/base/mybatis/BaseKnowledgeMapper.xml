@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.codyy.oc.base.dao.BaseKnowledgeDao" >
+  <resultMap id="BaseResultMap" type="com.codyy.oc.base.entity.BaseKnowledge" >
+    <id column="BASE_KNOWLEDGE_ID" property="baseKnowledgeId" jdbcType="VARCHAR" />
+    <result column="BASE_SEMESTER_ID" property="baseSemesterId" jdbcType="VARCHAR" />
+    <result column="BASE_SUBJECT_ID" property="baseSubjectId" jdbcType="VARCHAR" />
+    <result column="KNOWLEDGE_NAME" property="knowledgeName" jdbcType="VARCHAR" />
+    <result column="PARENT_ID" property="parentId" jdbcType="VARCHAR" />
+    <result column="SORT" property="sort" jdbcType="DECIMAL" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    BASE_KNOWLEDGE_ID, BASE_SEMESTER_ID, BASE_SUBJECT_ID, KNOWLEDGE_NAME, PARENT_ID, 
+    SORT
+  </sql>
+   <select id="findKnowledgeListByIds" resultMap="BaseResultMap">
+     select
+     <include refid="Base_Column_List"/>
+      from BASE_KNOWLEDGE where BASE_KNOWLEDGE_ID in
+      <foreach collection="list" index="index"  item="item" open="(" separator="," close=")">
+       #{item}
+      </foreach>
+   </select>
+   <select id="getAllBaseKnowledgeBySemesterAndDiscipline" parameterType="map" resultMap="BaseResultMap">
+     select 
+    <include refid="Base_Column_List" />
+    from BASE_KNOWLEDGE a
+    where a.BASE_SEMESTER_ID = #{baseSemesterId} and BASE_SUBJECT_ID = #{baseSubjectId} and parent_id = '-1'
+  </select>
+  
+    <select id="getAllBaseKnowledgeTreeBySemesterAndDiscipline" parameterType="map" resultMap="BaseResultMap">
+     select 
+    <include refid="Base_Column_List" />
+    from BASE_KNOWLEDGE a
+    where a.BASE_SEMESTER_ID = #{baseSemesterId} and BASE_SUBJECT_ID = #{baseSubjectId} 
+  </select>
+  
+  <select id="getSubKnowledgeByParent" parameterType="String" resultMap="BaseResultMap">
+     select 
+    <include refid="Base_Column_List" />
+    from BASE_KNOWLEDGE a
+    where a.parent_id = #{parentId}
+  </select>
+  
+  <!--  根据知识点的id来获得对应的知识点的名字-->
+    <select id="selecKnowLedgeNameById" resultType="java.lang.String" parameterType="java.lang.String">
+        select k.knowledge_name from base_knowledge k where k.base_knowledge_id=#{baseKnowledgeId}
+    </select>
+  
+</mapper>
