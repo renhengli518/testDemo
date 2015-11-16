@@ -410,9 +410,9 @@
 				
 				if(i % pageSize == 0){
 					pageNo += 1;
-					qstHtml += "<div class='quesPage' ";
+					qstHtml += '<div class="quesPage"';
 					if(pageNo > 1){
-						qstHtml += "style='display:none'";
+						qstHtml += 'style="display:none"';
 					}
 					qstHtml += " pageNo="+pageNo+">";
 				}
@@ -420,7 +420,7 @@
 				qstHtml += '<div class="quesDetail ">';
 				qstHtml += '<p class="quesDesc">';
 				qstHtml += '	<label>组卷次数：</label><span class="red">'+isEmpty(qstObj.useCount)+'</span>';
-				qstHtml += '	<label>知识点：</label><span class="c888">'+qstObj.endKonwledgeNames+'</span>';
+				qstHtml += '	<label>知识点：</label><span class="c888">'+isEmpty(qstObj.endKonwledgeNames)+'</span>';
 				qstHtml += '	<label>难易度：</label><span class="red">'+switchDifficulty(qstObj.difficulty)+'</span>';
 				qstHtml += '	<label>更新日期：</label><span>'+now('y-m-d h:i:s',qstObj.updateTime)+'</span>';
 				qstHtml += '</p>';

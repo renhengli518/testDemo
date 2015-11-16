@@ -630,6 +630,104 @@
 		order by a.update_time desc
 
 	</select>
+	
+	
+	<!-- 教室组卷题库列表 -->
+	<select id="getTeaQuePageList" parameterType="com.codyy.commons.page.Page" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List_1" />
+		from que_question a ,base_area c,base_user d
+		where
+		a.base_area_id = c.base_area_id(+)
+		and a.base_user_id = d.base_user_id
+		and a.relational_indicator='MOTHER'
+		and (a.usable_type='PUBLIC'
+		<if test="map.userType =='TEACHER' or map.userType =='AREA_USR'">
+			and a.audit_status='PASSED'
+		</if>
+		<if test='map.baseAreaId!=null and map.baseAreaId!=""'>
+			or (a.usable_type='AREA' and c.area_id_path like CONCAT('${map.areaIdPath}','%' ) )
+		</if>
+		<if test='map.clsSchoolId!=null and map.clsSchoolId!=""'>
+			or (a.usable_type='SCHOOL' and a.cls_school_id =#{map.clsSchoolId})
+		</if> 
+		<if test="map.userId != null and map.userId !=''">
+			or a.base_user_id = #{map.userId} 
+		</if>
+		)
+		<if test='map.difficulty!=null and map.difficulty!="" and map.difficulty!="0"'>
+			and a.difficulty=#{map.difficulty}
+		</if>
+		<if test='map.type!=null and map.type!="" and map.type!="0"'>
+			and a.type=#{map.type}
+		</if>
+		<if test='map.baseSemesterId!=null and map.baseSemesterId!="" and map.baseSemesterId!="0"'>
+			and a.base_semester_id=#{map.baseSemesterId}
+		</if>
+		<if test='map.baseClasslevelId!=null and map.baseClasslevelId!="" and map.baseClasslevelId!="0"'>
+			and a.base_classlevel_id=#{map.baseClasslevelId}
+		</if>
+		<if test='map.baseSubjectId!=null and map.baseSubjectId!="" and map.baseSubjectId!="0"'>
+			and a.base_subject_id=#{map.baseSubjectId}
+		</if>
+		
+		<if test='map.baseVersionId!=null and map.baseVersionId!="" and map.baseVersionId!="0"'>
+			
+			and exists (
+				select 1 from que_question_r_chapter b where a.que_question_id = b.que_question_id
+				and b.base_version_id=#{map.baseVersionId}
+			<if test='map.baseVolumeId!=null and map.baseVolumeId!="" and map.baseVolumeId!="0"'>
+				and b.base_volume_id=#{map.baseVolumeId}
+			</if>
+			<if test='map.baseChapterId!=null and map.baseChapterId!="" and map.baseChapterId!="0"'>
+				and b.base_chapter_id=#{map.baseChapterId}
+			</if>
+			<if test='map.baseSectionId!=null and map.baseSectionId!="" and map.baseSectionId!="0"'>
+				and b.base_section_id=#{map.baseSectionId}
+			</if>
+			)
+		</if>
+		
+		
+		
+		<if test='map.baseKnowledgeId!=null and map.baseKnowledgeId!="" and map.baseKnowledgeId!="0"'>
+			and exists (
+				select 1 from que_question_r_knowledge e where a.que_question_id = e.que_question_id
+				and e.base_knowledge_id=#{map.baseKnowledgeId}
+			<if test='map.baseSubKnowledge1Id!=null and map.baseSubKnowledge1Id!="" and map.baseSubKnowledge1Id!="0"'>
+				and e.base_sub_knowledge1_id=#{map.baseSubKnowledge1Id}
+			</if>
+			<if test='map.baseSubKnowledge2Id!=null and map.baseSubKnowledge2Id!="" and map.baseSubKnowledge2Id!="0"'>
+				and e.base_sub_knowledge2_id=#{map.baseSubKnowledge2Id}
+			</if>
+			<if test='map.baseSubKnowledge3Id!=null and map.baseSubKnowledge3Id!="" and map.baseSubKnowledge3Id!="0"'>
+				and e.base_sub_knowledge3_id=#{map.baseSubKnowledge3Id}
+			</if>
+			<if test='map.baseSubKnowledge4Id!=null and map.baseSubKnowledge4Id!="" and map.baseSubKnowledge4Id!="0"'>
+				and e.base_sub_knowledge4_id=#{map.baseSubKnowledge4Id}
+			</if>
+			<if test='map.baseSubKnowledge5Id!=null and map.baseSubKnowledge5Id!="" and map.baseSubKnowledge5Id!="0"'>
+				and e.base_sub_knowledge5_id=#{map.baseSubKnowledge5Id}
+			</if>
+			)
+		</if>
+		
+		
+		
+		<if test='map.auditStatus!=null and map.auditStatus!="" and map.auditStatus!="0"'>
+			and a.audit_status=#{map.auditStatus}
+		</if>
+		<if test='map.relationalIndicator!=null and map.relationalIndicator!="" and map.relationalIndicator!="0"'>
+			and exists (
+			select 1 from que_question m where a.que_question_id = m.mother_id
+			and
+			m.relational_indicator=#{map.relationalIndicator}
+			and m.mother_id is not null
+			)
+		</if>
+		order by a.update_time desc
+
+	</select>
 	<!-- 智能组卷获取随机题目 -->
 
 	<select id="searchIntelligenceList" resultMap="BaseResultMap" parameterType="com.codyy.oc.base.form.QuestionListCriteria">

@@ -157,5 +157,5 @@
 		
 		<property name="local" value="${host.onlinetest}"/>
 	</bean>
-	
+	<import resource="classpath:spring-onlinetest.xml" />
 </beans>

@@ -68,9 +68,10 @@
 	order by BCL.sort,BC.base_class_name
   </select>
   <select id="selectHomeworkClass" parameterType="java.lang.String" resultType="com.codyy.oc.base.view.IdNameView">
-	SELECT DISTINCT base_class_id id,CLASSLEVEL_NAME||BASE_CLASS_NAME name
+	SELECT DISTINCT base_class_id id,CLASSLEVEL_NAME||BASE_CLASS_NAME name,CLASSLEVEL_NAME,BASE_CLASS_NAME
 	FROM work_receive_stu where 
 	WORK_HOMEWORK_ID = #{workHomeworkId,jdbcType=VARCHAR}
+	order by CLASSLEVEL_NAME,BASE_CLASS_NAME
   </select>
   <select id="selectClassInfoByClassId" parameterType="java.lang.String" resultType="map">
   	SELECT BC.BASE_CLASS_ID classId,BC.BASE_CLASS_NAME className,BCL.BASE_CLASSLEVEL_ID classlevelId,BCL.CLASSLEVEL_NAME classlevelName
@@ -263,21 +264,21 @@ select whw.work_homework_id,
 <select id="getWorkCountByworkQueCount" parameterType="string" resultMap="workCountMap">
 
 select b.allCount, a.queCount, c.objectQueCount
-  from (
+  from 
+   (select wh.question_count as allCount, wh.work_homework_id
+          from work_homework wh
+         where wh.work_homework_id = #{workId}) b
+     left join (
         
         select count(wq.work_question_id) as queCount, wq.work_homework_id
         
           from work_question wq
         
          where wq.work_homework_id = #{workId}
-         group by wq.work_homework_id) a
-
-  join (select wh.question_count as allCount, wh.work_homework_id
-          from work_homework wh
-         where wh.work_homework_id = #{workId}) b
+         group by wq.work_homework_id) a    
     on a.work_homework_id = b.work_homework_id
 
-  join (select count(wq.work_question_id) as objectQueCount,
+  left join (select count(wq.work_question_id) as objectQueCount,
                wq.work_homework_id
         
           from work_question wq
@@ -385,7 +386,7 @@ select a.work_question_id as workQuestionId,
        b.rightStuCount,
        d.checkedStuCount,
        round((nvl(b.rightStuCount, 0) / (nvl(d.checkedStuCount, 1))) * 100,
-             2) || '%' as quePercent
+             2) as quePercent
   from (select wq.work_question_id, wq.type,wq.sort
           from work_question wq
          where wq.work_homework_id = #{workId}

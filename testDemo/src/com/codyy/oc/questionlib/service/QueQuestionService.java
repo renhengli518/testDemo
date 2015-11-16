@@ -94,6 +94,33 @@ public class QueQuestionService {
 		page.setData(data);
 		return page;
 	}
+	
+	/**
+	 * 获取教师出题列表
+	 * 
+	 * @param page
+	 * @return
+	 */
+	public Page getTeaQuePageList(Page page, Map<String, Object> map) {
+		List<QuestionListResult> data = queQuestionMapper.getTeaQuePageList(page);
+		// 封装知识点（多个用字符串拼接）,并加上收藏标记
+		if (data.size() > 0) {
+			for (QuestionListResult dto : data) {
+				combineKnowledges(dto);
+				// 加上收藏标记
+				map.put("queQuestionId", dto.getQueQuestionId());
+				QueFavorite queFavorite = queFavoriteMapper.selectByQesIdAndUserId(map);
+				if (queFavorite == null) {
+					dto.setQueFavoriteId(null);
+				} else {
+					dto.setQueFavoriteId(queFavorite.getQueFavoriteId());
+				}
+
+			}
+		}
+		page.setData(data);
+		return page;
+	}
 
 	/**
 	 * 根据Id 获取question

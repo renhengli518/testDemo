@@ -180,7 +180,7 @@
 		//章节选题
 		function searchQuestions2() {
 			console.log("章节查询");
-			var url  = '${root}/questionLib/searchShareList.do';
+			var url  = '${root}/teacherTest/searchShareList.do';
 			var baseSemesterId = $("#semesterOption").val();
 			var baseSubjectId = $("#subjOption").val();
 			var baseClasslevelId = $("#classlevelLi").find(".selected").prop("id");

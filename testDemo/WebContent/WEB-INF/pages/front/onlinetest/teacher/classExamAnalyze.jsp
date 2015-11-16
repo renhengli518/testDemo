@@ -323,13 +323,14 @@
     			 }
     		 }
 
-    		var classlevel = $(".chooseClass .active").attr("id");
+    		var classId = $(".chooseClass .active").attr("id");
     		var className = $(".chooseClass .active").text();
     		var examTaskId = '${examTaskView.examTaskId}';
     		var flag = $("#sortBtn").attr("flag");
+    	 if(classId !=null && examTaskId != null){
     		var url = "${root}/teacherTest/exportStatisticsData.do";
     		var obj = {
-    			classlevel  : classlevel,
+    			classId     : classId,
     			className   : className,
     			examTaskId  : examTaskId,
     			flag        : flag,
@@ -345,15 +346,15 @@
     				Win.alert("导出失败！");
     			}
     		});
-    		
+    	 }
     	 });
     
     	 //查看详情
     	 $("#viewDetail").click(function(){
     	    var examTaskId = '${examTaskView.examTaskId}';
-    	    var classlevel = $(".chooseClass .active").attr("id");
-    	    if(examTaskId != null && classlevel != null){
-    	    	var url =  "${root}/teacherTest/toViewAnalyzeDetail/"+examTaskId+"/"+classlevel+".html";
+    	    var classId = $(".chooseClass .active").attr("id");
+    	    if(examTaskId != null && classId != null){
+    	    	var url =  "${root}/teacherTest/toViewAnalyzeDetail/"+examTaskId+"/"+classId+".html";
     	    	window.open (url, "_blank") ;
     	    }
     	   
@@ -383,10 +384,10 @@
     			    html += '<td>'+examStatis.passRate+'%</td>';
     			    html += '</tr>';
     			    if (i == 1){
-        			 chooseClass += '<a href="javascript:;" class="active" id='+examStatis.classlevelId+':'+examStatis.classId+'>'+examStatis.classlevelName+''+examStatis.className+'</a>';	
+        			 chooseClass += '<a href="javascript:;" class="active" id='+examStatis.classId+'>'+examStatis.classlevelName+''+examStatis.className+'</a>';	
     			    } 
     			    if (i > 1){
-    			     chooseClass += '<a href="javascript:;" class="" id='+examStatis.classId+'>'+examStatis.classlevelId+':'+examStatis.classId+'</a>';	
+    			     chooseClass += '<a href="javascript:;" class="" id='+examStatis.classId+'>'+examStatis.classlevelName+''+examStatis.className+'</a>';	
     			    }
     			    
                 }
@@ -406,11 +407,11 @@
       //获取正确率统计
       function formPassRateList(flag){
     	  var examTaskId = '${examTaskView.examTaskId}';
-    	  var classlevel = $(".chooseClass .active").attr("id");
-    	  if(examTaskId != null && classlevel != null){
+    	  var classId = $(".chooseClass .active").attr("id");
+    	  if(examTaskId != null && classId != null){
     	    var url = "${root}/teacherTest/getExamRightStatisByClass.do";
     	    var obj={
-               classlevel : classlevel,
+                classId : classId,
                 examTaskId : examTaskId,
                 flag       : flag
     	     };
@@ -434,7 +435,7 @@
 				    if(i < cnt){
 				       var obj = data[i];
 					   title += '<li><span class="quesNo">'+obj.sort+'</span>';
-				       title += '<span class="theRate">'+obj.passRate+'%</span></li>';
+				       title += '<span class="theRate">'+obj.rightRate+'%</span></li>';
 				    }else{
 				       title += '<li><span class="quesNo">&nbsp;</span>';
 					   title += '<span class="theRate">&nbsp;</span></li>';
@@ -452,13 +453,13 @@
       
       //学生统计
       function studentStatisticsList(nameSort, scoreSort, numSort, rightSort){
-    	  var classlevel = $(".chooseClass .active").attr("id");
+    	  var classId = $(".chooseClass .active").attr("id");
     	  var examTaskId = '${examTaskView.examTaskId}';
     	  var score = '${examTaskView.score}'*0.6;       //获取试卷总分的及格分数
-    	if(examTaskId != null && classlevel != null){
+    	if(examTaskId != null && classId != null){
     	  var url = "${root}/teacherTest/getStudentStatisList.do";
     	  var obj = {
-    		classlevel : classlevel,
+    		classId    : classId,
     		examTaskId : examTaskId,
     		nameSort   : nameSort,
     		scoreSort  : scoreSort,

@@ -12,7 +12,6 @@ import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.ibatis.annotations.Param;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -32,6 +31,7 @@ import com.codyy.oc.base.entity.BaseSemester;
 import com.codyy.oc.base.service.CommonsService;
 import com.codyy.oc.base.view.IdNameView;
 import com.codyy.oc.base.view.SelectModel;
+import com.codyy.oc.homework.entity.ClassLevel;
 import com.codyy.oc.homework.entity.ReceiveStu;
 import com.codyy.oc.homework.entity.StuComment;
 import com.codyy.oc.homework.entity.WorkCommentTemplate;
@@ -472,19 +472,23 @@ public class TeacherHomeworkController extends BaseController {
 	 * 作业统计
 	 * */
 	@RequestMapping("/workCount")
-	public String workCount(String pid,String type,HttpServletRequest request,@RequestParam(required = true) String workId, String classId){
+	public String workCount(String pid,String type,HttpServletRequest request,@RequestParam(required = true) String workId,String classId,String objType){
 		WorkHomework homework = teacherHomeworkService.getHomeworkById(workId);
+		ClassLevel classLevel = null;
 		if (homework != null) {
 			List<IdNameView> classList = teacherHomeworkService.getHomeworkClass(workId);
 			if (StringUtils.isBlank(classId)) {
 				classId = classList.get(0).getId();
 			}
+			classLevel = teacherHomeworkService.findClassNameAndClassLevelByClassId(classId);
 			WorkCountView workCountView = teacherHomeworkService.getWorkCountByWorkQueCount(pid,type,workId,classId);
 			request.setAttribute("workCountView",workCountView);
 			request.setAttribute("classList", classList);
 			request.setAttribute("workId", workId);
 			request.setAttribute("homework", homework);
 			request.setAttribute("classId", classId);
+			request.setAttribute("classLevel", classLevel);
+			request.setAttribute("objType", objType);
 			return "front/homework/teacher/workCount";
 		} else {
 			return CommonsConstant.ERROR_PAGE_404;

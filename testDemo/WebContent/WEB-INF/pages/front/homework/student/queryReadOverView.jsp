@@ -122,7 +122,7 @@ function myReadOverListResult(data,total){
 		
 		}else{
 			html = '<tr><td colspan="5" class="center">';
-			html+="抱歉，暂时没有查看批阅数据！</td></tr>";
+			html+="抱歉，暂时没有批阅数据！</td></tr>";
 			$("#pageBody").html(html);
 		}	
 

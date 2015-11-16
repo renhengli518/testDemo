@@ -4,7 +4,7 @@ public class ExamTaskSortView {
 	
 	private String examTaskId;
 	
-	private String classlevel;
+	private String classId;
 	
 	private String nameSort;  //按姓名排序
 	
@@ -21,13 +21,13 @@ public class ExamTaskSortView {
 	public void setExamTaskId(String examTaskId) {
 		this.examTaskId = examTaskId;
 	}
-
-	public String getClasslevel() {
-		return classlevel;
+	
+	public String getClassId() {
+		return classId;
 	}
 
-	public void setClasslevel(String classlevel) {
-		this.classlevel = classlevel;
+	public void setClassId(String classId) {
+		this.classId = classId;
 	}
 
 	public String getNameSort() {

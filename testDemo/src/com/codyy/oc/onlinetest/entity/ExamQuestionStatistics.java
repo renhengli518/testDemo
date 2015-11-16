@@ -15,6 +15,8 @@ public class ExamQuestionStatistics {
 	
 	private String passRate;        //通过率
 	
+	private String rightRate;       //正确率
+	
 	private String sort;            //排序
 
 	public String getExamQuestionId() {
@@ -57,4 +59,11 @@ public class ExamQuestionStatistics {
 		this.sort = sort;
 	}
 
+	public String getRightRate() {
+		return rightRate;
+	}
+
+	public void setRightRate(String rightRate) {
+		this.rightRate = rightRate;
+	}
 }

@@ -20,10 +20,12 @@ import com.codyy.commons.page.Page;
 import com.codyy.commons.utils.ResultJson;
 import com.codyy.commons.utils.UUIDUtils;
 import com.codyy.oc.base.view.StudentClassView;
+import com.codyy.oc.homework.dao.ClassHomeWorkMapper;
 import com.codyy.oc.homework.dao.WorkCommentTemplateMapper;
 import com.codyy.oc.homework.dao.WorkHomeworkMapper;
 import com.codyy.oc.homework.dao.WorkRecStuQueAnswerMapper;
 import com.codyy.oc.homework.dao.WorkReceiveStuMapper;
+import com.codyy.oc.homework.entity.ClassLevel;
 import com.codyy.oc.homework.entity.ReceiveStu;
 import com.codyy.oc.homework.entity.StuComment;
 import com.codyy.oc.homework.entity.WorkCommentTemplate;
@@ -73,6 +75,9 @@ public class TeacherHomeworkService extends WorkHomeworkService {
 	
 	@Autowired
 	private WorkReceiveStuMapper workReceiveStuMapper;
+	
+	@Autowired
+	private ClassHomeWorkMapper classHomeWorkMapper;
 	/**
 	 * 习题选择-获取习题
 	 * 
@@ -624,10 +629,10 @@ public class TeacherHomeworkService extends WorkHomeworkService {
 			DecimalFormat decimalFormat=new DecimalFormat("#.00");//构造方法的字符格式这里如果小数不足2位,会以0补足.
 			
 			if(average == 0){
-				averageCorrect = "0.00%";
+				averageCorrect = "0.00";
 			}else{
 				float t = (float)average/(float)checkedCount/(float)(workCountView.getObjectQueCount());
-				averageCorrect=(decimalFormat.format(t*100))+"%";
+				averageCorrect=decimalFormat.format(t*100);
 			}
 			
 		}
@@ -693,5 +698,11 @@ public class TeacherHomeworkService extends WorkHomeworkService {
 			workHomeworkMapper.updateWorkStatusByWorkId(stuComment.getHomeWorkId());
 		}
 	}
-
+/*
+ * 根据班级ID查询出班级名称
+ * */
+	public ClassLevel findClassNameAndClassLevelByClassId(String classId){
+		ClassLevel classLevel = classHomeWorkMapper.findClassNameAndClassLevelByClassId(classId);
+	return classLevel;
+	}
 }

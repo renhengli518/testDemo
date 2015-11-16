@@ -4,11 +4,14 @@
 <link media="all" type="text/css" rel="stylesheet" href="${PUBLIC_PATH}/public/css/4.0/differentRoleStyle.css"/>
 <link media="all" type="text/css" rel="stylesheet" href="${PUBLIC_PATH}/public/css/4.1/test.css"/>
 <link media="all" type="text/css" rel="stylesheet" href="${PUBLIC_PATH}/public/css/4.1/homework.css"/>
+
+<c:set var="menuTag" value="CLASS" />
 </head>
 <body class="mainIndex">
 
-     <%@include file="../../../common/topHeader.jsp" %>
-	 <%@include file="../../../common/nav.jsp" %>
+	<%@include file="../../../common/topHeader.jsp" %>
+<%@ include file="../../../common/classroomHeader.jsp" %>
+
 <div class="container clearfix w1200 bkgNone marginauto">
 <%@include file="../../../common/teaWorkList.jsp" %>
 </div> 
@@ -33,7 +36,7 @@ function listHomeWork() {
 	var subjectId = $("#subjectLi a.selected").attr("id") ;
 	var status=$("#status a.selected").attr("id");
 	var homeWorkName = $("#workName").val();
-	var userId="${userId}";
+	var userId="${classId}";
 	var params = {
 			assignStartTime     :   startTime,
 			assignEndTime       :   endTime,
@@ -45,7 +48,7 @@ function listHomeWork() {
 	
 	var config = {
 			node:$id("pager"),
-			url:"/OnlineTest/classWork/getClassWorkList.do?r="+(+new Date),
+			url:"${root}/classWork/getClassWorkList.do?r="+(+new Date),
 			count :20,
 			type :"post",
 			callback : homeWorkListResult,
@@ -94,11 +97,11 @@ function homeWorkListResult(data,total){
 			console.log(homeWorkId);
 
 				if(homeWork.readOverType != 'TEACHER'){
-					html+=' <div class="borderBox pl40 testWithLabel withLabel1 verticalMiddle">';
+					html+=' <div homeworkId="'+homeWorkId+'" class="borderBox pl40 testWithLabel withLabel1 verticalMiddle">';
 				}else{
-					html+=' <div class="borderBox pl40 testWithLabel verticalMiddle">';
+					html+=' <div homeworkId="'+homeWorkId+'" class="borderBox pl40 testWithLabel verticalMiddle">';
 				}
-				html+='<h4 class="examTitle"><a href="${root}/classWork/toHomeWorkView/'+homeWorkId+'.do"' +'target="_blank" >'+homeWork.workTitle+'</a></h4>';
+				html+='<h4 class="examTitle"><a href="${root}/classWork/toHomeWorkView/'+homeWorkId+'.do?classId=${classId}"' +'target="_blank" >'+homeWork.workTitle+'</a></h4>';
 				html+=' <div class="examDesc">';
 				html+= '布置时间：<span>'+assignTime+'</span>';
 				html+='学科：<span>'+subjectName+'</span><br/>';
@@ -108,7 +111,7 @@ function homeWorkListResult(data,total){
 				html+='</div>';
 		    if(homeWork.status!='INIT'){
 				
-				html+='<a href="javascript:;" class="examState threeItem">统计</a>';
+				html+='<a href="javascript:;" class="examState threeItem countWork">统计</a>';
 				
 			}
 				html+='</div>';
@@ -121,6 +124,14 @@ function homeWorkListResult(data,total){
 		$("#pageBody").html(html);
 	}
 	}	
+	
+$("#pageBody").on("click",".countWork",function(){
+	var homeworkId = $(this).parents(".borderBox").attr("homeworkId");
+	var classId = "${classId}";
+	var objType = "CLASS";
+	location.href="${root}/homework/workCount.html?workId="+homeworkId+"&classId="+classId+"&objType="+objType;
+	
+});
 </script>
 
 </html>

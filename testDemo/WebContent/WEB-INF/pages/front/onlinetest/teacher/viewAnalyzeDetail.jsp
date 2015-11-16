@@ -354,7 +354,6 @@
    
       //获取统计
       function bindSpecifyOptionSatistics($elem,examTaskId,examQstId){
-    	  var classlevelId = '${classlevelId}';
    		  var classId = '${classId}';
 
  		 $.ajax({                                                                                                                                            
@@ -364,7 +363,6 @@
  				data	:	{
  					         'examTaskId'      : examTaskId,
  					         'examQuestionId'  : examQstId,
- 					         'classlevelId'    : classlevelId,
 					         'classId'         : classId
  					        },
  				dataType: 'json',

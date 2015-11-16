@@ -29,6 +29,7 @@ import com.codyy.commons.filter.SecurityWrapper;
 import com.codyy.commons.page.Page;
 import com.codyy.commons.sso.SessionUser;
 import com.codyy.commons.utils.ResultJson;
+import com.codyy.oc.base.entity.BaseArea;
 import com.codyy.oc.base.entity.BaseSemester;
 import com.codyy.oc.base.entity.BaseUser;
 import com.codyy.oc.base.form.ExamFormFields;
@@ -83,6 +84,9 @@ public class TeacherTestController extends BaseOnlineTestController{
 	
 	@Autowired
 	private ExamQuestionService examQuestionService;
+	
+	@Autowired
+	private QueQuestionService queQuestionService;
 	
 	private String filterSpecChar(String oldChar) {
 		return (oldChar == null ? "" : oldChar.replaceAll("<br/>", "").replaceAll("\r\n", " ").replaceAll("<p>", "").replaceAll("</p>", "")); 
@@ -320,13 +324,10 @@ public class TeacherTestController extends BaseOnlineTestController{
 	 */
 	@ResponseBody
 	@RequestMapping("getExamRightStatisByClass")
-	public List<ExamQuestionStatistics> getExamRightStatisByClass(String examTaskId, String classlevel,
+	public List<ExamQuestionStatistics> getExamRightStatisByClass(String examTaskId, String classId,
 			String flag){
-		 String[] classIds= classlevel.split(":");
-		 String classlevelId = classIds[0];
-		 String classId = classIds[1];
-		 if (StringUtils.isNotBlank(classlevelId) && StringUtils.isNotBlank(classId)) {
-			 List<ExamQuestionStatistics> examQuestionStatistics = examTaskService.getExamRightStatisByClass(examTaskId, classlevelId, classId, flag);
+		 if (StringUtils.isNotBlank(classId)) {
+			 List<ExamQuestionStatistics> examQuestionStatistics = examTaskService.getExamRightStatisByClass(examTaskId, classId, flag);
 	    	 return examQuestionStatistics;
 		 }
 	   return null;
@@ -342,14 +343,9 @@ public class TeacherTestController extends BaseOnlineTestController{
 	@ResponseBody
 	@RequestMapping("getStudentStatisList")
 	public List<ExamStudentStatistic>  getStudentStatisList(ExamTaskSortView examTaskSortView){
-		String[] classIds = examTaskSortView.getClasslevel().split(":");
-		String classlevelId = classIds[0];
-		String classId = classIds[1];
-		if(StringUtils.isNotBlank(classlevelId) && StringUtils.isNotBlank(classId)){
-			List<ExamStudentStatistic> examStudentStatistics=examTaskService.getStudentStatisList(examTaskSortView, classlevelId, classId);
-			return examStudentStatistics;
-	    }
-		return null;
+		List<ExamStudentStatistic> examStudentStatistics=examTaskService.getStudentStatisList(examTaskSortView);
+		return examStudentStatistics;
+	    
 	}
 	
 	/**
@@ -365,10 +361,6 @@ public class TeacherTestController extends BaseOnlineTestController{
 			String flag, HttpServletResponse response, HttpServletRequest request){
 		
 		try {
-			String[] classIds = examTaskSortView.getClasslevel().split(":");
-			String classlevelId = classIds[0];
-			String classId = classIds[1];
-			
 			Map<String, Object> model = new HashMap<String, Object>();
 			
 			//试卷信息
@@ -378,10 +370,10 @@ public class TeacherTestController extends BaseOnlineTestController{
 			List<ExamTaskStatistics> examTaskStatistics = examTaskService.getExamStaticsByClass(examTaskSortView.getExamTaskId());
 			
 			//正确率统计
-			List<ExamQuestionStatistics> examQuestionStatistics = examTaskService.getExamRightStatisByClass(examTaskSortView.getExamTaskId(), classlevelId, classId, flag);
+			List<ExamQuestionStatistics> examQuestionStatistics = examTaskService.getExamRightStatisByClass(examTaskSortView.getExamTaskId(), examTaskSortView.getClassId(), flag);
 			
 			//学生统计
-			List<ExamStudentStatistic> examStudentStatistics = examTaskService.getStudentStatisList(examTaskSortView, classlevelId, classId);
+			List<ExamStudentStatistic> examStudentStatistics = examTaskService.getStudentStatisList(examTaskSortView);
 			
 			model.put("examTaskId", examTaskSortView.getExamTaskId());
 			model.put("className", className);
@@ -431,16 +423,12 @@ public class TeacherTestController extends BaseOnlineTestController{
 	 * @return 
 	 *
 	 */
-@RequestMapping("toViewAnalyzeDetail/{id}/{classlevel}")
+@RequestMapping("toViewAnalyzeDetail/{id}/{classId}")
    public String toViewAnalyzeDetail(@PathVariable("id") String examTaskId, 
-			@PathVariable("classlevel") String classlevel, Model model){
-	    String[] classIds = classlevel.split(":");
-	    String classlevelId = classIds[0];
-	    String classId = classIds[1];
-	    List<ExamQuestionListResult>  examQuestions = examTaskService.getClassExamStatistics(examTaskId, classlevelId, classId);
+			@PathVariable("classId") String classId, Model model){
+	    List<ExamQuestionListResult>  examQuestions = examTaskService.getClassExamStatistics(examTaskId, classId);
 	    model.addAttribute("examTaskId", examTaskId);
 		model.addAttribute("examQuestions", examQuestions);
-		model.addAttribute("classlevelId", classlevelId);
 		model.addAttribute("classId", classId);
 		model.addAttribute("tabType", "classExam");
 		return "front/onlinetest/teacher/viewAnalyzeDetail";
@@ -488,10 +476,10 @@ public class TeacherTestController extends BaseOnlineTestController{
 	@ResponseBody
 	@RequestMapping("getExamQstOptionStatisticsByExamQstId")
 	public String[] getExamQstOptionStatisticsByExamQstId(String examTaskId,
-			String examQuestionId, String classlevelId, String classId){
+			String examQuestionId, String classId){
 		ExamQuestion examQuestion = examTaskService.getExamQuestionByQuestionId(examQuestionId);
 		if (examQuestion != null){
-			return examTaskService.getExamQuestionStatistics(examQuestion, examTaskId, classlevelId, classId);
+			return examTaskService.getExamQuestionStatistics(examQuestion, examTaskId, classId);
 		}
 		
 		return null;
@@ -874,6 +862,54 @@ public class TeacherTestController extends BaseOnlineTestController{
 		return examQuestionService.getSubjetiveNum(classLevelClassView);
 	}
 	
+	
+	/**
+	 * 查询题库习题列表
+	 * 
+	 * @param page
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping("searchShareList")
+	@ResponseBody
+	public Page searchShareListByPagination(Page page, HttpServletRequest request) {
+		SessionUser sessionUser = (SessionUser) request.getSession().getAttribute(CommonsConstant.SESSION_USER);
+		BaseArea baseArea = new BaseArea();
+		String baseUserId = "";
+		if (sessionUser != null) {
+			baseArea = commonsService.getAreaById(sessionUser.getAreaId());
+			baseUserId = sessionUser.getUserId();
+		}
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("userId",sessionUser.getUserId());
+		map.put("baseSemesterId", request.getParameter("baseSemesterId"));
+		map.put("baseClasslevelId", request.getParameter("baseClasslevelId"));
+		map.put("baseSubjectId", request.getParameter("baseSubjectId"));
+		map.put("baseVersionId", request.getParameter("baseVersionId"));
+		String chapterIdStr = request.getParameter("chapterIdStr");
+		map.put("baseVolumeId", chapterIdStr.split(",")[0]);
+		map.put("type", request.getParameter("type"));// 题型
+		map.put("baseChapterId", chapterIdStr.split(",")[1]);
+		map.put("baseSectionId", chapterIdStr.split(",")[2]);
+		map.put("baseKnowledgeId", request.getParameter("knowledgeIdStr").split(",")[0]);
+		map.put("baseSubKnowledge1Id", request.getParameter("knowledgeIdStr").split(",")[1]);
+		map.put("baseSubKnowledge2Id", request.getParameter("knowledgeIdStr").split(",")[2]);
+		map.put("baseSubKnowledge3Id", request.getParameter("knowledgeIdStr").split(",")[3]);
+		map.put("baseSubKnowledge4Id", request.getParameter("knowledgeIdStr").split(",")[4]);
+		map.put("baseSubKnowledge5Id", request.getParameter("knowledgeIdStr").split(",")[5]);
+		map.put("auditStatus", request.getParameter("auditStatus"));// 审核状态（学校工作台使用）
+		map.put("relationalIndicator", request.getParameter("relationalIndicator"));// 是否包含孪生题、衍生题
+		map.put("difficulty", request.getParameter("difficulty"));// 难易度
+		map.put("baseAreaId", sessionUser == null ? "" : sessionUser.getAreaId());// 区域Id
+		map.put("clsSchoolId", sessionUser == null ? "" : sessionUser.getSchoolId());// 学校Id
+		map.put("areaIdPath", baseArea == null ? "" : baseArea.getAreaIdPath());// areaIdPath
+		map.put("userType", sessionUser == null ? "" : sessionUser.getUserType());
+		page.setMap(map);
+		// 添加判断收藏标记map
+		Map<String, Object> map1 = new HashMap<String, Object>();
+		map1.put("baseUserId", baseUserId);
+		return queQuestionService.getTeaQuePageList(page, map1);
+	}
     
 }
 	

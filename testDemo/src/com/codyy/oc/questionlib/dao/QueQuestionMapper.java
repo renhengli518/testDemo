@@ -74,6 +74,18 @@ public interface QueQuestionMapper {
 	 * @throws
 	 */
 	List<QuestionListResult> getShareQuePageList(Page page);
+	
+	/**
+	 * 查询教师组卷习题列表
+	 * 
+	 * @Title: getShareQuePageList
+	 * @Description: TODO(这里用一句话描述这个方法的作用)
+	 * @param @param page
+	 * @param @return 设定文件
+	 * @return List<QueQuestion> 返回类型
+	 * @throws
+	 */
+	List<QuestionListResult> getTeaQuePageList(Page page);
 
 	/**
 	 * 

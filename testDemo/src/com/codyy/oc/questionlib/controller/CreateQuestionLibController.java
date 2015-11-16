@@ -69,7 +69,7 @@ public class CreateQuestionLibController extends BaseController {
 				String useType =qstForm.getUsableType();//权限(习题共享)
 				
 				String auditStatus="";
-				if("SCHOOL_USR".equals(userType) || "AREA_USR".equals(useType)){//学校用户 和省市县 不需审核
+				if("SCHOOL_USR".equals(userType) || "AREA_USR".equals(userType)){//学校用户 和省市县 不需审核
 					 auditStatus="PASSED";//默认创建的题为未审核
 				}else{//非学校用户创建的习题需要进行审核操作
 					auditStatus="INIT";

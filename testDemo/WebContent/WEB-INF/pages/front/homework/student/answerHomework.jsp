@@ -85,8 +85,8 @@
 						<div class="quesTitle"><p class="fl fz20">${status.count }、</p>${que.content }</div>
 						<c:if test="${!empty que.contentVideo}">
 							<p class="uploadMediaWrap mt20">
-								<a href="javaScript:;"class="btn btnUpLoad uploadBox"  onclick="showContentVideo('${que.contentVideo}','${que.workQuestionId}');">点击播放音视频</a>
-								<span id="showVideo${que.workQuestionId}"></span>
+								<a href="javaScript:;"class="btn btnUpLoad uploadBox"  onclick="showContentVideo('${que.contentVideo}','${que.workQuestionId}','contentVideo');">点击播放音视频</a>
+								<span id="showContentVideo${que.workQuestionId}"></span>
 							</p>
 						</c:if>
 					<c:forTokens items="${que.options}" delims="∷" var="option" varStatus="opStatus">
@@ -99,8 +99,8 @@
 						<div class="quesTitle"><p class="fl fz20">${status.count }、</p>${que.content }</div>
 							<c:if test="${!empty que.contentVideo}">
 									<p class="uploadMediaWrap mt20">
-										<a href="javaScript:;"class="btn btnUpLoad uploadBox"  onclick="showContentVideo('${que.contentVideo}','${que.workQuestionId}');">点击播放音视频</a>
-									<span id="showVideo${que.workQuestionId}"></span>
+										<a href="javaScript:;"class="btn btnUpLoad uploadBox"  onclick="showContentVideo('${que.contentVideo}','${que.workQuestionId}','contentVideo');">点击播放音视频</a>
+									<span id="showContentVideo${que.workQuestionId}"></span>
 									</p>
 								</c:if>
 					</div>
@@ -111,14 +111,14 @@
 						<div class="quesTitle"><p class="fl fz20">${status.count }、</p>${que.content }</div>
 							<c:if test="${!empty que.contentVideo}">
 									<p class="uploadMediaWrap mt20 mb20">
-										<a href="javaScript:;"class="btn btnUpLoad uploadBox"  onclick="showContentVideo('${que.contentVideo}','${que.workQuestionId}');">点击播放音视频</a>
-									<span id="showVideo${que.workQuestionId}"></span>
+										<a href="javaScript:;"class="btn btnUpLoad uploadBox"  onclick="showContentVideo('${que.contentVideo}','${que.workQuestionId}','contentVideo');">点击播放音视频</a>
+									<span id="showContentVideo${que.workQuestionId}"></span>
 									</p>
 								</c:if>
 					<script id="${que.workQuestionId}" type="text/plain" style="height:210px;width:100%"></script>
 				
 				<p class="uploadMediaWrap mt20 ">
-					<a href="javascript:;" class="btn btnUpLoad uploadBox" id="answerVideo">上传音视频<span id="uploadCont_${que.workQuestionId}" class="uploadCont"> </span></a>
+					<a href="javascript:;" class="btn btnUpLoad uploadBox" id="answerVideo${que.workQuestionId}">上传音视频<span id="uploadCont_${que.workQuestionId}" class="uploadCont"> </span></a>
 						<span id="uploadVedioInfoBox">
 						<ul id="uploadInfo_${que.workQuestionId}" class="commonUL">
 							&nbsp;

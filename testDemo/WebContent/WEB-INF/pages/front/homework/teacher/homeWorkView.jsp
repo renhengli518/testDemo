@@ -92,7 +92,7 @@
 											</div>
 											<c:if test="${!empty ques.contentVideo}">
 											<p class="uploadMediaWrap mt20 mb20">
-												<a href="javaScript:;"class="btn btnUpLoad uploadBox"  onclick="showContentVideo('${ques.contentVideo}','${ques.workQuestionId}','contentVideo');">点击播放音视频</a>
+												<a href="javaScript:;"class="btn btnUpLoad uploadBox" onclick="showContentVideo('${ques.contentVideo}','${ques.workQuestionId}','contentVideo');">点击播放音视频</a>
 												<span id="showContentVideo${ques.workQuestionId}"></span>
 											</p>
 											</c:if>

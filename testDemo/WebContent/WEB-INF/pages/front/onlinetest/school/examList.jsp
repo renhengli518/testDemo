@@ -164,6 +164,8 @@
       }
         
       function resultClassTestData(data, total){<%-- 处理返回结果 --%>
+    	//去掉正在加载层      		
+  		$("body").hideLoading();
     	  if(total || total != 0){
     		if(data){
     			var html = '';
@@ -207,6 +209,14 @@
  		 Win.open({id:'uploadQuestion',width:500,height:520,title:"导入年级统考试卷",url:"${root}/questionLib/uploadQuestionPage.do?type=clazexam"});
  	}
    
+    //显示正在加载层
+      $(document).ready(function(){
+      	$("body").showLoading();
+      	$(".wrap").css({
+      		"height" : ($(window).height() - 70) + 'px',
+      		"width" : $(window).width()
+      	});
+      });
    </script>
 </body>
 </html>

@@ -134,7 +134,6 @@ public class ExamTaskService {
 		map.put("beginTime", testSearchView.getBeginTime());
 		map.put("endTime", testSearchView.getEndTime() == null?null:new Date(testSearchView.getEndTime().getTime() + 86400000 - 1));
 		map.put("subjectId", testSearchView.getSubjectId());
-		map.put("classlevelId", testSearchView.getClasslevelId());
 		map.put("classId", testSearchView.getClassId());
 		map.put("examTypeId", testSearchView.getExamTypeId());
 		map.put("status", testSearchView.getStatus());
@@ -274,10 +273,9 @@ public class ExamTaskService {
 	 *
 	 */
 	public List<ExamQuestionStatistics> getExamRightStatisByClass(
-			String examTaskId, String classlevelId, String classId, String flag) {
+			String examTaskId, String classId, String flag) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("examTaskId", examTaskId);
-		map.put("classlevelId", classlevelId);
 		map.put("classId", classId);
 		map.put("flag", flag);
 		return examTaskMapper.getExamRightStatisByClass(map);
@@ -290,12 +288,10 @@ public class ExamTaskService {
 	 * @return 
 	 *
 	 */
-	public List<ExamStudentStatistic> getStudentStatisList(ExamTaskSortView examTaskSortView,
-			String classlevelId, String classId) {
+	public List<ExamStudentStatistic> getStudentStatisList(ExamTaskSortView examTaskSortView) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("examTaskId", examTaskSortView.getExamTaskId());
-		map.put("classlevelId", classlevelId);
-		map.put("classId", classId);
+		map.put("classId", examTaskSortView.getClassId());
 		map.put("nameSort", examTaskSortView.getNameSort());
 		map.put("scoreSort", examTaskSortView.getScoreSort());
 		map.put("numSort", examTaskSortView.getNumSort());
@@ -336,11 +332,9 @@ public class ExamTaskService {
 	 * @return 
 	 *
 	 */
-	public List<ExamQuestionListResult> getClassExamStatistics(String examTaskId, String classId,
-			String classlevelId) {
+	public List<ExamQuestionListResult> getClassExamStatistics(String examTaskId, String classId) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("examTaskId", examTaskId);
-		map.put("classlevelId", classlevelId);
 		map.put("classId", classId);
 		return examQuestionMapper.getClassExamStatistics(map);
 	}
@@ -440,14 +434,13 @@ public class ExamTaskService {
 	 *
 	 */
 	public String[] getExamQuestionStatistics(ExamQuestion examQuestion, String examTaskId,
-			String classlevelId, String classId) {
+			String classId) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		String examType = examQuestion.getType();
 		String examQuestionId = examQuestion.getExamQuestionId();
 		if (StringUtils.isNotBlank(examType) && StringUtils.isNotBlank(examQuestionId)
-				&& StringUtils.isNotBlank(classId) && StringUtils.isNotBlank(classlevelId)) {
+				&& StringUtils.isNotBlank(classId)) {
 			map.put("examQuestionId", examQuestionId);
-			map.put("classlevelId", classlevelId);
 			map.put("classId", classId);
 			map.put("examTaskId", examTaskId);
 			String[] result = null;
@@ -1600,10 +1593,9 @@ public class ExamTaskService {
 	 * @return 
 	 *
 	 */
-	public ExamTaskView getClsClassExamTask(String examTaskId, String classlevelId, String classId) {
+	public ExamTaskView getClsClassExamTask(String examTaskId, String classId) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("examTaskId", examTaskId);
-		map.put("classlevelId", classlevelId);
 		map.put("classId", classId);
 		return examTaskMapper.getClsClassExamTask(map);
 	}

@@ -23,6 +23,7 @@ select c.*, d.subWorkStuCount, e.stuCount
                wh.status,
                wh.create_time,
                wh.base_subject_id,
+               wh.read_over_type,
                bs.subject_name,
                a.base_class_id
           from work_homework wh
@@ -34,7 +35,7 @@ select c.*, d.subWorkStuCount, e.stuCount
             on wh.base_subject_id = bs.base_subject_id) c
  left join((select count(*) as subWorkStuCount, work_homework_id
           from work_receive_stu wrs
-         where wrs.status = 'END'
+         where wrs.status != 'PROGRESS'
            and wrs.base_class_id = #{map.userId}
          group by wrs.work_homework_id)) d
     on c.work_homework_id = d.work_homework_id
@@ -61,5 +62,12 @@ left  join((select count(*) as stuCount, work_homework_id
 		    and c.work_title  like '%'||#{map.homeWorkName}||'%' escape '/'
 		 </if>
 order by  c.create_time desc
+</select>
+<select id="findClassNameAndClassLevelByClassId" parameterType="string" resultType="com.codyy.oc.homework.entity.ClassLevel">
+select bs.base_class_name as className, bs.base_classlevel_id as classLevelId, csl.classlevel_name as classLevelName
+from base_class bs
+join base_classlevel csl
+on bs.base_classlevel_id = csl.base_classlevel_id
+where bs.base_class_id = #{classId}
 </select>
 </mapper>

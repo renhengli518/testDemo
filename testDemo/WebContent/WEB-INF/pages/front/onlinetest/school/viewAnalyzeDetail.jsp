@@ -257,8 +257,7 @@
 				                    	<div class="pd10 commentContent" id="resolve_${status.index}_box" style="display:block">
 				                       		  ${q.resolve} <br/>
 				                       		 <c:if test="${q.resolveVideo != null }">
-						                         <a href="javascript:;" class="movieAnalysisBtn btn bgBlue videoItem" onclick="showContentVideo('${q.resolveVideo}','${q.examQuestionId}');">点击播放音视频</a>
-						                         <span id="showVideo${q.examQuestionId}"></span>
+						                       <p class="playVideoP"><button class="btn playVideo" onclick="playVideo('${q.resolveVideo}','${q.examQuestionId}')">点播解析视频</button></p>
 						                     </c:if>
 				                        </div>
 				                        <div class="pd10 commentContent" id="know_${status.index}_box" style="display:none">
@@ -368,9 +367,7 @@
    
       //获取统计
       function bindSpecifyOptionSatistics($elem,examTaskId,examQstId){
- 		var classlevelId = '${classlevelId}';
  		var classId = '${classId}';
-
  		 $.ajax({                                                                                                                                            
  				url		:	'${root}/schoolTest/getExamQstOptionStatisticsByExamQstId.do',
  				cache	:	false, 
@@ -378,7 +375,6 @@
  				data	:	{
  					         'examTaskId'      : examTaskId,
  					         'examQuestionId'  : examQstId,
- 					         'classlevelId'    : classlevelId,
  					         'classId'         : classId
  					        },
  				dataType: 'json',

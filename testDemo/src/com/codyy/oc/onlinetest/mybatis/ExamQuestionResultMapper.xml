@@ -155,7 +155,6 @@
 		    on er.exam_result_id = eqr.exam_result_id
 		where er.exam_task_id = #{examTaskId}
           and eqr.exam_question_id = #{examQuestionId}
-          and er.base_classlevel_id = #{classlevelId}
           and er.base_class_id = #{classId}
           and er.status = 'CHECKED'
   </select>
@@ -169,7 +168,6 @@
        on er.exam_result_id = eqr.exam_result_id
     where er.exam_task_id = #{examTaskId}
           and eqr.exam_question_id = #{examQuestionId}
-          and er.base_classlevel_id = #{classlevelId}
           and er.base_class_id = #{classId}
           and er.status = 'CHECKED'
   </select>
@@ -184,7 +182,6 @@
 		   on eqr.exam_result_id = er.exam_result_id
 		where er.exam_task_id = #{examTaskId}
           and eqr.exam_question_id = #{examQuestionId}
-          and er.base_classlevel_id = #{classlevelId}
           and er.base_class_id = #{classId}
           and eqr.answer is not null
           and er.status = 'CHECKED'

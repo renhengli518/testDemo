@@ -99,8 +99,7 @@
 									<c:when test="${que.difficulty eq 'LITTLE_EASY' }">较容易</c:when>
 									<c:when test="${que.difficulty eq 'NORMAL' }">一般</c:when>
 									<c:when test="${que.difficulty eq 'LITTLE_DIFFICULT' }">较难</c:when>
-									<c:when test="${que.difficulty eq 'DIFFICULT' }">困难</c:when>
-									<c:otherwise></c:otherwise>
+									<c:otherwise>困难</c:otherwise>
 								</c:choose>
 								</span>
 							</li>

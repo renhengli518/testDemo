@@ -319,9 +319,7 @@
                distinct er.exam_task_id      
              from exam_result er
              
-              where er.base_classlevel_id = #{map.classlevelId}
-                    
-                  and er.base_class_id = #{map.classId}
+              where er.base_class_id = #{map.classId}
          ) t
 
        on t.exam_task_id = e.exam_task_id
@@ -439,7 +437,6 @@
            on er.exam_task_id =eet.exam_task_id
           
          where eet.exam_task_id = #{examTaskId}
-                and  er.base_classlevel_id = #{classlevelId}
                 and er.base_class_id = #{classId}
     
     ) t
@@ -530,7 +527,7 @@
     left join exam_task et
       on et.exam_task_id = er.exam_task_id
     where er.exam_task_id = #{examTaskId}
-        and er.status='checked'
+        and er.status ='CHECKED'
      
     group by er.base_classlevel_id,er.classlevel_name,er.base_class_id,er.class_name
     
@@ -566,7 +563,7 @@
 
 	where er.exam_task_id = #{examTaskId}
     
-		and er.status='checked'
+		and er.status='CHECKED'
 
     group by er.exam_task_id
 		
@@ -604,8 +601,6 @@
           on etrq.exam_question_id=eqr.exam_question_id
       
        where er.exam_task_id = #{examTaskId}
-    
-          and er.base_classlevel_id = #{classlevelId}
           and er.base_class_id = #{classId}
           and er.status='CHECKED'
     
@@ -615,7 +610,7 @@
 	   order by t.sort asc
 	 </if>
 	 <if test="flag ==  1">
-	   order by t.passRate desc
+	   order by rightRate desc
 	 </if>
   </select>
   
@@ -647,8 +642,6 @@
                on er.exam_result_id = eqr.exam_result_id
            
             where er.exam_task_id = #{examTaskId}
-                 
-              and er.base_classlevel_id = #{classlevelId}
               and er.base_class_id = #{classId}
                  and er.status='CHECKED'
               and eq.type not in ('ASK_ANSWER', 'COMPUTING')
@@ -677,8 +670,6 @@
     	on eq.base_user_id = er.base_user_id
 
  	where er.exam_task_id = #{examTaskId}
-      
-         and er.base_classlevel_id = #{classlevelId}
          and er.base_class_id = #{classId}
          and er.status='CHECKED'
         

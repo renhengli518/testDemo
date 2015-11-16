@@ -13,8 +13,9 @@
 </script>
 </head>
 <body class="mainIndex">
+     <c:set var="menuTag" value="TEST"/>
      <%@include file="../../../common/topHeader.jsp"%>
-     <%@include file="../../../common/nav.jsp"%> 
+     <%@ include file="../../../common/classroomHeader.jsp" %>
      <div class="container clearfix w1200 bkgNone marginauto">
        <div class="content">
           <div class="content-in">
@@ -62,7 +63,7 @@
 	
 				     </div>
 				      <div class="chooseClass" id="className">
-				        <a href="javascript:;" class="active" id="${classlevelId}:${classId}">${classMsg}</a>
+				        <a href="javascript:;" class="active" id="${classId}">${classMsg}</a>
 				      </div>
 				      <div class="tableWrap marginauto">
 				        <h5>正确率统计</h5>
@@ -110,7 +111,6 @@
     </div>
     
     <script  type="text/javascript">
-      var classlevelId = "${classlevelId}";
       var classId = "${classId}";
       var classMsg = "${classMsg}";
       $(document).ready(function(){
@@ -326,19 +326,20 @@
     			 }
     		 }
 
-    		var classlevelId = $(".chooseClass .active").attr("id");
+    		var classId = $(".chooseClass .active").attr("id");
     		var className = $(".chooseClass .active").text();
     		var examTaskId = '${examTaskView.examTaskId}';
     		var flag = $("#sortBtn").attr("flag");
+    	 if(classId != null && examTaskId != null){
     		var url = "${root}/classTest/exportStatisticsData.do";
     		var obj = {
-    			classlevelId : classlevelId,
+    			classId   : classId,
     			className : className,
     			examTaskId : examTaskId,
-    			flag : flag,
-    			nameSort : nameSort,
+    			flag      : flag,
+    			nameSort  : nameSort,
     			scoreSort : scoreSort,
-    			numSort : numSort,
+    			numSort   : numSort,
     		    rightSort : rightSort
     		};
     		$.post(url, obj, function(data){
@@ -348,15 +349,15 @@
     				Win.alert("导出失败！");
     			}
     		});
-    		
+    	  }
     	 });
     
     	 //查看详情
     	 $("#viewDetail").click(function(){
     	    var examTaskId = '${examTaskView.examTaskId}';
-    	    var classlevel = $(".chooseClass .active").attr("id");
-    	    if(examTaskId != null && classlevel != null){
-    	      var url =  "${root}/classTest/toViewAnalyzeDetail/"+examTaskId+"/"+classlevel+".html";
+    	    var classId = $(".chooseClass .active").attr("id");
+    	    if(examTaskId != null && classId != null){
+    	      var url =  "${root}/classTest/toViewAnalyzeDetail/"+examTaskId+"/"+classId+".html";
     	      window.open (url, "_blank");
     	    }
     	 
@@ -389,7 +390,6 @@
           			
                 }
              $("#statistics tbody").append(html);
-             $("#className").html(chooseClass);
              
              //初始化时， 不会等到ajax 执行完才执执行
              var flag = $("#sortBtn").attr("flag");
@@ -404,11 +404,11 @@
       //获取正确率统计
       function formPassRateList(flag){
     	  var examTaskId = '${examTaskView.examTaskId}';
-    	  var classlevel = $(".chooseClass .active").attr("id");
-    	  if(examTaskId != null && classlevel != null){
+    	  var classId = $(".chooseClass .active").attr("id");
+    	  if(examTaskId != null && classId != null){
     	    var url = "${root}/classTest/getExamRightStatisByClass.do";
     	    var obj={
-              classlevel:classlevel,
+              classId:classId,
               examTaskId:examTaskId,
               flag:flag
     	    };
@@ -432,7 +432,7 @@
 				    if(i < cnt){
 				       var obj = data[i];
 					   title += '<li><span class="quesNo">'+obj.sort+'</span>';
-				       title += '<span class="theRate">'+obj.passRate+'%</span></li>';
+				       title += '<span class="theRate">'+obj.rightRate+'%</span></li>';
 				    }else{
 				       title += '<li><span class="quesNo">&nbsp;</span>';
 					   title += '<span class="theRate">&nbsp;</span></li>';
@@ -449,13 +449,13 @@
       
       //学生统计
       function studentStatisticsList(nameSort, scoreSort, numSort, rightSort){
-    	  var classlevel = $(".chooseClass .active").attr("id");
+    	  var classId = $(".chooseClass .active").attr("id");
     	  var examTaskId = '${examTaskView.examTaskId}';
     	  var score = '${examTaskView.score}'*0.6;       //获取试卷总分的及格分数
-    	  if(examTaskId != null && classlevel != null){
+    	 if(examTaskId != null && classId != null){
     	  var url = "${root}/classTest/getStudentStatisList.do";
     	  var obj = {
-    		classlevel : classlevel,
+    		classId    : classId,
     		examTaskId : examTaskId,
     		nameSort   : nameSort,
     		scoreSort  : scoreSort,
@@ -477,7 +477,7 @@
     				 }	
     				 html += '<td><span class="red">'+student.answerCount+'</span>/ '+student.totalCount+'</td>';
     				 html += '<td>'+student.rightRate+'%</td>';
-    				 html += '<td><a href="javascript:;" class="" onclick="viewAnswer(\''+student.baseUserId+'\')">查看答题</a></td>';
+    				 html += '<td><a href="${root}/classTest/toViewExamAnswer/'+examTaskId+'/'+student.baseUserId+'/'+classId+'.html" target="_blank">查看答题</a></td>';
     				 html += '</tr>';
     			 }
     			 
@@ -488,12 +488,12 @@
     	 }
       }
       
-      //查看答题
+     /*  //查看答题
       function viewAnswer(baseUserId){
  		 var examTaskId = '${examTaskView.examTaskId}';
- 		 var url = "${root}/classTest/toViewExamAnswer/"+examTaskId+"/"+baseUserId+".html";
+ 		 var url = "${root}/classTest/toViewExamAnswer/"+examTaskId+"/"+baseUserId+"/"+classId+".html";
  		 window.open(url, "_blank");
-      }
+      } */
         
       
     </script>

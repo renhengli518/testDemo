@@ -69,8 +69,9 @@
     <result column="MYSCORE" property="myScore" jdbcType="DECIMAL" />
     <result column="AVGSCORE" property="avgScore" jdbcType="VARCHAR" />
     <result column="ANSWER_VIDEO" property="answerVideo" jdbcType="VARCHAR" />
+    <result column="result" property="result" jdbcType="VARCHAR" />
     <result column="MYAnswer" property="myAnswer" jdbcType="VARCHAR"/>
-    <result column="RIGHTRATE" property="rightRate" jdbcType="VARCHAR" />
+    <result column="rightRate" property="rightRate" jdbcType="VARCHAR" />
     <result column="QUE_QUESTION_ID" property="queQuestionId" jdbcType="VARCHAR" />
     <collection property="fillInAnswers" column="EXAM_QUESTION_ID" ofType="com.codyy.oc.onlinetest.entity.ExamQueFillInAnswer" select="selectFillInAnswer"/>
     <collection property="rKnowledges" column="EXAM_QUESTION_ID" ofType="com.codyy.oc.onlinetest.entity.ExamQuestionRKnowledge"  select="selectRKnowledge"/>
@@ -638,7 +639,8 @@
           t2.myscore   as myScore,
           t2.myanswer  as myAnswer,
           t2.teacher_comment  as teacherComment,
-          t2.answer_video
+          t2.answer_video,
+          t2.result
      from exam_question eq
      
      left join (
@@ -663,7 +665,8 @@
           eqr.score   as myscore,
           eqr.answer  as myanswer,
           eqr.teacher_comment,
-          eqr.answer_video  
+          eqr.answer_video,
+          eqr.result  
         
         from exam_question_result  eqr
         
@@ -716,7 +719,7 @@
        t1.OPTIONS,
        t1.RESOLVE,
        t1.OPTIONS_TXT,
-       trunc((t1.rightCnt / t1.total) * 100, 2) as rigthRate,
+       trunc((t1.rightCnt / t1.total) * 100, 2) as rightRate,
        t1.avgScore,
        t1.score
 
@@ -742,21 +745,19 @@
          avg(eqr.score) over(partition by eqr.exam_question_id) as avgScore,
          row_number() over(partition by eq.exam_question_id order by etrq.sort) as rnum
         
-          from exam_question_result eqr
+        from exam_question_result eqr
         
-          left join exam_question eq
+        left join exam_question eq
         
             on eqr.exam_question_id = eq.exam_question_id
         
-          left join exam_task_r_exam_question etrq
+        left join exam_task_r_exam_question etrq
             on etrq.exam_question_id = eqr.exam_question_id
         
-          left join exam_result er
+        left join exam_result er
             on er.exam_result_id = eqr.exam_result_id
         
          where er.exam_task_id = #{examTaskId}
-              
-           and er.base_classlevel_id = #{classlevelId}
            and er.base_class_id = #{classId}
            and er.status='CHECKED'
         
@@ -1080,7 +1081,7 @@
        EXAM_QUESTION_ID    as   examQuestionId, 
        TYPE                as   type, 
        CONTENT             as   content, 
-       OPTIONS             as   options,
+       OPTIONS             as   options
      from exam_question eq
      where eq.exam_question_id = #{examQuestionId}
   </select>
@@ -1124,7 +1125,7 @@
   
   <!--更新批阅数-->
   <update id="updateReadOverCount" parameterType="java.lang.String">
-     update exam_task sk set sk.read_over_count=sk.read_over_count+1 where sk.exam_task_id=#{examTaskId}
+     update exam_task sk set sk.read_over_count=nvl(sk.read_over_count,0)+1 where sk.exam_task_id=#{examTaskId}
   </update>
   
   <select id="getExamQuestionById" resultType="com.codyy.oc.onlinetest.entity.ExamQuestion" parameterType="java.lang.String">
@@ -1135,4 +1136,9 @@
    from EXAM_QUESTION eq
     where eq.EXAM_QUESTION_ID = #{examQuestionId}
   </select>
+  
+  <delete id="deleteLSExamQuestion">
+  	 delete from exam_question a
+ 	 where a.temporary_flag = 'Y' and a.update_time &lt; (sysdate - 1)
+  </delete>
 </mapper>

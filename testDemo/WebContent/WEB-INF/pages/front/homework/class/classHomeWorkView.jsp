@@ -53,15 +53,16 @@
 	})
 	
 </script>
+<c:set var="menuTag" value="CLASS" />
 </head>
 <body class="mainIndex">
-	<%@include file="../../../common/topHeader.jsp"%>
-	<%@include file="../../../common/nav.jsp"%>
+<%@include file="../../../common/topHeader.jsp" %>
+<%@ include file="../../../common/classroomHeader.jsp" %>
 	<div class="container clearfix w1200 bkgNone marginauto">
 		<div class="content">
 			<div class="content-in">
 				<div class="breadCrumb">
-					<a href="${root}/classWork/toClassWorkList.do">作业</a><span class="nextlevel">></span><span
+					<a href="${root}/classWork/toClassWorkList.do?baseClassId=${classId}">作业</a><span class="nextlevel">></span><span
 						class="currentLevel">查看作业 </span>
 				</div>
 				<div class="borderBox gn-bgWhite pd20 pb0">

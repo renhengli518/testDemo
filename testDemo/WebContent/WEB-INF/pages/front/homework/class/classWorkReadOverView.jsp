@@ -55,6 +55,7 @@
 	})
 
 </script>
+<c:set var="menuTag" value="CLASS" />
 </head>
 <body class="mainIndex">
 	<%@include file="../../../common/topHeader.jsp"%>

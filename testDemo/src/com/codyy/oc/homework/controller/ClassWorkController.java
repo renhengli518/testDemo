@@ -10,7 +10,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.codyy.commons.CommonsConstant;
 import com.codyy.commons.page.Page;
+import com.codyy.commons.sso.SessionUser;
 import com.codyy.oc.BaseController;
 import com.codyy.oc.homework.entity.HomeWorkQuestionInfo;
 import com.codyy.oc.homework.entity.QuestionInfo;
@@ -30,14 +32,13 @@ private TeacherWorkService teacherWorkService;
  * 班级空间--作业列表
  * */
 @RequestMapping("/toClassWorkList")
-public String toClassWorkList(HttpServletRequest request) {
+public String toClassWorkList(HttpServletRequest request,String baseClassId) {
 	List<Subject> subjects = null ;
-		//String userId=getSessionUserId(request);
-	String userId = "6961445b37304403a964bca7b90bdbec";
-		subjects=classWorkService.findSubjects(userId);
-	    request.setAttribute("subjects", subjects);
-	    request.setAttribute("userId", userId);
-	    request.setAttribute("type", "class");
+	String userId=getSessionUserId(request);
+	subjects=classWorkService.findSubjects(baseClassId);
+	request.setAttribute("classId", baseClassId);
+	request.setAttribute("subjects", subjects);
+	request.setAttribute("userId", userId);
 		return "front/homework/class/classWorkList";		
 	} 
 
@@ -50,8 +51,9 @@ public Page getHomeworkList(String assignStartTime,String assignEndTime,String s
  * 查看作业
  * */
 @RequestMapping("/toHomeWorkView/{workId}")
-public String toHomeWorkView(@PathVariable String workId,HttpServletRequest request){
+public String toHomeWorkView(@PathVariable String workId,String classId,HttpServletRequest request){
 	request.setAttribute("workId", workId);
+	request.setAttribute("classId", classId);
 	HomeWorkQuestionInfo homeWorkQuestionInfo = classWorkService.findClassWorkInfo(workId);
 	if(homeWorkQuestionInfo == null){ 
 		return "error/404";

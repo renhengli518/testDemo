@@ -14,23 +14,37 @@ answer(pid,type);
 });
 
 </script>
+<c:set var="menuTag" value="CLASS" />
 </head>
 <body class="mainIndex">
-	<%@include file="../../../common/topHeader.jsp" %>
-	<%@include file="../../../common/workNav.jsp" %>
+<c:if test="${objType!='CLASS'}">
+<%@include file="../../../common/topHeader.jsp" %>
+<%@include file="../../../common/workNav.jsp" %>
+</c:if>
+<c:if test="${objType=='CLASS'}">
+<%@include file="../../../common/topHeader.jsp" %>
+<%@ include file="../../../common/classroomHeader.jsp" %>
+</c:if>
 <div class="container clearfix w1200 bkgNone marginauto">
 	<div class="content">
 		<div class="content-in">
 			<div class="breadCrumb">
+			<c:if test="${objType!='CLASS'}">
 				<a href="${root}/teacherWork/toTeacherWork.do">作业 </a><span class="nextlevel">></span><span class="currentLevel">作业统计 </span>
+			</c:if>
+			<c:if test="${objType=='CLASS'}">
+			<a href="${root}/classWork/toClassWorkList.do?baseClassId=${classId}">作业 </a><span class="nextlevel">></span><span class="currentLevel">作业统计 </span>
+			</c:if>
 			</div>
 			<div class="borderBox gn-bgWhite pd20">
 				<h3 class="MarginTitle">${homework.workTitle}</h3>
+			<c:if test="${objType!='CLASS'}">
 			<div class="chooseClass borderNone">
-				<c:forEach items="${classList }" var="classItem" varStatus="status">
+			<c:forEach items="${classList }" var="classItem" varStatus="status">
 					<a href="${root}/homework/workCount.html?workId=${workId}&classId=${classItem.id}" class="<c:if test="${classId eq classItem.id }">active</c:if>">${classItem.name }</a>
 				</c:forEach>
 			</div>
+			</c:if>
 		<h3 class="MarginTitle1 MarginTitle2 fz14">布置总人数：<span class="mr70"><b class="fontNormal red ">${workCountView.stuAllCount}</b>人</span>
 			已提交：<span class="mr70"><b class="fontNormal red ">${workCountView.submitCount+workCountView.readOverCount}</b>人</span> 
 			未提交：<span class="mr70"><b class="fontNormal red ">${workCountView.notSubmitCount}</b>人</span> </h3>
@@ -62,8 +76,8 @@ answer(pid,type);
 				<h5 class="mb0">正确率统计</h5>
 				<p class="LH3">
 					总正确率：<span class="coffeeColor">
-					<c:if test="${workCountView.correctCountList[0].checkedStuCount != '0'}">
-					${workCountView.averageCorrect}
+					<c:if test="${workCountView.correctCountList[0].checkedStuCount != '0' && workCountView.objectQueCount>0}">
+					${workCountView.averageCorrect}%   
 					</c:if>
 					
 					<c:if test="${workCountView.correctCountList[0].checkedStuCount == '0'}">
@@ -82,15 +96,15 @@ answer(pid,type);
 					<c:forEach items="${workCountView.correctCountList}" var="correctCount">
 						<li>
 							<span class="quesNo">${correctCount.rn}</span>
-					<c:if test="${workCountView.correctCountList[0].checkedStuCount != '0'}">
-						<c:if test="${correctCount.quePercent<'60%'}">
+					<c:if test="${workCountView.correctCountList[0].checkedStuCount != '0' && workCountView.objectQueCount>0}">
+						<c:if test="${correctCount.quePercent<60}">
 							<span class="theRate red">
-							${correctCount.quePercent}
+							${correctCount.quePercent}%
 							</span>
 						</c:if>
-						<c:if test="${correctCount.quePercent>='60%'}">
+						<c:if test="${correctCount.quePercent>=60 }">
 							<span class="theRate">
-							${correctCount.quePercent}
+							${correctCount.quePercent}%
 							</span>
 						</c:if>
 					</c:if>

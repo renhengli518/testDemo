@@ -34,7 +34,7 @@
    $(function(){
 	   var et;
 	   $(".wrap").css({"height":($(window).height()-70)+'px',"width":$(window).width()});
-	   $.get("${root}/commons/selectStudentByTeacher.do?userId=fbe1910647504713bdfe043084de7014",function(treeData){
+	   $.get("${root}/commons/selectStudentByTeacher.do?userId=${SESSION_USER.userId}",function(treeData){
 		   et = eTree.init({
 				"id": "easyTree",
 				"data": treeData,

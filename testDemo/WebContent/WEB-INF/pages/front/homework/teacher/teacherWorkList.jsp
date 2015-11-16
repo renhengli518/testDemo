@@ -110,9 +110,9 @@ function homeWorkListResult(data,total){
 				if(homeWork.readOverType == 'TEACHER'){
 					if(homeWork.status=='PROGRESS'){
 						html+='<a href="javascript:;" class="marking threeItem readHomework">批 阅</a>';
-						html+='<a href="${root}/homework/workCount.html?workId='+homeWorkId+'" class="examState threeItem">统计</a>';
+						html+='<a href="javascript:;" class="examState threeItem countWork">统计</a>';
 					}else if(homeWork.status=='END'){
-						html+='<a href="${root}/homework/workCount.html?workId='+homeWorkId+'" class="examState threeItem">统计</a>';
+						html+='<a href="javascript:;" class="examState threeItem countWork">统计</a>';
 						
 					}else if(homeWork.status=='INIT'){
 						
@@ -125,7 +125,7 @@ function homeWorkListResult(data,total){
 						html+='<a href="javascript:void(0);" class="marking threeItem arrangeWork" >布置</a>'; 
 						html+='<a href="javascript:;" class="examState threeItem editHomework">编辑</a>';	
 					}else{
-						html+='<a href="${root}/homework/workCount.html?workId='+homeWorkId+'" class="examState threeItem">统计</a>';
+						html+='<a href="javascript:;" class="examState threeItem countWork">统计</a>';
 					}
 				}
 				
@@ -178,6 +178,13 @@ function homeWorkListResult(data,total){
 	$("#pageBody").on("click",".readHomework",function(){
 		var homeworkId = $(this).parents(".borderBox").attr("homeworkId");
 		location.href="${root}/homework/readOverHomework.html?homeworkId="+homeworkId;
+	});
+	
+	$("#pageBody").on("click",".countWork",function(){
+		var homeworkId = $(this).parents(".borderBox").attr("homeworkId");
+		var objType="TEACHER";
+		location.href="${root}/homework/workCount.html?workId="+homeworkId+"&objType="+objType;
+		
 	});
 
 </script>

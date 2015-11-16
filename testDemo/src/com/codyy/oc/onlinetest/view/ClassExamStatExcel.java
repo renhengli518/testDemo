@@ -110,7 +110,7 @@ public class ClassExamStatExcel extends AbstractExcelView {
         	ExamQuestionStatistics quesStatis = examQuestionStatistics.get(i);
         	HSSFRow sheetRow = sheet.createRow(i + 11+classCount);
         	sheetRow.createCell(0).setCellValue(quesStatis.getSort());
-        	sheetRow.createCell(1).setCellValue(quesStatis.getPassRate()+"%");
+        	sheetRow.createCell(1).setCellValue(quesStatis.getRightRate()+"%");
 		}
 		
 	}

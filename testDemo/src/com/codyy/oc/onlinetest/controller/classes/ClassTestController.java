@@ -79,12 +79,10 @@ public class ClassTestController extends BaseController{
 	 * @author zhangshuangquan
 	 * @return
 	 */
-	@RequestMapping("classExamList/{classlevelId}/{classId}")
-	public String classExamList(@PathVariable("classlevelId") String classlevelId, @PathVariable("classId") String classId, 
-			HttpServletRequest request) {
+	@RequestMapping("classExamList/{classId}")
+	public String classExamList(@PathVariable("classId") String classId, HttpServletRequest request) {
 		// 获取年级和学科全部信息
 		SessionUser sessionUser = getSessionUser(request);
-		request.setAttribute("classlevelId", classlevelId);
 		request.setAttribute("classId", classId);
 		getClassAndSubject(request, sessionUser);
 		return "front/onlinetest/class/classExamList";
@@ -126,10 +124,12 @@ public class ClassTestController extends BaseController{
 	 * @return 
 	 *
 	 */
-	@RequestMapping("viewClassExam/{id}")
-	public String viewClassExam(@PathVariable("id") String examTaskId, Model model){
+	@RequestMapping("viewClassExam/{id}/{classId}")
+	public String viewClassExam(@PathVariable("id") String examTaskId,
+			@PathVariable("classId") String classId, Model model){
 		ExamTaskView examTaskView = examTaskService.getClsClassExamTaskById(examTaskId);
 		List<ExamQuestionListResult>  examQuestions = examTaskService.getExamQuestionByExamTaskId(examTaskId);
+		model.addAttribute("classId", classId);
 		model.addAttribute("examTaskView", examTaskView);
 		model.addAttribute("examQuestions", examQuestions);
 		return "front/onlinetest/class/viewClassExam";
@@ -143,15 +143,12 @@ public class ClassTestController extends BaseController{
 	 * @return 
 	 *
 	 */
-	@RequestMapping("toClassExamAnalyze/{id}/{classlevelId}/{classId}")
-	public String toClassExamAnalyze(@PathVariable("id") String examTaskId, 
-			@PathVariable("classlevelId") String classlevelId, 
-			@PathVariable("classId") String classId,
-			Model model){
-		ExamTaskView examTaskView = examTaskService.getClsClassExamTask(examTaskId, classlevelId, classId);
+	@RequestMapping("toClassExamAnalyze/{id}/{classId}")
+	public String toClassExamAnalyze(@PathVariable("id") String examTaskId,
+			@PathVariable("classId") String classId, Model model){
+		ExamTaskView examTaskView = examTaskService.getClsClassExamTask(examTaskId, classId);
 		String classMsg = examTaskView.getClasslevelName()+examTaskView.getClassName();
 		model.addAttribute("examTaskView", examTaskView);
-		model.addAttribute("classlevelId", classlevelId);
 		model.addAttribute("classId", classId);
 		model.addAttribute("classMsg", classMsg);
 		return "front/onlinetest/class/classExamAnalyze";
@@ -184,13 +181,10 @@ public class ClassTestController extends BaseController{
 	 */
 	@ResponseBody
 	@RequestMapping("getExamRightStatisByClass")
-	public List<ExamQuestionStatistics> getExamRightStatisByClass(String examTaskId, String classlevel,
+	public List<ExamQuestionStatistics> getExamRightStatisByClass(String examTaskId, String classId,
 			String flag){
-		 String[] classIds= classlevel.split(":");
-		 String classlevelId = classIds[0];
-		 String classId = classIds[1];
-		 if (StringUtils.isNotBlank(classlevelId) && StringUtils.isNotBlank(classId)) {
-    	    List<ExamQuestionStatistics> examQuestionStatistics = examTaskService.getExamRightStatisByClass(examTaskId, classlevelId, classId, flag);
+		 if (StringUtils.isNotBlank(classId)) {
+    	    List<ExamQuestionStatistics> examQuestionStatistics = examTaskService.getExamRightStatisByClass(examTaskId, classId, flag);
     	    return examQuestionStatistics;
 		 }
        return null;
@@ -206,14 +200,8 @@ public class ClassTestController extends BaseController{
 	@ResponseBody
 	@RequestMapping("getStudentStatisList")
 	public List<ExamStudentStatistic>  getStudentStatisList(ExamTaskSortView examTaskSortView){
-		String[] classIds = examTaskSortView.getClasslevel().split(":");
-		String classlevelId = classIds[0];
-		String classId = classIds[1];
-		if(StringUtils.isNotBlank(classlevelId) && StringUtils.isNotBlank(classId)){
-			List<ExamStudentStatistic> examStudentStatistics=examTaskService.getStudentStatisList(examTaskSortView, classlevelId, classId);
-		   return examStudentStatistics;
-		}
-		return null;
+		List<ExamStudentStatistic> examStudentStatistics=examTaskService.getStudentStatisList(examTaskSortView);
+		return examStudentStatistics;
 	}
 	
 	/**
@@ -229,10 +217,6 @@ public class ClassTestController extends BaseController{
 			String flag, HttpServletResponse response, HttpServletRequest request){
 		
 		try {
-			String[] classIds = examTaskSortView.getClasslevel().split(":");
-			String classlevelId = classIds[0];
-			String classId = classIds[1];
-			
 			Map<String, Object> model = new HashMap<String, Object>();
 			
 			//试卷信息
@@ -242,10 +226,10 @@ public class ClassTestController extends BaseController{
 			List<ExamTaskStatistics> examTaskStatistics = examTaskService.getExamStaticsByClass(examTaskSortView.getExamTaskId());
 			
 			//正确率统计
-			List<ExamQuestionStatistics> examQuestionStatistics = examTaskService.getExamRightStatisByClass(examTaskSortView.getExamTaskId(), classlevelId, classId, flag);
+			List<ExamQuestionStatistics> examQuestionStatistics = examTaskService.getExamRightStatisByClass(examTaskSortView.getExamTaskId(), examTaskSortView.getClassId(), flag);
 			
 			//学生统计
-			List<ExamStudentStatistic> examStudentStatistics = examTaskService.getStudentStatisList(examTaskSortView, classlevelId, classId);
+			List<ExamStudentStatistic> examStudentStatistics = examTaskService.getStudentStatisList(examTaskSortView);
 		
 			model.put("examTaskId", examTaskSortView.getExamTaskId());
 			model.put("className", className);
@@ -293,18 +277,14 @@ public class ClassTestController extends BaseController{
 	 * @return 
 	 *
 	 */
-	@RequestMapping("toViewAnalyzeDetail/{id}/{classlevel}")
+	@RequestMapping("toViewAnalyzeDetail/{id}/{classId}")
 	public String toViewAnalyzeDetail(@PathVariable("id") String examTaskId, 
-			@PathVariable("classlevel") String classlevel, Model model){
-		String[] classIds = classlevel.split(":");
-		String classlevelId = classIds[0];
-		String classId = classIds[1];
-		List<ExamQuestionListResult>  examQuestions = examTaskService.getClassExamStatistics(examTaskId, classlevelId, classId);
+			@PathVariable("classId") String classId, Model model){
+		List<ExamQuestionListResult>  examQuestions = examTaskService.getClassExamStatistics(examTaskId, classId);
 		model.addAttribute("examTaskId", examTaskId);
 		model.addAttribute("examQuestions", examQuestions);
-		model.addAttribute("classlevelId", classlevelId);
 		model.addAttribute("classId", classId);
-		return "front/onlinetest/school/viewAnalyzeDetail";
+		return "front/onlinetest/class/viewAnalyzeDetail";
 	}
 	
 	/**
@@ -314,15 +294,17 @@ public class ClassTestController extends BaseController{
 	 * @return 
 	 *
 	 */
-	@RequestMapping("toViewExamAnswer/{id}/{userId}")
+	@RequestMapping("toViewExamAnswer/{id}/{userId}/{classId}")
 	public String toViewExamAnswer(@PathVariable("id") String examTaskId, 
-			@PathVariable("userId") String userId, Model model){
+			@PathVariable("userId") String userId, @PathVariable("classId") String classId,
+			Model model){
 		ExamResult examResult = examTaskService.getExamResultByUserId(examTaskId, userId);
 		List<ExamQuestionListResult> examQuestions = examTaskService.getStudentExamAnswer(examTaskId, userId);
 		model.addAttribute("examResult", examResult);
-		 model.addAttribute("examTaskId", examTaskId);
+		model.addAttribute("examTaskId", examTaskId);
         model.addAttribute("examQuestions", examQuestions);
-		return "front/onlinetest/school/viewExamAnswer";
+        model.addAttribute("classId", classId);
+		return "front/onlinetest/class/viewExamAnswer";
 	}
 	
 	/**
@@ -351,7 +333,7 @@ public class ClassTestController extends BaseController{
 			String examQuestionId, String classlevelId, String classId){
 		ExamQuestion examQuestion = examTaskService.getExamQuestionByQuestionId(examQuestionId);
 		if (examQuestion != null){
-			return examTaskService.getExamQuestionStatistics(examQuestion, examTaskId, classlevelId, classId);
+			return examTaskService.getExamQuestionStatistics(examQuestion, examTaskId, classId);
 		}
 		
 		return null;

@@ -5,7 +5,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.ibatis.annotations.Param;
-import org.springframework.web.bind.annotation.PathVariable;
 
 import com.codyy.commons.page.Page;
 import com.codyy.oc.onlinetest.entity.ExamQstRKnowledgeExtend;
@@ -199,4 +198,11 @@ public interface ExamQuestionMapper {
 	Integer updateReadOverCount(String examTaskId);
 
 	ExamQuestion getExamQuestionById(String examQuestionId);
+	
+	/**
+	 * @author renhengli
+	 * 定时删除临时习题
+	 * @return
+	 */
+	int deleteLSExamQuestion();
 }

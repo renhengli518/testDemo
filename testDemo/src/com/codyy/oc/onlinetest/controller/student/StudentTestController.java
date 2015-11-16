@@ -301,8 +301,7 @@ public class StudentTestController extends BaseController {
 	        return new ResultJson(true, "已提交答题！");
 			
 		} catch (Exception e) {
-			e.printStackTrace();
-			logger.debug(e);
+			logger.error(e);
 			return new ResultJson(false, "答题错误！");
 		}
 		
@@ -404,8 +403,7 @@ public class StudentTestController extends BaseController {
 			
 			return new ResultJson(true, "已提交答题！");
 		} catch (Exception e) {
-			e.printStackTrace();
-			logger.debug(e);
+			logger.error(e);
 			return new ResultJson(false, "答题错误！");
 		}
 		

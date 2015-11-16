@@ -229,13 +229,10 @@ public class SchoolTestController extends BaseOnlineTestController{
 	 */
 	@ResponseBody
 	@RequestMapping("getExamRightStatisByClass")
-	public List<ExamQuestionStatistics> getExamRightStatisByClass(String examTaskId, String classlevel,
+	public List<ExamQuestionStatistics> getExamRightStatisByClass(String examTaskId, String classId,
 			String flag){
-		 String[] classIds= classlevel.split(":");
-		 String classlevelId = classIds[0];
-		 String classId = classIds[1];
-		 if (StringUtils.isNotBlank(classlevelId) && StringUtils.isNotBlank(classId)) {
-			 List<ExamQuestionStatistics> examQuestionStatistics = examTaskService.getExamRightStatisByClass(examTaskId, classlevelId, classId, flag);
+		 if (StringUtils.isNotBlank(classId)) {
+			 List<ExamQuestionStatistics> examQuestionStatistics = examTaskService.getExamRightStatisByClass(examTaskId, classId, flag);
 	    	 return examQuestionStatistics;
 		 }
     	return null;
@@ -251,14 +248,8 @@ public class SchoolTestController extends BaseOnlineTestController{
 	@ResponseBody
 	@RequestMapping("getStudentStatisList")
 	public List<ExamStudentStatistic>  getStudentStatisList(ExamTaskSortView examTaskSortView){
-		String[] classIds = examTaskSortView.getClasslevel().split(":");
-		String classlevelId = classIds[0];
-		String classId = classIds[1];
-		if(StringUtils.isNotBlank(classlevelId) && StringUtils.isNotBlank(classId)){
-		   List<ExamStudentStatistic> examStudentStatistics=examTaskService.getStudentStatisList(examTaskSortView, classlevelId, classId);
-		   return examStudentStatistics;
-		}
-		return null;
+		List<ExamStudentStatistic> examStudentStatistics=examTaskService.getStudentStatisList(examTaskSortView);
+		return examStudentStatistics;
 	}
 	
 	/**
@@ -273,10 +264,6 @@ public class SchoolTestController extends BaseOnlineTestController{
 	public ResultJson exportStatisticsData(ExamTaskSortView examTaskSortView, String className,
 			String flag, HttpServletResponse response, HttpServletRequest request){
 		try {
-			String[] classIds = examTaskSortView.getClasslevel().split(":");
-			String classlevelId = classIds[0];
-			String classId = classIds[1];
-			
 			Map<String, Object> model = new HashMap<String, Object>();
 			
 			//试卷信息
@@ -286,10 +273,10 @@ public class SchoolTestController extends BaseOnlineTestController{
 			List<ExamTaskStatistics> examTaskStatistics = examTaskService.getExamStaticsByClass(examTaskSortView.getExamTaskId());
 			
 			//正确率统计
-			List<ExamQuestionStatistics> examQuestionStatistics = examTaskService.getExamRightStatisByClass(examTaskSortView.getExamTaskId(), classlevelId, classId, flag);
+			List<ExamQuestionStatistics> examQuestionStatistics = examTaskService.getExamRightStatisByClass(examTaskSortView.getExamTaskId(), examTaskSortView.getClassId(), flag);
 			
 			//学生统计
-			List<ExamStudentStatistic> examStudentStatistics = examTaskService.getStudentStatisList(examTaskSortView, classlevelId, classId);
+			List<ExamStudentStatistic> examStudentStatistics = examTaskService.getStudentStatisList(examTaskSortView);
 			
 			model.put("examTaskId", examTaskSortView.getExamTaskId());
 			model.put("className", className);
@@ -309,8 +296,6 @@ public class SchoolTestController extends BaseOnlineTestController{
 			request.getSession().setAttribute("fileName", fileName);
 			return new ResultJson(true);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 			return new ResultJson(false);
 		}
 	}
@@ -339,16 +324,12 @@ public class SchoolTestController extends BaseOnlineTestController{
 	 * @return 
 	 *
 	 */
-	@RequestMapping("toViewAnalyzeDetail/{id}/{classlevel}")
+	@RequestMapping("toViewAnalyzeDetail/{id}/{classId}")
 	public String toViewAnalyzeDetail(@PathVariable("id") String examTaskId, 
-			@PathVariable("classlevel") String classlevel, Model model){
-		String[] classIds = classlevel.split(":");
-		String classlevelId = classIds[0];
-		String classId = classIds[1];
-		List<ExamQuestionListResult>  examQuestions = examTaskService.getClassExamStatistics(examTaskId, classlevelId, classId);
+			@PathVariable("classId") String classId, Model model){
+		List<ExamQuestionListResult>  examQuestions = examTaskService.getClassExamStatistics(examTaskId, classId);
 		model.addAttribute("examTaskId", examTaskId);
 		model.addAttribute("examQuestions", examQuestions);
-		model.addAttribute("classlevelId", classlevelId);
 		model.addAttribute("classId", classId);
 		model.addAttribute("tabType", "task");
 		return "front/onlinetest/school/viewAnalyzeDetail";
@@ -395,13 +376,11 @@ public class SchoolTestController extends BaseOnlineTestController{
 	 */
 	@ResponseBody
 	@RequestMapping("getExamQstOptionStatisticsByExamQstId")
-	public String[] getExamQstOptionStatisticsByExamQstId(String examTaskId,
-			String examQuestionId, String classlevelId, String classId){
+	public String[] getExamQstOptionStatisticsByExamQstId(String examTaskId, String examQuestionId, String classId){
 		ExamQuestion examQuestion = examTaskService.getExamQuestionByQuestionId(examQuestionId);
 		if (examQuestion != null){
-			return examTaskService.getExamQuestionStatistics(examQuestion, examTaskId, classlevelId, classId);
+			return examTaskService.getExamQuestionStatistics(examQuestion, examTaskId, classId);
 		}
-		
 		return null;
 	}
 	

@@ -64,7 +64,6 @@
 <script type="text/javascript">
 	function initKnowledge(){
 		console.log("初始化知识点选题数据");
-		console.log(semesterId+"***"+subjectId);
 		var param = {
     			semesterId:semesterId,
     			subjectId:subjectId
@@ -125,7 +124,7 @@
 	
 	// 查询共享题库列表
 	function searchQuestionsByKnowledge() {
-		var url  = '${root}/questionLib/searchShareList.do';
+		var url  = '${root}/teacherTest/searchShareList.do';
 		var baseSemesterId = $("#semesterLi").find(".selected").prop("id");
 		var baseClasslevelId = $("#classlevelLi").find(".selected").prop("id");
 		var baseSubjectId = $("#subjectLi").find(".selected").prop("id");
@@ -214,7 +213,7 @@ $('.criteria').on('click', 'a', function () {
 //知识点选题
 function searchQuestions1() {
 	console.log("知识点查询");
-	var url  = '${root}/questionLib/searchShareList.do';
+	var url  = '${root}/teacherTest/searchShareList.do';
 	var baseSemesterId = $("#semesterOption").val();
 	var baseClasslevelId;
 	var baseSubjectId = $("#subjOption").val();

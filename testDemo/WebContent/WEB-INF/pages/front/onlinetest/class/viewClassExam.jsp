@@ -12,8 +12,9 @@
 
 </head>
 <body class="mainIndex">
+     <c:set var="menuTag" value="TEST"/>
      <%@include file="../../../common/topHeader.jsp"%>
-     <%@include file="../../../common/nav.jsp"%>
+     <%@ include file="../../../common/classroomHeader.jsp" %>
      <%@include file="../../../common/fixedRight.jsp"%>
      <div class="container clearfix w1200 bkgNone marginauto">
        <div class="content">

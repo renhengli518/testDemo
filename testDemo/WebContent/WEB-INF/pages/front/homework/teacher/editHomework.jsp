@@ -156,7 +156,7 @@
 							<label class="text" for=""><span class="red">*</span>完成时间：</label>
 							
 							<span class="cont">
-								<input type="text" value="<fmt:formatDate value="${homework.finishTime }" pattern="yyyy-MM-dd HH:mm"/>" needcheck nullmsg="作业完成时间不能为空！" value="" onclick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm'});" name="finishTime" class="Wdate">
+								<input type="text" value="<fmt:formatDate value="${homework.finishTime }" pattern="yyyy-MM-dd HH:mm"/>" needcheck nullmsg="作业完成时间不能为空！" value="" onclick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm',minDate:'%y-%M-%d'});" name="finishTime" class="Wdate">
 								<br/>
 								<label>
 								  <input id="isPublish" type="checkbox" checked />&nbsp;&nbsp;暂不布置给学生
